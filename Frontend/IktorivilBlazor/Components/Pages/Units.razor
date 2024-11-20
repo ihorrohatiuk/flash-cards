@@ -1,0 +1,25 @@
+﻿@page "/Units"
+
+<h3>Your flash card's sets</h3>
+
+<div class="unit" onclick="href='nextpage.html';" style="cursor: pointer; border: 1px solid #ccc; border-radius: 5px; padding: 20px; margin: 10px; width: 300px;">
+    <h2 class="unit-name">Card Name</h2>
+    <p class="unit-description">This is a brief description of the card.</p>
+    <p class="unit-owner">Owner: John Doe</p>
+</div>
+
+@*<MudCard Outlined="true" Style="width: 300px;">
+    <MudCardContent>
+        <MudText>Story of the day</MudText>
+        <MudText Typo="Typo.body2">The quick, brown fox jumps over a lazy dog.</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
+    </MudCardActions>
+</MudCard>*@
+
+@code {
+    private List<Unit> _userUnits;
+    
+    
+}
