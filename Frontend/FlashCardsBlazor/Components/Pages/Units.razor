@@ -1,0 +1,63 @@
+﻿@page "/Units"
+@using Helpers
+
+<PageTitle>Units</PageTitle>
+
+@if (_userUnits == null)
+{
+    <h3>Loading your flash card's units...</h3>
+    
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+}
+else
+{
+    <div class="custom-flex-container">
+        <h3>Your flash card's units</h3>
+        <MudButton 
+            Variant="Variant.Filled" 
+            Size="Size.Small" 
+            StartIcon="@Icons.Material.Filled.Add" 
+            Color="Color.Primary" Href="/add-unit">Add unit</MudButton>
+    </div>
+    
+    <MudGrid Justify="Justify.FlexStart" Spacing="2">
+        @foreach (Unit unit in _userUnits)
+        {
+            <MudItem xs="12" sm="6" md="4" lg="3">
+                <MudLink Href="/flip" Style="text-decoration: none; display: inline-block;">
+                    <MudCard Outlined="true" Style="width: 300px;">
+                        <MudCardContent>
+                            <MudText Typo="Typo.h5" FontWeight="FontWeight.Bold">@TextHelper.TruncateText(unit.Name)</MudText>
+                            <MudText Typo="Typo.body2">@TextHelper.TruncateText(unit.Theme)</MudText>
+                            <MudText Typo="Typo.body2">@TextHelper.TruncateText(unit.OwnerName)</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudLink>
+            </MudItem>
+        }
+    </MudGrid>
+
+}
+
+@code {
+    
+    private List<Unit>? _userUnits;
+
+    protected override void OnInitialized()
+    {
+        _userUnits = 
+        [
+            new Unit(1, "English Wordsfffffffffffffffffffffffffffffffffffffffffff", "English", "John Doe"),
+            new Unit(2, "National Dishes", "Very long themeeeeeeeeeeeeee", "Jimmy Rodgers"),
+            new Unit(3, "Ancient History", "History", "Very long nameeeeeeeeeeeeeeeeee"),
+            new Unit(4, "Basic Chemistry", "Science", "Albert Newton"),
+            new Unit(5, "World Capitals", "Geography", "Emma Brown"),
+            new Unit(6, "Mathematics Basics", "Math", "Chris Lee"),
+            new Unit(7, "Spanish Phrases", "Language", "Sofia Garcia"),
+            new Unit(8, "Classical Music", "Music", "Ludwig Fischer"),
+            new Unit(9, "Computer Basics", "Technology", "Alex Johnson"),
+            new Unit(10, "Human Anatomy", "Biology", "Olivia Smith"),
+            new Unit(11, "Art Movements", "Art", "Leo Da Vinci")
+        ];
+    }
+}

@@ -1,4 +1,4 @@
-using IktorivilBlazor.Components;
+using FlashCardsBlazor.Components;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);

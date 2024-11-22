@@ -1,31 +1,29 @@
-﻿@page "/"
+﻿@page "/flip"
+@using FlashCardsBlazor.Components.Models
 @rendermode InteractiveServer
-@attribute [StreamRendering]
-
-<PageTitle>Home</PageTitle>
 
 @if (flashCards is null)
 {
-    <p>
-        <em>Loading flash cards...</em>
-    </p>
+<p>
+    <em>Loading flash cards...</em>
+</p>
 }
 else
 {
-    <div class="flip-container">
-        <div class="flip-card @(showAnswer ? "flip" : "")" @onclick="FlipCard">
-            <div class="flip-card-front">
-                @flashCards[currentCardIndex].Question            
-            </div>
-            <div class="flip-card-back">
-                @flashCards[currentCardIndex].Answer
-            </div>
+<div class="flip-container">
+    <div class="flip-card @(showAnswer ? "flip" : "")" @onclick="FlipCard">
+        <div class="flip-card-front">
+            @flashCards[currentCardIndex].Question
+        </div>
+        <div class="flip-card-back">
+            @flashCards[currentCardIndex].Answer
         </div>
     </div>
-    
-    <div class="mt-3">
-        <button class="btn btn-success" @onclick="NextCard">Next card</button>
-    </div>
+</div>
+
+<div class="mt-3">
+    <button class="btn btn-success" @onclick="NextCard">Next card</button>
+</div>
 }
 
 
@@ -39,7 +37,7 @@ else
     {
         LoadFlashCards();
     }
-    
+
     private void LoadFlashCards()
     {
         flashCards =
@@ -53,7 +51,7 @@ else
     {
         showAnswer = !showAnswer;
     }
-    
+
     private void NextCard()
     {
         showAnswer = false;
@@ -63,7 +61,7 @@ else
         }
         else
         {
-            currentCardIndex = 0; 
+            currentCardIndex = 0;
         }
     }
 }

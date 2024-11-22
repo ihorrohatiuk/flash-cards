@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IktorivilBlazor", "IktorivilBlazor\IktorivilBlazor.csproj", "{BC174987-4E8B-4A77-8603-FEACC2153EF9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlashCardsBlazor", "FlashCardsBlazor\FlashCardsBlazor.csproj", "{BC174987-4E8B-4A77-8603-FEACC2153EF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
