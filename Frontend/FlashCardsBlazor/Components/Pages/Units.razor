@@ -1,5 +1,6 @@
 ﻿@page "/Units"
 @using Helpers
+@rendermode InteractiveServer
 
 <PageTitle>Units</PageTitle>
 
@@ -43,8 +44,15 @@ else
     
     private List<Unit>? _userUnits;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        await LoadUnits();
+    }
+
+    private async Task LoadUnits()
+    {
+        // Mocking API response delay 
+        await Task.Delay(5000);
         _userUnits = 
         [
             new Unit(1, "English Wordsfffffffffffffffffffffffffffffffffffffffffff", "English", "John Doe"),
