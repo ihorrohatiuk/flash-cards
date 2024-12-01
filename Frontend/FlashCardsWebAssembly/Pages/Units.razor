@@ -1,4 +1,5 @@
 ﻿@page "/Units"
+@inject HttpClient Http
 
 <PageTitle>Units</PageTitle>
 
@@ -51,19 +52,6 @@ else
     {
         // Mocking API response delay 
         await Task.Delay(5000);
-        _userUnits = 
-        [
-            new Unit(1, "English Wordsfffffffffffffffffffffffffffffffffffffffffff", "English", "John Doe"),
-            new Unit(2, "National Dishes", "Very long themeeeeeeeeeeeeee", "Jimmy Rodgers"),
-            new Unit(3, "Ancient History", "History", "Very long nameeeeeeeeeeeeeeeeee"),
-            new Unit(4, "Basic Chemistry", "Science", "Albert Newton"),
-            new Unit(5, "World Capitals", "Geography", "Emma Brown"),
-            new Unit(6, "Mathematics Basics", "Math", "Chris Lee"),
-            new Unit(7, "Spanish Phrases", "Language", "Sofia Garcia"),
-            new Unit(8, "Classical Music", "Music", "Ludwig Fischer"),
-            new Unit(9, "Computer Basics", "Technology", "Alex Johnson"),
-            new Unit(10, "Human Anatomy", "Biology", "Olivia Smith"),
-            new Unit(11, "Art Movements", "Art", "Leo Da Vinci")
-        ];
+        _userUnits = await Http.GetFromJsonAsync<List<Unit>>("sample-data/units.json");
     }
 }
