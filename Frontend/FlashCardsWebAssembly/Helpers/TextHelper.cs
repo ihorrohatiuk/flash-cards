@@ -1,5 +1,4 @@
-﻿namespace FlashCardsBlazor.Helpers;
-
+﻿namespace FlashCardsWebAssembly.Helpers;
 
 public static class TextHelper
 {

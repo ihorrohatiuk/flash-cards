@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlashCardsBlazor", "FlashCardsBlazor\FlashCardsBlazor.csproj", "{BC174987-4E8B-4A77-8603-FEACC2153EF9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlashCardsWebAssembly", "FlashCardsWebAssembly\FlashCardsWebAssembly.csproj", "{C341450D-F089-4CF3-8364-F73CCFF2D7B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +8,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BC174987-4E8B-4A77-8603-FEACC2153EF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC174987-4E8B-4A77-8603-FEACC2153EF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC174987-4E8B-4A77-8603-FEACC2153EF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC174987-4E8B-4A77-8603-FEACC2153EF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C341450D-F089-4CF3-8364-F73CCFF2D7B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C341450D-F089-4CF3-8364-F73CCFF2D7B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C341450D-F089-4CF3-8364-F73CCFF2D7B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C341450D-F089-4CF3-8364-F73CCFF2D7B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

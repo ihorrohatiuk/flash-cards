@@ -1,4 +1,4 @@
-﻿namespace FlashCardsBlazor.Components.Models;
+﻿namespace FlashCardsWebAssembly.Models;
 
 public class FlashCard
 {
