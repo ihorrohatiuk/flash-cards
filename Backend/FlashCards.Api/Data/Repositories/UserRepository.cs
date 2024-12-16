@@ -15,9 +15,9 @@ public class UserRepository : IUserRepository
         _context = context;
     }
     
-    public IEnumerable<User> GetAllUsers()
+    public IEnumerable<User> GetAllUsers() 
     {
-        return _context.Set<User>().ToList();
+        return _context.Set<User>().AsEnumerable();
     }
 
     public User? GetUserById(int id)

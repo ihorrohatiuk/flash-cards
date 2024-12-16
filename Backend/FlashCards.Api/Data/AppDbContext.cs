@@ -13,17 +13,4 @@ public class AppDbContext : DbContext
     public DbSet<FlashCardsSet> FlashCardsSet { get; set; }
     
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-    
-    /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        var builder = new ConfigurationBuilder();
-        builder.SetBasePath(Directory.GetCurrentDirectory());
-        builder.AddJsonFile("appsettings.json");
-        var config = builder.Build();
-        var connectionString = config.GetConnectionString("DefaultConnection");
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer(connectionString);
-        }
-    }*/
 }

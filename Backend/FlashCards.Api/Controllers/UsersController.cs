@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using FlashCards.Api.Data;
-using FlashCards.Api.Data.Repositories;
 using FlashCards.Api.Models;
+using FlashCards.Api.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace FlashCards.Api.Controllers;
 
@@ -12,39 +10,29 @@ namespace FlashCards.Api.Controllers;
 [Route("[controller]")]
 public class UsersController : ControllerBase
 {
-    private readonly ILogger<UsersController> _logger;
-    private readonly IUserRepository _userRepository;
+    private readonly IUserService _userService;
 
-    public UsersController(AppDbContext context, ILogger<UsersController> logger)
+    public UsersController(AppDbContext context)
     {
-        _logger = logger;
-        _userRepository = new UserRepository(context);
+        _userService = new UserService(context);
     }
 
     [HttpGet(Name = "GetUsers")]
-    public IEnumerable<User> Get()
+    public IEnumerable<User> GetUsers()
     {
-        return _userRepository.GetAllUsers();
+        return _userService.GetAllUsers();
     }
 
     [HttpGet("{id}", Name = "GetUser")]
-    public User Get(int id)
+    public User? Get(int id)
     {
-        return _userRepository.GetUserById(id);
+        return _userService.GetUserById(id);
     }
     
     [HttpPost(Name = "AddUser")]
-    public IActionResult Post(User user)
+    public IActionResult AddUser(User user)
     {
-        try
-        {
-            _userRepository.AddUser(user);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, e.Message);
-            throw;
-        }
+        _userService.AddUser(user);
         return Ok(user);
     }
 }
