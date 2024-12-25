@@ -1,42 +1,92 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using FlashCards.Api.Data;
+using FlashCards.Api.Data.Dtos;
+using FlashCards.Api.Data.Models;
 using FlashCards.Api.Data.Repositories;
-using FlashCards.Api.Models;
+using FlashCards.Api.Infrastructure;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FlashCards.Api.Services;
 
-public class UserService : IUserService
+public class UserService
 {
-    private readonly IUserRepository _userRepository;
+    private readonly UserRepository _userRepository;
+    private JwtProvider _jwtProvider;
     
-    public UserService(AppDbContext context)
+    public UserService(AppDbContext context, JwtProvider jwtProvider)
     {
         _userRepository = new UserRepository(context);    
+        _jwtProvider = jwtProvider;
     }
-    public IEnumerable<User> GetAllUsers()
+    public IEnumerable<User> GetAll()
     {
-        return _userRepository.GetAllUsers();
-    }
-
-    public User? GetUserById(int id)
-    {
-        return _userRepository.GetUserById(id);
+        return _userRepository.GetAll();
     }
 
-    public void AddUser(User user)
+    public async Task<User?> GetByIdAsync(Guid id)
     {
-        // TODO: Add validation
-        _userRepository.AddUser(user);
+        return await _userRepository.GetByIdAsync(id);
     }
 
-    public void UpdateUser(User user)
+    public async Task<Result<User>> AddAsync(UserRegistrationDto userDto)
     {
-        // TODO: Add validation
-        _userRepository.UpdateUser(user);
+        if (_userRepository.Exists(userDto.Email).Result)
+        {
+            return new Result<User>(false, $"Email {userDto.Email} already exists.");
+        }
+        
+        var user = new User()
+        {
+            Id = Guid.NewGuid(),
+            FirstName = userDto.FirstName,
+            LastName = userDto.LastName,
+            Email = userDto.Email,
+            Role = Role.User,
+            PasswordHash = PasswordHashHandler.PasswordToHash(userDto.Password),
+        };
+        
+        await _userRepository.AddAsync(user);
+        
+        return new Result<User>(true, $"User {user.Email} successfully created.");
     }
 
-    public void DeleteUser(int id)
+    public async Task UpdateAsync(User user) //TODO: Implement 
     {
-        _userRepository.DeleteUser(id);
+        await _userRepository.UpdateAsync(user);
+    }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        await _userRepository.DeleteAsync(id);
+    }
+
+    public async Task<Result<UserLoginResponseDto>> AuthenticateAsync(UserLoginRequestDto? userLoginRequestDto)
+    {
+        // email check
+        if (userLoginRequestDto == null || !_userRepository.Exists(userLoginRequestDto.Email).Result)
+        {
+            return new Result<UserLoginResponseDto>(false, $"Email or password is incorrect.");
+        }
+        
+        var user = await _userRepository.GetByEmailAsync(userLoginRequestDto.Email);
+        // password check
+        if (!PasswordHashHandler.Verify(userLoginRequestDto.Password, user.PasswordHash))
+        {
+            return new Result<UserLoginResponseDto>(false, $"Email or password is incorrect.");
+        } 
+        
+        // return token
+        var token = _jwtProvider.GenerateJwtToken(user);
+        var userLoginResponseDto = new UserLoginResponseDto()
+        {
+            Email = user.Email,
+            AccessToken = token
+        };
+        
+        return new Result<UserLoginResponseDto>(userLoginResponseDto, true, $"User {user.Email} successfully logged in.");
     }
 }

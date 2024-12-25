@@ -1,18 +1,23 @@
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using FlashCards.Api.Data;
-using FlashCards.Api.Models;
+using FlashCards.Api.Data.Dtos;
+using FlashCards.Api.Data.Models;
 using FlashCards.Api.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlashCards.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
-    private readonly IUserService _userService;
+    private readonly UserService _userService;
 
-    public UsersController(AppDbContext context)
+    /*public UsersController(AppDbContext context)
     {
         _userService = new UserService(context);
     }
@@ -20,19 +25,12 @@ public class UsersController : ControllerBase
     [HttpGet(Name = "GetUsers")]
     public IEnumerable<User> GetUsers()
     {
-        return _userService.GetAllUsers();
+        return _userService.GetAll();
     }
 
     [HttpGet("{id}", Name = "GetUser")]
-    public User? Get(int id)
+    public async Task<User?> Get(Guid id)
     {
-        return _userService.GetUserById(id);
-    }
-    
-    [HttpPost(Name = "AddUser")]
-    public IActionResult AddUser(User user)
-    {
-        _userService.AddUser(user);
-        return Ok(user);
-    }
+        return await _userService.GetByIdAsync(id);
+    }*/
 }

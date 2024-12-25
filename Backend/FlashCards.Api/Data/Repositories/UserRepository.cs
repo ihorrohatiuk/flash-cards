@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FlashCards.Api.Models;
+using FlashCards.Api.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlashCards.Api.Data.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository : IRepository<User>
 {
     private readonly AppDbContext _context;
 
@@ -15,35 +16,55 @@ public class UserRepository : IUserRepository
         _context = context;
     }
     
-    public IEnumerable<User> GetAllUsers() 
+    public IEnumerable<User> GetAll() //TODO: Add pagination
     {
-        return _context.Set<User>().AsEnumerable();
+        return _context.Set<User>()
+            .AsNoTracking()
+            .AsEnumerable();
     }
 
-    public User? GetUserById(int id)
+    public async Task<User?> GetByIdAsync(Guid id)
     {
-        return _context.Set<User>().Find(id);
-    }
-
-    public void AddUser(User user)
-    {
-        _context.Set<User>().Add(user);
-        _context.SaveChanges();
-    }
-
-    public void UpdateUser(User user)
-    {
-       _context.Entry(user).State = EntityState.Modified;
-       _context.SaveChanges();
+        return await _context.Set<User>()
+            .FindAsync(id);
     }
     
-    public void DeleteUser(int id)
+    public async Task<User?> GetByEmailAsync(string email)
     {
-        User? user = _context.Set<User>().Find(id);
+        return await _context.Set<User>()
+            .AsNoTracking() 
+            .FirstOrDefaultAsync(user => user.Email == email);
+    }
+
+    public async Task AddAsync(User user)
+    {
+        await _context.Set<User>().AddAsync(user);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(User user)
+    {
+       _context.Entry(user).State = EntityState.Modified;
+       await _context.SaveChangesAsync();
+    }
+    
+    public async Task DeleteAsync(Guid id)
+    {
+        var user = await _context.Set<User>().FindAsync(id);
         if (user != null)
         {
             _context.Set<User>().Remove(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
+    }
+
+    public async Task<bool> Exists(Guid id)
+    {
+        return await _context.Set<User>().AnyAsync(u => u.Id == id);
+    }
+    
+    public async Task<bool> Exists(string email)
+    {
+        return await _context.Set<User>().AnyAsync(u => u.Email == email);
     }
 }
