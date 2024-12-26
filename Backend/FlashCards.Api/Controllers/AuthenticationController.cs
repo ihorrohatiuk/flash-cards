@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FlashCards.Api.Data.Dtos;
 using FlashCards.Api.Data.Models;
+using FlashCards.Api.Infrastructure;
 using FlashCards.Api.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -44,7 +46,10 @@ public class AuthenticationController : ControllerBase
         {
             return Unauthorized(authenticationResult.Message);
         }
+        var token = authenticationResult.Data?.AccessToken;
         
-        return Ok(authenticationResult.Data);
+        Response.Cookies.Append("AccessToken", token);
+        
+        return Ok();
     }
 }

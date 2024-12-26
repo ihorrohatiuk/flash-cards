@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FlashCards.Api.Data;
 using FlashCards.Api.Data.Dtos;
 using FlashCards.Api.Data.Models;
+using FlashCards.Api.Infrastructure;
 using FlashCards.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,14 +13,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace FlashCards.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
     private readonly UserService _userService;
 
-    /*public UsersController(AppDbContext context)
+    public UsersController(AppDbContext context, JwtProvider jwtProvider)
     {
-        _userService = new UserService(context);
+        _userService = new UserService(context, jwtProvider);
     }
 
     [HttpGet(Name = "GetUsers")]
@@ -32,5 +34,5 @@ public class UsersController : ControllerBase
     public async Task<User?> Get(Guid id)
     {
         return await _userService.GetByIdAsync(id);
-    }*/
+    }
 }
