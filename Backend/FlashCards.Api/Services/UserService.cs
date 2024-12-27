@@ -39,13 +39,13 @@ public class UserService
             return new Result<User>(false, $"Email {userDto.Email} already exists.");
         }
         
-        var user = new User()
+        var user = new User
         {
             Id = Guid.NewGuid(),
             FirstName = userDto.FirstName,
             LastName = userDto.LastName,
             Email = userDto.Email,
-            Role = Role.User,
+            Role = RolesType.User,
             PasswordHash = PasswordHashHandler.PasswordToHash(userDto.Password),
         };
         

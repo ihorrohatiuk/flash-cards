@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using System.Threading.Tasks;
 using FlashCards.Api.Data;
@@ -51,10 +52,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             OnMessageReceived = context =>
             {
                 context.Token = context.Request.Cookies["AccessToken"];
+                Console.WriteLine(context.Token);
                 return Task.CompletedTask;
             }
         };
     });
+// Authorization 
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
