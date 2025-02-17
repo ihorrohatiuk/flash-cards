@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Headers;
-using FlashCardsWebAssembly.Services;
+using FlashCards.WebUI.Services;
 
 namespace FlashCards.WebUI.Handllers;
 

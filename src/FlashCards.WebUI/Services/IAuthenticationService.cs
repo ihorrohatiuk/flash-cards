@@ -1,6 +1,6 @@
 ﻿using FlashCards.WebUI.Models;
 
-namespace FlashCardsWebAssembly.Services;
+namespace FlashCards.WebUI.Services;
 
 public interface IAuthenticationService
 {

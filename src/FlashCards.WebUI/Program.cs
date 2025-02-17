@@ -4,7 +4,6 @@ using FlashCards.WebUI.Handllers;
 using FlashCards.WebUI.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using FlashCardsWebAssembly.Services;
 using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);

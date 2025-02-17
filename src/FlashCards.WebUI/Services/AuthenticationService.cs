@@ -3,7 +3,6 @@ using System.Net.Http.Json;
 using System.Security.Claims;
 using Blazored.SessionStorage;
 using FlashCards.WebUI.Models;
-using FlashCardsWebAssembly.Services;
 
 namespace FlashCards.WebUI.Services;
 
