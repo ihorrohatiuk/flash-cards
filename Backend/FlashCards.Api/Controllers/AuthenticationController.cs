@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FlashCards.Api.Data.Dtos;
 using FlashCards.Api.Data.Models;
 using FlashCards.Api.Infrastructure;
@@ -52,6 +51,9 @@ public class AuthenticationController : ControllerBase
         
         Response.Cookies.Append("AccessToken", token);
         
-        return Ok();
+        return Ok(new UserLoginResponseDto
+        {
+            AccessToken = token
+        });
     }
 }

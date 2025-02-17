@@ -17,7 +17,7 @@ public class UserService
     private readonly UserRepository _userRepository;
     private JwtProvider _jwtProvider;
     
-    public UserService(AppDbContext context, JwtProvider jwtProvider)
+    public UserService(AppDbContext context, JwtProvider jwtProvider) //jwt provider shouldnt be here
     {
         _userRepository = new UserRepository(context);    
         _jwtProvider = jwtProvider;
@@ -81,10 +81,10 @@ public class UserService
         
         // return token
         var token = _jwtProvider.GenerateJwtToken(user);
-        var userLoginResponseDto = new UserLoginResponseDto()
+        var userLoginResponseDto = new UserLoginResponseDto
         {
-            Email = user.Email,
-            AccessToken = token
+            AccessToken = token,
+            // Add exipation time
         };
         
         return new Result<UserLoginResponseDto>(userLoginResponseDto, true, $"User {user.Email} successfully logged in.");

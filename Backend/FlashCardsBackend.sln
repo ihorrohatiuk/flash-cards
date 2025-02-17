@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlashCards.Api", "FlashCards.Api\FlashCards.Api.csproj", "{65CA4E33-BE70-4BC3-8EE7-834AD6A7A056}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlashCards.Core", "FlashCards.Core\FlashCards.Core.csproj", "{86FC10E2-42C3-4164-B783-4632DF2E9524}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlashCards.Infrastructure", "FlashCards.Infrastructure\FlashCards.Infrastructure.csproj", "{CDBC7111-DEC8-425A-8176-5D33CC6B9ED0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,15 @@ Global
 		{65CA4E33-BE70-4BC3-8EE7-834AD6A7A056}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65CA4E33-BE70-4BC3-8EE7-834AD6A7A056}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65CA4E33-BE70-4BC3-8EE7-834AD6A7A056}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86FC10E2-42C3-4164-B783-4632DF2E9524}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86FC10E2-42C3-4164-B783-4632DF2E9524}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86FC10E2-42C3-4164-B783-4632DF2E9524}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86FC10E2-42C3-4164-B783-4632DF2E9524}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDBC7111-DEC8-425A-8176-5D33CC6B9ED0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDBC7111-DEC8-425A-8176-5D33CC6B9ED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDBC7111-DEC8-425A-8176-5D33CC6B9ED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDBC7111-DEC8-425A-8176-5D33CC6B9ED0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal
