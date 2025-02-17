@@ -1,0 +1,59 @@
+﻿@page "/Units"
+@using FlashCards.WebUI.Helpers
+@using FlashCards.WebUI.Models
+@inject HttpClient Http
+
+<PageTitle>Units</PageTitle>
+
+@if (_userUnits == null)
+{
+    <h3>Loading your flash card's units...</h3>
+    
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+}
+else
+{
+    <div class="custom-flex-container">
+        <h3>Your flash card's units</h3>
+        <MudButton 
+            Variant="Variant.Filled" 
+            Size="Size.Small" 
+            StartIcon="@Icons.Material.Filled.Add" 
+            Color="Color.Primary" Href="/add-unit">Add unit</MudButton>
+    </div>
+    
+    <MudGrid Justify="Justify.FlexStart" Spacing="2">
+        @foreach (Unit unit in _userUnits)
+        {
+            <MudItem xs="12" sm="6" md="4" lg="3">
+                <MudLink Href="/flip" Style="text-decoration: none; display: inline-block;">
+                    <MudCard Outlined="true" Style="width: 300px;">
+                        <MudCardContent>
+                            <MudText Typo="Typo.h5" FontWeight="FontWeight.Bold">@TextHelper.TruncateText(unit.Name)</MudText>
+                            <MudText Typo="Typo.body2">@TextHelper.TruncateText(unit.Theme)</MudText>
+                            <MudText Typo="Typo.body2">@TextHelper.TruncateText(unit.OwnerName)</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudLink>
+            </MudItem>
+        }
+    </MudGrid>
+
+}
+
+@code {
+    
+    private List<Unit>? _userUnits;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUnits();
+    }
+
+    private async Task LoadUnits()
+    {
+        // Mocking API response delay 
+        await Task.Delay(5000);
+        _userUnits = await Http.GetFromJsonAsync<List<Unit>>("sample-data/units.json");
+    }
+}

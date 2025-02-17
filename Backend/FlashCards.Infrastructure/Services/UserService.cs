@@ -11,7 +11,7 @@ public class UserService
     private readonly UserRepository _userRepository;
     private JwtProvider _jwtProvider;
     
-    public UserService(AppDbContext context, JwtProvider jwtProvider) //TODO jwt provider shouldnt be here
+    public UserService(AppDbContext context, JwtProvider jwtProvider) //TODO jwt provider shouldnt be here, write authService for this
     {
         _userRepository = new UserRepository(context);    
         _jwtProvider = jwtProvider;
