@@ -1,8 +1,7 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FlashCards.Api.Data.Models;
+namespace FlashCards.Core.Domain.Entities;
 
 public class User
 {

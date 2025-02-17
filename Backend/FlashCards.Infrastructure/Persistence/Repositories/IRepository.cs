@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using FlashCards.Api.Data.Models;
-
-namespace FlashCards.Api.Data.Repositories;
+﻿namespace FlashCards.Infrastructure.Persistence.Repositories;
 
 public interface IRepository<T> where T : class
 {

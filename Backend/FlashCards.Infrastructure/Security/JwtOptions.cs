@@ -1,4 +1,4 @@
-﻿namespace FlashCards.Api.Infrastructure;
+﻿namespace FlashCards.Infrastructure.Security;
 
 public class JwtOptions
 {

@@ -1,12 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 
-namespace FlashCards.Api.Services;
+namespace FlashCards.Core.Application.Services;
 
 public class LLMService
 {

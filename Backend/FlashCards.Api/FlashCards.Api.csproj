@@ -22,4 +22,9 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\FlashCards.Core\FlashCards.Core.csproj" />
+      <ProjectReference Include="..\FlashCards.Infrastructure\FlashCards.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>

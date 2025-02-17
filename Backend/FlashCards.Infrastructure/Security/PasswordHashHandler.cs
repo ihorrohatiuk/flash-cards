@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace FlashCards.Api.Infrastructure;
+namespace FlashCards.Infrastructure.Security;
 
 public static class PasswordHashHandler
 {

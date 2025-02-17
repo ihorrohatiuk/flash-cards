@@ -1,7 +1,7 @@
-﻿using FlashCards.Api.Data.Models;
+﻿using FlashCards.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace FlashCards.Api.Data;
+namespace FlashCards.Infrastructure.Persistence.Contexts;
 
 public class AppDbContext : DbContext
 {

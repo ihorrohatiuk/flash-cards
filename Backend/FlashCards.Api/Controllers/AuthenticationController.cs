@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
-using FlashCards.Api.Data.Dtos;
-using FlashCards.Api.Data.Models;
-using FlashCards.Api.Infrastructure;
-using FlashCards.Api.Services;
+using FlashCards.Core.Application.Dtos;
+using FlashCards.Core.Application.Services;
+using FlashCards.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;

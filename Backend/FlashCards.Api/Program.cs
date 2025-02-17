@@ -1,16 +1,16 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using FlashCards.Api.Data;
-using FlashCards.Api.Data.Models;
-using FlashCards.Api.Data.Repositories;
-using FlashCards.Api.Infrastructure;
-using FlashCards.Api.Services;
+using FlashCards.Core.Application.Services;
+using FlashCards.Core.Domain.Entities;
+using FlashCards.Infrastructure.Persistence.Contexts;
+using FlashCards.Infrastructure.Persistence.Repositories;
+using FlashCards.Infrastructure.Security;
+using FlashCards.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +31,7 @@ builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(J
 builder.Services.AddScoped<IRepository<User>, UserRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<JwtProvider>();
-//Authentication configuration
+// Authentication configuration
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {

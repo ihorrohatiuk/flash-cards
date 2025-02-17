@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FlashCards.Api.Data.Models;
+﻿using FlashCards.Core.Domain.Entities;
+using FlashCards.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace FlashCards.Api.Data.Repositories;
+namespace FlashCards.Infrastructure.Persistence.Repositories;
 
 public class UserRepository : IRepository<User>
 {

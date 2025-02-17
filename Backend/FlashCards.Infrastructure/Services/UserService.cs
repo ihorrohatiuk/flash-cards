@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using FlashCards.Api.Data;
-using FlashCards.Api.Data.Dtos;
-using FlashCards.Api.Data.Models;
-using FlashCards.Api.Data.Repositories;
-using FlashCards.Api.Infrastructure;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using FlashCards.Core.Application.Dtos;
+using FlashCards.Core.Domain.Entities;
+using FlashCards.Infrastructure.Persistence.Contexts;
+using FlashCards.Infrastructure.Persistence.Repositories;
+using FlashCards.Infrastructure.Security;
 
-namespace FlashCards.Api.Services;
+namespace FlashCards.Infrastructure.Services;
 
 public class UserService
 {
     private readonly UserRepository _userRepository;
     private JwtProvider _jwtProvider;
     
-    public UserService(AppDbContext context, JwtProvider jwtProvider) //jwt provider shouldnt be here
+    public UserService(AppDbContext context, JwtProvider jwtProvider) //TODO jwt provider shouldnt be here
     {
         _userRepository = new UserRepository(context);    
         _jwtProvider = jwtProvider;

@@ -1,12 +1,11 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using FlashCards.Api.Data.Models;
+using FlashCards.Core.Domain.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace FlashCards.Api.Infrastructure;
+namespace FlashCards.Infrastructure.Security;
 
 public class JwtProvider(IOptions<JwtOptions> jwtOptions)
 {

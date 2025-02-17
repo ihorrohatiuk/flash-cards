@@ -1,4 +1,4 @@
-﻿namespace FlashCards.Api.Data.Models;
+﻿namespace FlashCards.Core.Domain.Entities;
 
 public class Result<T> where T : class
 {

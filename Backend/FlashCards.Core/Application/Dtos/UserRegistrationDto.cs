@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FlashCards.Api.Data.Dtos;
+namespace FlashCards.Core.Application.Dtos;
 
 public class UserRegistrationDto
 {

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FlashCards.Api.Data;
-using FlashCards.Api.Data.Dtos;
-using FlashCards.Api.Data.Models;
-using FlashCards.Api.Infrastructure;
-using FlashCards.Api.Services;
+using FlashCards.Core.Application.Services;
+using FlashCards.Core.Domain.Entities;
+using FlashCards.Infrastructure.Persistence.Contexts;
+using FlashCards.Infrastructure.Security;
+using FlashCards.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

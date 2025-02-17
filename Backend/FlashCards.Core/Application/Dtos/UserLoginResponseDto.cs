@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FlashCards.Api.Data.Dtos;
+﻿namespace FlashCards.Core.Application.Dtos;
 
 public class UserLoginResponseDto
 {

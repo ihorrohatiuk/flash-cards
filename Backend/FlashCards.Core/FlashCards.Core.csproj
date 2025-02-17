@@ -8,7 +8,10 @@
 
     <ItemGroup>
       <Folder Include="Application\" />
-      <Folder Include="Domain\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="itext" Version="9.0.0" />
     </ItemGroup>
 
 </Project>
