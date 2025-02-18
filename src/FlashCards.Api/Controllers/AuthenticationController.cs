@@ -1,11 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FlashCards.Core.Application.Dtos;
-using FlashCards.Core.Application.Services;
 using FlashCards.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlashCards.Api.Controllers;
@@ -25,9 +23,9 @@ public class AuthenticationController : ControllerBase
     [HttpPost("Register")]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddUserAsync(UserRegistrationDto userDto) 
+    public async Task<IActionResult> AddUserAsync(RegistrationRequestDto registrationRequestDto) 
     {
-        var result = await _userService.AddAsync(userDto);
+        var result = await _userService.AddAsync(registrationRequestDto);
         if (result.Success)
         {
             return Ok(result.Message);
@@ -39,18 +37,19 @@ public class AuthenticationController : ControllerBase
     [HttpPost("Login")]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> LoginUserAsync(UserLoginRequestDto userLoginRequestDto)
+    public async Task<IActionResult> LoginUserAsync(LoginRequestDto loginRequestDto)
     {
-        var authenticationResult = await _userService.AuthenticateAsync(userLoginRequestDto);
+        var authenticationResult = await _userService.AuthenticateAsync(loginRequestDto);
         if (!authenticationResult.Success)
         {
             return Unauthorized(authenticationResult.Message);
         }
         var token = authenticationResult.Data?.AccessToken;
+        ArgumentNullException.ThrowIfNull(token);
         
         Response.Cookies.Append("AccessToken", token);
         
-        return Ok(new UserLoginResponseDto
+        return Ok(new LoginResponseDto
         {
             AccessToken = token
         });

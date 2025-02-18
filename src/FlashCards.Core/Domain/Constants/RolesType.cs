@@ -1,4 +1,4 @@
-﻿namespace FlashCards.Core.Domain.Entities;
+﻿namespace FlashCards.Core.Domain.Constants;
 
 public static class RolesType
 {

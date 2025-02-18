@@ -1,4 +1,5 @@
 ﻿using FlashCards.Core.Application.Dtos;
+using FlashCards.Core.Domain.Constants;
 using FlashCards.Core.Domain.Entities;
 using FlashCards.Infrastructure.Persistence.Contexts;
 using FlashCards.Infrastructure.Persistence.Repositories;
@@ -26,21 +27,21 @@ public class UserService
         return await _userRepository.GetByIdAsync(id);
     }
 
-    public async Task<Result<User>> AddAsync(UserRegistrationDto userDto)
+    public async Task<Result<User>> AddAsync(RegistrationRequestDto registrationRequestDto)
     {
-        if (_userRepository.Exists(userDto.Email).Result)
+        if (_userRepository.Exists(registrationRequestDto.Email).Result)
         {
-            return new Result<User>(false, $"Email {userDto.Email} already exists.");
+            return new Result<User>(false, $"Email {registrationRequestDto.Email} already exists.");
         }
         
         var user = new User
         {
             Id = Guid.NewGuid(),
-            FirstName = userDto.FirstName,
-            LastName = userDto.LastName,
-            Email = userDto.Email,
+            FirstName = registrationRequestDto.FirstName,
+            LastName = registrationRequestDto.LastName,
+            Email = registrationRequestDto.Email,
             Role = RolesType.User,
-            PasswordHash = PasswordHashHandler.PasswordToHash(userDto.Password),
+            PasswordHash = PasswordHashHandler.PasswordToHash(registrationRequestDto.Password),
         };
         
         await _userRepository.AddAsync(user);
@@ -58,29 +59,29 @@ public class UserService
         await _userRepository.DeleteAsync(id);
     }
 
-    public async Task<Result<UserLoginResponseDto>> AuthenticateAsync(UserLoginRequestDto? userLoginRequestDto)
+    public async Task<Result<LoginResponseDto>> AuthenticateAsync(LoginRequestDto userLoginRequestDto)
     {
         // email check
         if (userLoginRequestDto == null || !_userRepository.Exists(userLoginRequestDto.Email).Result)
         {
-            return new Result<UserLoginResponseDto>(false, $"Email or password is incorrect.");
+            return new Result<LoginResponseDto>(false, $"Email or password is incorrect.");
         }
         
         var user = await _userRepository.GetByEmailAsync(userLoginRequestDto.Email);
         // password check
         if (!PasswordHashHandler.Verify(userLoginRequestDto.Password, user.PasswordHash))
         {
-            return new Result<UserLoginResponseDto>(false, $"Email or password is incorrect.");
+            return new Result<LoginResponseDto>(false, $"Email or password is incorrect.");
         } 
         
         // return token
         var token = _jwtProvider.GenerateJwtToken(user);
-        var userLoginResponseDto = new UserLoginResponseDto
+        var userLoginResponseDto = new LoginResponseDto
         {
             AccessToken = token,
             // Add exipation time
         };
         
-        return new Result<UserLoginResponseDto>(userLoginResponseDto, true, $"User {user.Email} successfully logged in.");
+        return new Result<LoginResponseDto>(userLoginResponseDto, true, $"User {user.Email} successfully logged in.");
     }
 }

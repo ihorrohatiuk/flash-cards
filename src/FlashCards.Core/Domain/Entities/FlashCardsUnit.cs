@@ -10,6 +10,10 @@ public class FlashCardsUnit
     
     [Required]
     [MaxLength(50)]
+    public string Name  { get; set; }
+    
+    [Required]
+    [MaxLength(50)]
     public string Theme  { get; set; }
     
     [Required]

@@ -1,14 +1,15 @@
 ﻿using System.Net.Http.Headers;
-using FlashCards.WebUI.Services;
+using FlashCards.Infrastructure.Services;
+using Microsoft.Extensions.Configuration;
 
-namespace FlashCards.WebUI.Handllers;
+namespace FlashCards.Infrastructure.Handlers;
 
-public class AuthenticationHandller : DelegatingHandler
+public class AuthenticationHandler : DelegatingHandler
 {
     private readonly IAuthenticationService _authenticationService;
     private readonly IConfiguration _configuration;
     
-    public AuthenticationHandller(IAuthenticationService authenticationService, IConfiguration configuration)
+    public AuthenticationHandler(IAuthenticationService authenticationService, IConfiguration configuration)
     {
         _authenticationService = authenticationService;
         _configuration = configuration;

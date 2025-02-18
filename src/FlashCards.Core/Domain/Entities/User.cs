@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using FlashCards.Core.Domain.Constants;
 
 namespace FlashCards.Core.Domain.Entities;
 
@@ -29,5 +30,5 @@ public class User
     public string PasswordHash { get; set; } = string.Empty;
     
     [NotMapped]
-    public bool IsAdmin => string.Equals(Role, "Admin");
+    public bool IsAdmin => string.Equals(Role, RolesType.Admin);
 }

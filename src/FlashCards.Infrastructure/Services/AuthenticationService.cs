@@ -2,9 +2,9 @@
 using System.Net.Http.Json;
 using System.Security.Claims;
 using Blazored.SessionStorage;
-using FlashCards.WebUI.Models;
+using FlashCards.Core.Application.Dtos;
 
-namespace FlashCards.WebUI.Services;
+namespace FlashCards.Infrastructure.Services;
 
 public class AuthenticationService : IAuthenticationService
 {
@@ -62,6 +62,6 @@ public class AuthenticationService : IAuthenticationService
         
         LoginChanged?.Invoke(GetUsername(content.AccessToken));
         
-        return content.Expiration;
+        return content.AccessTokenExpiration;
     }
 }

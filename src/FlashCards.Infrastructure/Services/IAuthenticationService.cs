@@ -1,6 +1,6 @@
-﻿using FlashCards.WebUI.Models;
+﻿using FlashCards.Core.Application.Dtos;
 
-namespace FlashCards.WebUI.Services;
+namespace FlashCards.Infrastructure.Services;
 
 public interface IAuthenticationService
 {

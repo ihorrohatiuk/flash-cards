@@ -1,4 +1,4 @@
-﻿namespace FlashCards.WebUI.Models;
+﻿namespace FlashCards.Core.Application.Dtos;
 
 public class LoginRequestDto
 {

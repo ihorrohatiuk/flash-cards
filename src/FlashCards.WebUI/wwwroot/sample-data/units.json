@@ -1,69 +1,58 @@
 [
   {
-    "id": 1,
+    "id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
     "name": "English Wordsfffffffffffffffffffffffffffffffffffffffffff",
-    "theme": "English",
-    "ownerName": "John Doe"
+    "theme": "English"
   },
   {
-    "id": 2,
+    "id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
     "name": "National Dishes",
-    "theme": "Very long themeeeeeeeeeeeeee",
-    "ownerName": "Jimmy Rodgers"
+    "theme": "Very long themeeeeeeeeeeeeee"
   },
   {
-    "id": 3,
+    "id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
     "name": "Ancient History",
-    "theme": "History",
-    "ownerName": "Very long nameeeeeeeeeeeeeeeeee"
+    "theme": "History"
   },
   {
-    "id": 4,
+    "id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
     "name": "Basic Chemistry",
-    "theme": "Science",
-    "ownerName": "Albert Newton"
+    "theme": "Science"
   },
   {
-    "id": 5,
+    "id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
     "name": "World Capitals",
-    "theme": "Geography",
-    "ownerName": "Emma Brown"
+    "theme": "Geography"
   },
   {
-    "id": 6,
+    "id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
     "name": "Mathematics Basics",
-    "theme": "Math",
-    "ownerName": "Chris Lee"
+    "theme": "Math"
   },
   {
-    "id": 7,
+    "id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
     "name": "Spanish Phrases",
-    "theme": "Language",
-    "ownerName": "Sofia Garcia"
+    "theme": "Language"
   },
   {
-    "id": 8,
+    "id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
     "name": "Classical Music",
-    "theme": "Music",
-    "ownerName": "Ludwig Fischer"
+    "theme": "Music"
   },
   {
-    "id": 9,
+    "id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
     "name": "Computer Basics",
-    "theme": "Technology",
-    "ownerName": "Alex Johnson"
+    "theme": "Technology"
   },
   {
-    "id": 10,
+    "id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
     "name": "Human Anatomy",
-    "theme": "Biology",
-    "ownerName": "Olivia Smith"
+    "theme": "Biology"
   },
   {
-    "id": 11,
+    "id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
     "name": "Art Movements",
-    "theme": "Art",
-    "ownerName": "Leo Da Vinci"
+    "theme": "Art"
   }
 ]
 

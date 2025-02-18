@@ -1,4 +1,4 @@
-﻿namespace FlashCards.WebUI.Helpers;
+﻿namespace FlashCards.Infrastructure.Helpers;
 
 public static class TextHelper
 {

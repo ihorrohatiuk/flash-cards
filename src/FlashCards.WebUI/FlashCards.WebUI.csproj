@@ -23,4 +23,8 @@
       <_ContentIncludedByDefault Remove="Pages\Home.razor" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\FlashCards.Infrastructure\FlashCards.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>
