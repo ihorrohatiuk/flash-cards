@@ -1,41 +1,31 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Json;
 using System.Security.Claims;
+using System.Text;
+using System.Text.Json;
 using Blazored.SessionStorage;
 using FlashCards.Core.Application.Dtos;
+using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
 namespace FlashCards.Infrastructure.Services;
 
 public class AuthenticationService : IAuthenticationService
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ISessionStorageService _sessionStorageService;
     
-    private const string JwtKey = nameof(JwtKey);
-    
-    private string? _jwtCache;
-    
-    public event Action<string?>? LoginChanged;
-    
-    public AuthenticationService(IHttpClientFactory factory, ISessionStorageService sessionStorageService)
+    public AuthenticationService(IHttpClientFactory httpClientFactory)
     {
-        _httpClientFactory = factory;
-        _sessionStorageService = sessionStorageService;
+        _httpClientFactory = httpClientFactory;
     }
 
     public async ValueTask<string> GetJwtAsync()
     {
-        if (string.IsNullOrEmpty(_jwtCache))
-            _jwtCache = await _sessionStorageService.GetItemAsync<string>(JwtKey);
-        
-        return _jwtCache;
+        throw new NotImplementedException("GetJwtAsync is not implemented");
     }
 
     public async Task LogoutAsync()
     {
-        await _sessionStorageService.RemoveItemAsync(JwtKey);
-        _jwtCache = null;
-        LoginChanged?.Invoke(null);
+        throw new NotImplementedException("Logging out is not implemented");
     }
 
     public static string GetUsername(string jwtToken)
@@ -47,20 +37,23 @@ public class AuthenticationService : IAuthenticationService
     
     public async Task<DateTime> LoginAsync(LoginRequestDto loginRequestDto)
     {
-        var responce = await _httpClientFactory.CreateClient("ServerApi")
-            .PostAsync("api/Authentication/Login", JsonContent.Create(loginRequestDto));
-
-        if (!responce.IsSuccessStatusCode)
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/Authentication/Login")
+        {
+            Content = JsonContent.Create(loginRequestDto)
+        };
+        request.SetBrowserRequestCredentials(BrowserRequestCredentials.Include); // to save cookies on client.
+        
+        var response = await _httpClientFactory
+            .CreateClient("ServerApi")
+            .SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+        
+        if (!response.IsSuccessStatusCode)
             throw new UnauthorizedAccessException("Login failed.");
         
-        var content = await responce.Content.ReadFromJsonAsync<LoginResponseDto>();
+        var content = await response.Content.ReadFromJsonAsync<LoginResponseDto>();
         
         if (content == null)
             throw new InvalidDataException("Invalid data was returned as a login response.");
-        
-        await _sessionStorageService.SetItemAsync(JwtKey, content.AccessToken);
-        
-        LoginChanged?.Invoke(GetUsername(content.AccessToken));
         
         return content.AccessTokenExpiration;
     }

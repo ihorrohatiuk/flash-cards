@@ -36,7 +36,7 @@
     private bool _isValid = false;
     private string _errorMessage = null!;
 
-    private LoginRequestDto _loginRequestDto = new LoginRequestDto();
+    private LoginRequestDto _loginRequestDto = new();
     private DateTime? _expiration;
 
     private async Task SubmitAsync()

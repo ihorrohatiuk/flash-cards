@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using FlashCards.Core.Application.Services;
 using FlashCards.Core.Domain.Entities;
 using FlashCards.Infrastructure.Persistence.Contexts;
 using FlashCards.Infrastructure.Persistence.Repositories;
@@ -24,6 +23,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+// CORS Policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorClient", policy =>
+    {
+        policy.WithOrigins("https://localhost:7232") 
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials(); 
+    });
 });
 // JWT configuration
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
@@ -52,7 +62,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             OnMessageReceived = context =>
             {
                 context.Token = context.Request.Cookies["AccessToken"];
-                Console.WriteLine(context.Token);
+                Console.WriteLine(context.Token); // TODO only for debug, using logger instead of
                 return Task.CompletedTask;
             }
         };
@@ -77,10 +87,12 @@ if (app.Environment.IsDevelopment())
 // Cookie configuration
 app.UseCookiePolicy(new CookiePolicyOptions // TODO: Cookie expires time? `Expires = DateTimeOffset.UtcNow.AddDays(7)`
 {
-    MinimumSameSitePolicy = SameSiteMode.Strict,
+    MinimumSameSitePolicy = SameSiteMode.None,
     HttpOnly = HttpOnlyPolicy.Always,
     Secure = CookieSecurePolicy.Always
 });
+
+app.UseCors("AllowBlazorClient");
 
 app.UseAuthentication();
 app.UseAuthorization();
