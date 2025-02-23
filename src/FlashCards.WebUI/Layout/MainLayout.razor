@@ -1,4 +1,8 @@
-﻿@inherits LayoutComponentBase
+﻿@using Blazored.SessionStorage
+@using FlashCards.Infrastructure.Handlers
+@inject IJSRuntime JsRuntime
+@inject ISessionStorageService SessionStorage
+@inherits LayoutComponentBase
 
 <MudThemeProvider />
 <MudPopoverProvider />
@@ -8,19 +12,31 @@
 <MudLayout Class="pl-8 pa-8">
     <MudAppBar Elevation="1" Dense="true" Style="background-color: #1f1f1f;">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="DrawerToggle" />
-        <MudText Typo="Typo.h5" Class="ml-3">Flash Cards</MudText>
+        <MudText Typo="Typo.h5" Class="ml-3">
+            <a href="/" class="main-layout-logo-link">
+                Flash Cards
+            </a>
+        </MudText>
         <MudSpacer />
-        @*TODO: if user isn't logged in => show buttons Log In and Sign Up*@
-        <MudMenu>
-            <ActivatorContent>
-                <MudAvatar Size="Size.Medium" Color="Color.Primary">M</MudAvatar>
-            </ActivatorContent>
-            <ChildContent>
-                <MudMenuItem Href="/profile">Profile</MudMenuItem>
-                <MudMenuItem Href="/settings">Settings</MudMenuItem>
-                <MudMenuItem>Logout</MudMenuItem> @*TODO: How to make logout?*@
-            </ChildContent>
-        </MudMenu>
+        
+        @if (!_isLoggedIn)
+        {
+            <MudButton Href="/Login" Color="Color.Primary" Variant="Variant.Filled">Log In</MudButton>
+            <MudButton Href="/Signup" Color="Color.Secondary" Variant="Variant.Outlined" Class="ml-2">Sign Up</MudButton>
+        }
+        else
+        {
+            <MudMenu>
+                <ActivatorContent>
+                    <MudAvatar Size="Size.Medium" Color="Color.Primary">M</MudAvatar>
+                </ActivatorContent>
+                <ChildContent>
+                    <MudMenuItem Href="/profile">Profile</MudMenuItem>
+                    <MudMenuItem Href="/settings">Settings</MudMenuItem>
+                    <MudMenuItem>Logout</MudMenuItem> @*TODO: How to make logout?*@
+                </ChildContent>
+            </MudMenu>
+        }
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu />
@@ -36,10 +52,22 @@
 
 
 @code {
-    bool _drawerOpen = false;
+    private bool _drawerOpen = false;
+    private bool _isLoggedIn = false;
 
-    void DrawerToggle()
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoggedIn = await CheckUserLoginStatus();
+    }
+
+    private void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+    
+    private async Task<bool> CheckUserLoginStatus()
+    {
+        var token = await SessionStorage.GetItemAsync<string>("AccessToken");
+        return !string.IsNullOrEmpty(token);
     }
 }

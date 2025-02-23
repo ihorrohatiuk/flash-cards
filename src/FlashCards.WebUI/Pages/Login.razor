@@ -31,24 +31,26 @@
 </MudPaper>
 
 @code {
-    /*private string _username = string.Empty;
-    private string _password = string.Empty;*/
     private bool _isValid = false;
-    private string _errorMessage = null!;
+    private bool _isLoginSuccess = false;
+    private string? _errorMessage = null!;
 
     private LoginRequestDto _loginRequestDto = new();
-    private DateTime? _expiration;
 
     private async Task SubmitAsync()
     {
         try
         {
-            _expiration = await AuthenticationService.LoginAsync(_loginRequestDto);
+            _isLoginSuccess = await AuthenticationService.LoginAsync(_loginRequestDto);
+            _errorMessage = null;
+            
+            if (_isLoginSuccess)
+                NavigationManager.NavigateTo("/", true);
+            
+            StateHasChanged();
         }
         catch (Exception e)
         {
-            _expiration = null;
-
             _errorMessage = e.Message;
         }
     }

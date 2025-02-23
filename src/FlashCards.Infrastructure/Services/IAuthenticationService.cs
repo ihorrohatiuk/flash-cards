@@ -6,5 +6,5 @@ public interface IAuthenticationService
 {
     ValueTask<string> GetJwtAsync();
     Task LogoutAsync();
-    Task<DateTime> LoginAsync(LoginRequestDto loginRequestDto);
+    Task<bool> LoginAsync(LoginRequestDto loginRequestDto);
 }

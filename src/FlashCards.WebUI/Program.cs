@@ -1,3 +1,4 @@
+using Blazored.SessionStorage;
 using FlashCards.Infrastructure.Handlers;
 using FlashCards.Infrastructure.Services;
 using FlashCards.WebUI;
@@ -18,11 +19,12 @@ builder.Services.AddScoped(sp =>
         BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) 
     });
 builder.Services.AddHttpClient("ServerApi")
-    .ConfigureHttpClient(c => 
+    .ConfigureHttpClient(c =>
         c.BaseAddress = new Uri(builder.Configuration["ServerUrl"] ?? ""))
     .AddHttpMessageHandler<AuthenticationHandler>();
 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddBlazoredSessionStorageAsSingleton();
 builder.Services.AddMudServices();
 
 await builder.Build().RunAsync();

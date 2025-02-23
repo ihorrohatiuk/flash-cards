@@ -46,8 +46,6 @@ public class AuthenticationController : ControllerBase
         }
         var token = authenticationResult.Data?.AccessToken;
         ArgumentNullException.ThrowIfNull(token);
-
-        Response.Cookies.Append("AccessToken", token);
         
         return Ok(new LoginResponseDto
         {

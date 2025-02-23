@@ -59,7 +59,7 @@ public class UserService
         await _userRepository.DeleteAsync(id);
     }
 
-    public async Task<Result<LoginResponseDto>> AuthenticateAsync(LoginRequestDto userLoginRequestDto)
+    public async Task<Result<LoginResponseDto>> AuthenticateAsync(LoginRequestDto? userLoginRequestDto) //TODO: Move to Authentication service
     {
         // email check
         if (userLoginRequestDto == null || !_userRepository.Exists(userLoginRequestDto.Email).Result)
@@ -79,7 +79,8 @@ public class UserService
         var userLoginResponseDto = new LoginResponseDto
         {
             AccessToken = token,
-            // Add exipation time
+            //TODO: Token expiration
+            //AccessTokenExpiration = 
         };
         
         return new Result<LoginResponseDto>(userLoginResponseDto, true, $"User {user.Email} successfully logged in.");
