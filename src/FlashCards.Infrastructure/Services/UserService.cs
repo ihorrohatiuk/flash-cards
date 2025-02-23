@@ -79,8 +79,6 @@ public class UserService
         var userLoginResponseDto = new LoginResponseDto
         {
             AccessToken = token,
-            //TODO: Token expiration
-            //AccessTokenExpiration = 
         };
         
         return new Result<LoginResponseDto>(userLoginResponseDto, true, $"User {user.Email} successfully logged in.");
