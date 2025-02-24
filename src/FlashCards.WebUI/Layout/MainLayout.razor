@@ -1,7 +1,6 @@
-﻿@using Blazored.SessionStorage
-@using FlashCards.Infrastructure.Handlers
-@inject IJSRuntime JsRuntime
-@inject ISessionStorageService SessionStorage
+﻿@using FlashCards.Infrastructure.Services
+@inject NavigationManager NavigationManager
+@inject IAuthenticationService AuthenticationService
 @inherits LayoutComponentBase
 
 <MudThemeProvider />
@@ -11,41 +10,53 @@
 
 <MudLayout Class="pl-8 pa-8">
     <MudAppBar Elevation="1" Dense="true" Style="background-color: #1f1f1f;">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="DrawerToggle" />
+        @if (!_isLoginOrRegisterPage)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="DrawerToggle"/>
+        }
         <MudText Typo="Typo.h5" Class="ml-3">
             <a href="/" class="main-layout-logo-link">
                 Flash Cards
             </a>
         </MudText>
-        <MudSpacer />
-        
-        @if (!_isLoggedIn)
+        <MudSpacer/>
+
+        @if (!_isLoginOrRegisterPage)
         {
-            <MudButton Href="/Login" Color="Color.Primary" Variant="Variant.Filled">Log In</MudButton>
-            <MudButton Href="/Signup" Color="Color.Secondary" Variant="Variant.Outlined" Class="ml-2">Sign Up</MudButton>
-        }
-        else
-        {
-            <MudMenu>
-                <ActivatorContent>
-                    <MudAvatar Size="Size.Medium" Color="Color.Primary">M</MudAvatar>
-                </ActivatorContent>
-                <ChildContent>
-                    <MudMenuItem Href="/profile">Profile</MudMenuItem>
-                    <MudMenuItem Href="/settings">Settings</MudMenuItem>
-                    <MudMenuItem>Logout</MudMenuItem> @*TODO: How to make logout?*@
-                </ChildContent>
-            </MudMenu>
+            @if (!_isLoggedIn)
+            {
+                <MudButton Href="/Login" Color="Color.Primary" Variant="Variant.Filled">Log In</MudButton>
+                <MudButton Href="/Signup" Color="Color.Secondary" Variant="Variant.Outlined" Class="ml-2">Sign Up</MudButton>
+            }
+            else
+            {
+                <MudMenu>
+                    <ActivatorContent>
+                        <MudAvatar Size="Size.Medium" Color="Color.Primary">M</MudAvatar>
+                    </ActivatorContent>
+                    <ChildContent>
+                        <MudMenuItem Href="/profile">Profile</MudMenuItem>
+                        <MudMenuItem Href="/settings">Settings</MudMenuItem>
+                        <MudMenuItem OnClick="LogoutAsync">Logout</MudMenuItem>
+                    </ChildContent>
+                </MudMenu>
+            }
         }
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-        <NavMenu />
-    </MudDrawer>
+    @if (!_isLoginOrRegisterPage)
+    {
+        <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+            <NavMenu/>
+        </MudDrawer>
+    }
     <MudMainContent>
         <div style="min-height: 100vh;">
             @Body
         </div>
-        <Footer />
+        @if (!_isLoginOrRegisterPage)
+        {
+            <Footer />
+        }
     </MudMainContent>
 </MudLayout>
 
@@ -54,10 +65,12 @@
 @code {
     private bool _drawerOpen = false;
     private bool _isLoggedIn = false;
+    private bool _isLoginOrRegisterPage = false;
 
     protected override async Task OnInitializedAsync()
     {
-        _isLoggedIn = await CheckUserLoginStatus();
+        _isLoggedIn = await AuthenticationService.IsLoggedInAsync();
+        NavigationManager.LocationChanged += (_, __) => UpdatePageVisibilityForLoginPage();
     }
 
     private void DrawerToggle()
@@ -65,9 +78,16 @@
         _drawerOpen = !_drawerOpen;
     }
     
-    private async Task<bool> CheckUserLoginStatus()
+    private void UpdatePageVisibilityForLoginPage()
     {
-        var token = await SessionStorage.GetItemAsync<string>("AccessToken");
-        return !string.IsNullOrEmpty(token);
+        var currentUrl = NavigationManager.Uri.ToLower();
+        _isLoginOrRegisterPage = currentUrl.Contains("/login") || currentUrl.Contains("/register");
+        StateHasChanged();
+    }
+
+    private async Task LogoutAsync()
+    {
+        await AuthenticationService.LogoutAsync();
+        NavigationManager.NavigateTo("/", forceLoad: true);
     }
 }

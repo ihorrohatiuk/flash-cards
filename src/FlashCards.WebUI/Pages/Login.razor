@@ -1,11 +1,12 @@
 ﻿@page "/Login"
+@using Blazored.SessionStorage
 @using FlashCards.Core.Application.Dtos
 @using FlashCards.Infrastructure.Services
+@inject NavigationManager Navigation
+@inject ISessionStorageService SessionStorage
 
 @inject NavigationManager NavigationManager
 @inject IAuthenticationService AuthenticationService
-@*TODO: remove footer from this page*@
-@*TODO: remove navbar and navbar button from this page*@
 
 <MudPaper Elevation="4" Style="max-width: 400px;
     margin: 100px auto;
@@ -16,9 +17,16 @@
     <MudText Typo="Typo.h4" Align="Align.Center">Log in</MudText>
 
     <MudForm Valid="_isValid">
-        <MudTextField @bind-Value="_loginRequestDto.Email" Label="Email" Required="true" RequiredError="Email is required" />
-        <MudTextField @bind-Value="_loginRequestDto.Password" Label="Password" Required="true" InputType="InputType.Password" 
-                      RequiredError="Password is required" />
+        <MudTextField 
+            @bind-Value="_loginRequestDto.Email"
+            Label="Email" 
+            Required="true" 
+            RequiredError="Email is required" />
+        <MudTextField 
+            @bind-Value="_loginRequestDto.Password" 
+            Label="Password" Required="true" 
+            InputType="InputType.Password" 
+            RequiredError="Password is required" />
 
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SubmitAsync" 
                    Style="margin-top: 30px">Login</MudButton>
@@ -28,6 +36,10 @@
     {
         <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
     }
+    @if (_isLoginSuccess)
+    {
+        <MudAlert Severity="Severity.Success">Login success</MudAlert>
+    }
 </MudPaper>
 
 @code {
@@ -36,6 +48,16 @@
     private string? _errorMessage = null!;
 
     private LoginRequestDto _loginRequestDto = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await AuthenticationService.GetJwtAsync();
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            Navigation.NavigateTo("/", forceLoad: true);
+        }
+    }
 
     private async Task SubmitAsync()
     {
@@ -45,7 +67,7 @@
             _errorMessage = null;
             
             if (_isLoginSuccess)
-                NavigationManager.NavigateTo("/", true);
+                NavigationManager.NavigateTo("/", forceLoad: true);
             
             StateHasChanged();
         }

@@ -63,4 +63,10 @@ public class AuthenticationService : IAuthenticationService
         
         return true;
     }
+
+    public async Task<bool> IsLoggedInAsync()
+    {
+        var token = await GetJwtAsync();
+        return !string.IsNullOrEmpty(token);
+    }
 }
