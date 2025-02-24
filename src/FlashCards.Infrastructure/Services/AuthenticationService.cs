@@ -69,4 +69,16 @@ public class AuthenticationService : IAuthenticationService
         var token = await GetJwtAsync();
         return !string.IsNullOrEmpty(token);
     }
+    
+    public async Task<bool> RegisterAsync(RegistrationRequestDto registrationRequestDto)
+    {
+        var response = await _httpClientFactory
+            .CreateClient("ServerApi")
+            .PostAsync("api/Authentication/Register", JsonContent.Create(registrationRequestDto));
+        
+        if (!response.IsSuccessStatusCode)
+            throw new InvalidOperationException("Failed to register user. " + response.Content.ReadAsStringAsync().Result);
+        
+        return true;
+    }
 }

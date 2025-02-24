@@ -1,10 +1,7 @@
 ﻿@page "/Login"
-@using Blazored.SessionStorage
 @using FlashCards.Core.Application.Dtos
 @using FlashCards.Infrastructure.Services
 @inject NavigationManager Navigation
-@inject ISessionStorageService SessionStorage
-
 @inject NavigationManager NavigationManager
 @inject IAuthenticationService AuthenticationService
 
@@ -16,7 +13,7 @@
     gap: 16px;">
     <MudText Typo="Typo.h4" Align="Align.Center">Log in</MudText>
 
-    <MudForm Valid="_isValid">
+    <MudForm Valid="_isValid" Spacing="4">
         <MudTextField 
             @bind-Value="_loginRequestDto.Email"
             Label="Email" 
@@ -28,8 +25,11 @@
             InputType="InputType.Password" 
             RequiredError="Password is required" />
 
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SubmitAsync" 
-                   Style="margin-top: 30px">Login</MudButton>
+        <MudButton 
+            Variant="Variant.Filled" 
+            Color="Color.Primary" 
+            OnClick="SubmitAsync"
+            Disabled="@_isLoginButtonDisable">Login</MudButton>
     </MudForm>
 
     @if (_errorMessage != null)
@@ -43,9 +43,10 @@
 </MudPaper>
 
 @code {
-    private bool _isValid = false;
+    private bool _isInputValid = false;
     private bool _isLoginSuccess = false;
     private string? _errorMessage = null!;
+    private bool _isLoginButtonDisable = false;
 
     private LoginRequestDto _loginRequestDto = new();
     
@@ -63,17 +64,22 @@
     {
         try
         {
+            _isLoginButtonDisable = true;
             _isLoginSuccess = await AuthenticationService.LoginAsync(_loginRequestDto);
             _errorMessage = null;
-            
+
             if (_isLoginSuccess)
                 NavigationManager.NavigateTo("/", forceLoad: true);
-            
+
             StateHasChanged();
         }
         catch (Exception e)
         {
             _errorMessage = e.Message;
+        }
+        finally
+        {
+            _isLoginButtonDisable = false;
         }
     }
 }

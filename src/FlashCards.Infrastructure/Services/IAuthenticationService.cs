@@ -8,4 +8,5 @@ public interface IAuthenticationService
     Task LogoutAsync();
     Task<bool> LoginAsync(LoginRequestDto loginRequestDto);
     Task<bool> IsLoggedInAsync();
+    Task<bool> RegisterAsync(RegistrationRequestDto registrationRequestDto);
 }

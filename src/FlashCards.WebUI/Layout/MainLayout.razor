@@ -26,7 +26,7 @@
             @if (!_isLoggedIn)
             {
                 <MudButton Href="/Login" Color="Color.Primary" Variant="Variant.Filled">Log In</MudButton>
-                <MudButton Href="/Signup" Color="Color.Secondary" Variant="Variant.Outlined" Class="ml-2">Sign Up</MudButton>
+                <MudButton Href="/Registration" Color="Color.Secondary" Variant="Variant.Outlined" Class="ml-2">Registration</MudButton>
             }
             else
             {
@@ -81,7 +81,7 @@
     private void UpdatePageVisibilityForLoginPage()
     {
         var currentUrl = NavigationManager.Uri.ToLower();
-        _isLoginOrRegisterPage = currentUrl.Contains("/login") || currentUrl.Contains("/register");
+        _isLoginOrRegisterPage = currentUrl.Contains("/login") || currentUrl.Contains("/registration");
         StateHasChanged();
     }
 
