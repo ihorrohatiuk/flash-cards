@@ -1,6 +1,6 @@
 ﻿using FlashCards.Core.Application.Dtos;
 
-namespace FlashCards.Infrastructure.Services;
+namespace FlashCards.WebUI.Services;
 
 public interface IAuthenticationService
 {

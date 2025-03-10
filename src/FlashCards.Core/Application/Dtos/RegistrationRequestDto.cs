@@ -4,10 +4,10 @@ namespace FlashCards.Core.Application.Dtos;
 
 public class RegistrationRequestDto
 {
-    [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters.")]
+    [StringLength(50, MinimumLength = 2, ErrorMessage = "First name cannot exceed 50 characters.")]
     public required string FirstName { get; set; }
 
-    [StringLength(50, ErrorMessage = "Last name cannot exceed 50 characters.")]
+    [StringLength(50, MinimumLength = 2, ErrorMessage = "Last name cannot exceed 50 characters.")]
     public required string LastName { get; set; }
     
     [StringLength(50, ErrorMessage = "Email cannot exceed 50 characters.")]

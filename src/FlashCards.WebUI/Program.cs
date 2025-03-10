@@ -1,7 +1,7 @@
 using Blazored.SessionStorage;
-using FlashCards.Infrastructure.Handlers;
-using FlashCards.Infrastructure.Services;
 using FlashCards.WebUI;
+using FlashCards.WebUI.Handlers;
+using FlashCards.WebUI.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;

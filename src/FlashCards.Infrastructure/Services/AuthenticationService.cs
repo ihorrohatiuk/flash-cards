@@ -1,84 +1,43 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Json;
-using System.Security.Claims;
-using System.Text;
-using System.Text.Json;
-using Blazored.SessionStorage;
-using FlashCards.Core.Application.Dtos;
-using Microsoft.AspNetCore.Components.WebAssembly.Http;
+﻿using FlashCards.Core.Application.Dtos;
+using FlashCards.Core.Domain.Entities;
+using FlashCards.Infrastructure.Persistence.Repositories;
+using FlashCards.Infrastructure.Security;
 
 namespace FlashCards.Infrastructure.Services;
 
-public class AuthenticationService : IAuthenticationService
+public class AuthenticationService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ISessionStorageService _sessionStorageService;
-    
-    private string? _jwtCache;
-    
-    private const string AccessToken = nameof(AccessToken);
+    private readonly IUserRepository _userRepository;
+    private readonly JwtProvider _jwtProvider;
 
-    public AuthenticationService(IHttpClientFactory httpClientFactory, ISessionStorageService sessionStorageService)
+    public AuthenticationService(IUserRepository userRepository, JwtProvider jwtProvider)
     {
-        _httpClientFactory = httpClientFactory;
-        _sessionStorageService = sessionStorageService;
-    }
-
-    public async ValueTask<string> GetJwtAsync()
-    {
-        if (string.IsNullOrEmpty(_jwtCache))
-            _jwtCache = await _sessionStorageService.GetItemAsync<string>(AccessToken);
-
-        return _jwtCache;
-    }
-
-    public async Task LogoutAsync()
-    {
-        await _sessionStorageService.RemoveItemAsync(AccessToken);
-        _jwtCache = null;
-    }
-
-    public static string GetUsername(string jwtToken)
-    {
-        var jwt = new JwtSecurityToken(jwtToken);
-        
-        return jwt.Claims.First(claim => claim.Type == ClaimTypes.Name).Value;
+        _userRepository = userRepository;
+        _jwtProvider = jwtProvider;
     }
     
-    public async Task<bool> LoginAsync(LoginRequestDto loginRequestDto)
+    public async Task<Result<LoginResponseDto>> AuthenticateAsync(LoginRequestDto? userLoginRequestDto)
     {
-        var response = await _httpClientFactory
-            .CreateClient("ServerApi")
-            .PostAsync("api/Authentication/Login", JsonContent.Create(loginRequestDto));
+        // email check
+        if (userLoginRequestDto == null || !_userRepository.Exists(userLoginRequestDto.Email).Result)
+        {
+            return new Result<LoginResponseDto>(false, $"Email or password is incorrect.");
+        }
         
-        if (!response.IsSuccessStatusCode)
-            throw new UnauthorizedAccessException("Login failed.");
+        var user = await _userRepository.GetByEmailAsync(userLoginRequestDto.Email);
+        // password check
+        if (!PasswordHashHandler.Verify(userLoginRequestDto.Password, user.PasswordHash))
+        {
+            return new Result<LoginResponseDto>(false, $"Email or password is incorrect.");
+        } 
         
-        var content = await response.Content.ReadFromJsonAsync<LoginResponseDto>();
+        // return token
+        var token = _jwtProvider.GenerateJwtToken(user);
+        var userLoginResponseDto = new LoginResponseDto
+        {
+            AccessToken = token,
+        };
         
-        if (content == null)
-            throw new InvalidDataException("Invalid data was returned as a login response.");
-        
-        await _sessionStorageService.SetItemAsync(AccessToken, content.AccessToken);
-        
-        return true;
-    }
-
-    public async Task<bool> IsLoggedInAsync()
-    {
-        var token = await GetJwtAsync();
-        return !string.IsNullOrEmpty(token);
-    }
-    
-    public async Task<bool> RegisterAsync(RegistrationRequestDto registrationRequestDto)
-    {
-        var response = await _httpClientFactory
-            .CreateClient("ServerApi")
-            .PostAsync("api/Authentication/Register", JsonContent.Create(registrationRequestDto));
-        
-        if (!response.IsSuccessStatusCode)
-            throw new InvalidOperationException("Failed to register user. " + response.Content.ReadAsStringAsync().Result);
-        
-        return true;
+        return new Result<LoginResponseDto>(userLoginResponseDto, true, $"User {user.Email} successfully logged in.");
     }
 }

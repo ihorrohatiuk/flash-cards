@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Application\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="itext" Version="9.0.0" />
     </ItemGroup>
 

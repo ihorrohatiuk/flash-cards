@@ -1,8 +1,7 @@
 ﻿using System.Net.Http.Headers;
-using FlashCards.Infrastructure.Services;
-using Microsoft.Extensions.Configuration;
+using FlashCards.WebUI.Services;
 
-namespace FlashCards.Infrastructure.Handlers;
+namespace FlashCards.WebUI.Handlers;
 
 public class AuthenticationHandler : DelegatingHandler
 {

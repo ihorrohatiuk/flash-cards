@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using FlashCards.Core.Application.Dtos;
 using FlashCards.Infrastructure.Services;
@@ -14,10 +15,12 @@ namespace FlashCards.Api.Controllers;
 public class AuthenticationController : ControllerBase
 {
     private readonly UserService _userService;
+    private readonly AuthenticationService _authenticationService;
     
-    public AuthenticationController(UserService userService)
+    public AuthenticationController(UserService userService, AuthenticationService authenticationService)
     {
         _userService = userService;
+        _authenticationService = authenticationService;
     }
 
     [HttpPost("Register")]
@@ -39,7 +42,7 @@ public class AuthenticationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> LoginUserAsync(LoginRequestDto loginRequestDto)
     {
-        var authenticationResult = await _userService.AuthenticateAsync(loginRequestDto);
+        var authenticationResult = await _authenticationService.AuthenticateAsync(loginRequestDto);
         if (!authenticationResult.Success)
         {
             return Unauthorized(authenticationResult.Message);
