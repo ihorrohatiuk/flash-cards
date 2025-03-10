@@ -85,7 +85,7 @@ if (app.Environment.IsDevelopment())
 }
 
 // Cookie configuration
-app.UseCookiePolicy(new CookiePolicyOptions // TODO: Cookie expires time? `Expires = DateTimeOffset.UtcNow.AddDays(7)`
+app.UseCookiePolicy(new CookiePolicyOptions
 {
     MinimumSameSitePolicy = SameSiteMode.None,
     HttpOnly = HttpOnlyPolicy.Always,

@@ -59,7 +59,7 @@ public class UserService
         await _userRepository.DeleteAsync(id);
     }
 
-    public async Task<Result<LoginResponseDto>> AuthenticateAsync(LoginRequestDto? userLoginRequestDto) //TODO: Move to Authentication service
+    public async Task<Result<LoginResponseDto>> AuthenticateAsync(LoginRequestDto? userLoginRequestDto) //TODO: Move to BackendAuthentication service
     {
         // email check
         if (userLoginRequestDto == null || !_userRepository.Exists(userLoginRequestDto.Email).Result)

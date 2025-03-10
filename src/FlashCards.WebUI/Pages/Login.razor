@@ -1,6 +1,7 @@
 ﻿@page "/Login"
 @using FlashCards.Core.Application.Dtos
 @using FlashCards.Infrastructure.Services
+@using FlashCards.WebUI.Validation
 @inject NavigationManager Navigation
 @inject NavigationManager NavigationManager
 @inject IAuthenticationService AuthenticationService
@@ -17,12 +18,14 @@
         <MudTextField 
             @bind-Value="_loginRequestDto.Email"
             Label="Email" 
-            Required="true" 
+            Required="true"
+            Validation="@(new Func<string, IEnumerable<string>>(Validations.EmailValidation))"
             RequiredError="Email is required" />
         <MudTextField 
             @bind-Value="_loginRequestDto.Password" 
             Label="Password" Required="true" 
-            InputType="InputType.Password" 
+            InputType="InputType.Password"
+            Validation="@(new Func<string, IEnumerable<string>>(Validations.PasswordValidation))"
             RequiredError="Password is required" />
 
         <MudButton 
