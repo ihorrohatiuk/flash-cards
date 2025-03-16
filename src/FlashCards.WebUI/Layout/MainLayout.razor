@@ -59,7 +59,7 @@
     </MudAppBar>
     @if (!_isLoginOrRegisterPage)
     {
-        <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2" Variant="@DrawerVariant.Temporary">
             <NavMenu/>
         </MudDrawer>
     }
