@@ -1,6 +1,7 @@
 ﻿@page "/Units"
 @using FlashCards.Core.Domain.Entities
 @using FlashCards.Infrastructure.Helpers
+@using FlashCards.WebUI.Mocks
 @inject HttpClient Http
 
 <PageTitle>Units</PageTitle>
@@ -23,45 +24,58 @@ else
     </div>
     
     <MudGrid Justify="Justify.FlexStart" Spacing="5">
-        @foreach (FlashCardsUnit unit in _userUnits)
+        @foreach (FlashCardsUnitDto unit in _userUnits)
         {
             <MudItem Class="mud-grid-your-units" xs="12" sm="12" md="12" lg="12">
                 <MudLink Href="/flip" Style="text-decoration: none; display: inline-block; width: 100%">
                     <MudCard Outlined="true" Class="mud-card-unit">
                         <MudCardContent>
                             @*Unit name*@
-                            <MudText Typo="Typo.h5" FontWeight="FontWeight.Bold">@TextHelper.TruncateText(unit.Name)</MudText>
+                            <MudText Typo="Typo.h5" FontWeight="FontWeight.Bold">@TextHelper.TruncateText(unit.Name, UnitNameMaximumDisplayingLength)</MudText>
                             <div class="card-content">
                                 <MudStack Direction="Column" Spacing="2" AlignItems="AlignItems.Start">
                                     @*Subject name*@
-                                    <MudChip T="string" Color="Color.Warning" Class="mt-2 ml-0">
-                                        <ChildContent>@TextHelper.TruncateText(unit.Theme)</ChildContent>
+                                    <MudChip T="string" Color="Color.Primary" Class="mt-2 ml-0">
+                                        <ChildContent>@TextHelper.TruncateText(unit.Subject, UnitSubjectMaximumDisplayingLength)</ChildContent>
                                     </MudChip>
                                     <div class="accessibility-owner">
                                         @*Accessibility*@
-                                        <MudChip T="string" Style="@($"background:{Colors.Red.Accent1}")" Class="m-0">
-                                            <ChildContent>
-                                                <MudIcon Icon="@Icons.Material.Outlined.Lock" Style="@($"color:{Colors.Red.Accent4}")"/>
-                                                <MudText Style="@($"color:{Colors.Red.Accent4}")">Private</MudText>
-                                            </ChildContent>
-                                        </MudChip>
+                                        @if (unit.IsPrivate)
+                                        {
+                                            <MudChip T="string" Style="@($"background:{Colors.Red.Accent1}")" Class="m-0">
+                                                <ChildContent>
+                                                    <MudIcon Icon="@Icons.Material.Outlined.Lock" Style="@($"color:{Colors.Red.Accent4}")"/>
+                                                    <MudText Style="@($"color:{Colors.Red.Accent4}")">Private</MudText>
+                                                </ChildContent>
+                                            </MudChip>
+                                        }
+                                        else
+                                        {
+                                            <MudChip T="string" Style="@($"background:{Colors.Green.Accent1}")" Class="m-0">
+                                                <ChildContent>
+                                                    <MudIcon Icon="@Icons.Material.Outlined.LockOpen" Style="@($"color:{Colors.Green.Accent4}")"/>
+                                                    <MudText Style="@($"color:{Colors.Green.Accent4}")">Public</MudText>
+                                                </ChildContent>
+                                            </MudChip>
+                                        }
                                         <div class="divider"></div>
                                         @*User*@
                                         <MudChip T="string" Variant="Variant.Outlined" Class="m-0">
                                             <AvatarContent>
-                                                <MudAvatar Style="@($"background:{Colors.Purple.Lighten4}")">IR</MudAvatar>
+                                                <MudAvatar Style="@($"background:{Colors.Purple.Lighten4}")">@TextHelper.GetFirstLettersOfName(unit.Owner)</MudAvatar>
                                             </AvatarContent>
-                                            <ChildContent>@TextHelper.TruncateText("Ihor Rohatiuk")</ChildContent>
+                                            <ChildContent>@TextHelper.TruncateText(unit.Owner, UnitOwnerMaximumDisplayingLength)</ChildContent>
                                         </MudChip>
                                     </div>
                                 </MudStack>
                                 @*Progress*@
                                 <div class="progress-bar hide-on-medium">
-                                    <MudProgressLinear Color="Color.Success" Rounded="true" Size="Size.Large" Value="75.5" />
+                                    @(unit.Progress)%
+                                    <MudProgressLinear Color="Color.Success" Rounded="true" Size="Size.Large" Value="@(unit.Progress)"/>
                                 </div>
                                 @*Cards quantity*@
                                 <div class="hide-on-small">
-                                    <MudText class="hide-on-small" Typo="Typo.h5" FontWeight="FontWeight.Bold">50 cards</MudText>
+                                    <MudText class="hide-on-small" Typo="Typo.h5" FontWeight="FontWeight.Bold">@(unit.CardsQuantity) cards</MudText>
                                 </div>
                             </div>
                         </MudCardContent>
@@ -74,8 +88,11 @@ else
 
 
 @code {
+    private const int UnitNameMaximumDisplayingLength = 25;
+    private const int UnitSubjectMaximumDisplayingLength = 30;
+    private const int UnitOwnerMaximumDisplayingLength = 15;
     
-    private List<FlashCardsUnit>? _userUnits;
+    private List<FlashCardsUnitDto>? _userUnits;
 
     protected override async Task OnInitializedAsync()
     {
@@ -86,6 +103,6 @@ else
     {
         // Mocking API response delay 
         await Task.Delay(500);
-        _userUnits = await Http.GetFromJsonAsync<List<FlashCardsUnit>>("sample-data/units.json");
+        _userUnits = await Http.GetFromJsonAsync<List<FlashCardsUnitDto>>("sample-data/units.json");
     }
 }
