@@ -1,7 +1,7 @@
 using Blazored.SessionStorage;
-using FlashCards.Infrastructure.Handlers;
-using FlashCards.Infrastructure.Services;
 using FlashCards.WebUI;
+using FlashCards.WebUI.Handlers;
+using FlashCards.WebUI.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
@@ -12,13 +12,18 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddTransient<AuthenticationHandler>();
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-//TODO: change after authentication will be added (include Units.razor)
+builder.Services.AddScoped(sp => 
+    new HttpClient
+    {
+        // using to getting local files like sample-data
+        BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) 
+    });
 builder.Services.AddHttpClient("ServerApi")
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.Configuration["ServerUrl"] ?? ""))
+    .ConfigureHttpClient(c =>
+        c.BaseAddress = new Uri(builder.Configuration["ServerUrl"] ?? ""))
     .AddHttpMessageHandler<AuthenticationHandler>();
 
-builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddBlazoredSessionStorageAsSingleton();
 builder.Services.AddMudServices();
 

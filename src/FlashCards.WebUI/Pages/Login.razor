@@ -1,11 +1,11 @@
 ﻿@page "/Login"
 @using FlashCards.Core.Application.Dtos
 @using FlashCards.Infrastructure.Services
-
+@using FlashCards.WebUI.Services
+@using FlashCards.WebUI.Validation
+@inject NavigationManager Navigation
 @inject NavigationManager NavigationManager
 @inject IAuthenticationService AuthenticationService
-@*TODO: remove footer from this page*@
-@*TODO: remove navbar and navbar button from this page*@
 
 <MudPaper Elevation="4" Style="max-width: 400px;
     margin: 100px auto;
@@ -15,41 +15,75 @@
     gap: 16px;">
     <MudText Typo="Typo.h4" Align="Align.Center">Log in</MudText>
 
-    <MudForm Valid="_isValid">
-        <MudTextField @bind-Value="_loginRequestDto.Email" Label="Email" Required="true" RequiredError="Email is required" />
-        <MudTextField @bind-Value="_loginRequestDto.Password" Label="Password" Required="true" InputType="InputType.Password" 
-                      RequiredError="Password is required" />
+    <MudForm Valid="_isValid" Spacing="4">
+        <MudTextField 
+            @bind-Value="_loginRequestDto.Email"
+            Label="Email" 
+            Required="true"
+            Validation="@(new Func<string, IEnumerable<string>>(Validations.EmailValidation))"
+            RequiredError="Email is required" />
+        <MudTextField 
+            @bind-Value="_loginRequestDto.Password" 
+            Label="Password" Required="true" 
+            InputType="InputType.Password"
+            Validation="@(new Func<string, IEnumerable<string>>(Validations.PasswordValidation))"
+            RequiredError="Password is required" />
 
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SubmitAsync" 
-                   Style="margin-top: 30px">Login</MudButton>
+        <MudButton 
+            Variant="Variant.Filled" 
+            Color="Color.Primary" 
+            OnClick="SubmitAsync"
+            Disabled="@_isLoginButtonDisable">Login</MudButton>
     </MudForm>
 
     @if (_errorMessage != null)
     {
         <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
     }
+    @if (_isLoginSuccess)
+    {
+        <MudAlert Severity="Severity.Success">Login success</MudAlert>
+    }
 </MudPaper>
 
 @code {
-    /*private string _username = string.Empty;
-    private string _password = string.Empty;*/
-    private bool _isValid = false;
-    private string _errorMessage = null!;
+    private bool _isInputValid = false;
+    private bool _isLoginSuccess = false;
+    private string? _errorMessage = null!;
+    private bool _isLoginButtonDisable = false;
 
-    private LoginRequestDto _loginRequestDto = new LoginRequestDto();
-    private DateTime? _expiration;
+    private LoginRequestDto _loginRequestDto = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await AuthenticationService.GetJwtAsync();
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            Navigation.NavigateTo("/", forceLoad: true);
+        }
+    }
 
     private async Task SubmitAsync()
     {
         try
         {
-            _expiration = await AuthenticationService.LoginAsync(_loginRequestDto);
+            _isLoginButtonDisable = true;
+            _isLoginSuccess = await AuthenticationService.LoginAsync(_loginRequestDto);
+            _errorMessage = null;
+
+            if (_isLoginSuccess)
+                NavigationManager.NavigateTo("/", forceLoad: true);
+
+            StateHasChanged();
         }
         catch (Exception e)
         {
-            _expiration = null;
-
             _errorMessage = e.Message;
+        }
+        finally
+        {
+            _isLoginButtonDisable = false;
         }
     }
 }

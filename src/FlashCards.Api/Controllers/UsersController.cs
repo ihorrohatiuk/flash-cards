@@ -17,9 +17,9 @@ public class UsersController : ControllerBase
 {
     private readonly UserService _userService;
 
-    public UsersController(AppDbContext context, JwtProvider jwtProvider)
+    public UsersController(AppDbContext context)
     {
-        _userService = new UserService(context, jwtProvider);
+        _userService = new UserService(context);
     }
 
     [HttpGet(Name = "GetUsers")]

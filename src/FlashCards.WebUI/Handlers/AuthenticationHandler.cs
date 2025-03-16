@@ -1,8 +1,7 @@
 ﻿using System.Net.Http.Headers;
-using FlashCards.Infrastructure.Services;
-using Microsoft.Extensions.Configuration;
+using FlashCards.WebUI.Services;
 
-namespace FlashCards.Infrastructure.Handlers;
+namespace FlashCards.WebUI.Handlers;
 
 public class AuthenticationHandler : DelegatingHandler
 {
@@ -22,7 +21,7 @@ public class AuthenticationHandler : DelegatingHandler
         var isToServer = request.RequestUri?.AbsoluteUri.StartsWith(_configuration["ServerUrl"] ?? "") ?? false;
 
         if (isToServer && !string.IsNullOrEmpty(jwt))
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+            request.Headers.Authorization = new AuthenticationHeaderValue("AccessToken", jwt);
         
         return await base.SendAsync(request, cancellationToken);
     }

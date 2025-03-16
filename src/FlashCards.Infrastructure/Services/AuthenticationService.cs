@@ -1,67 +1,43 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Json;
-using System.Security.Claims;
-using Blazored.SessionStorage;
-using FlashCards.Core.Application.Dtos;
+﻿using FlashCards.Core.Application.Dtos;
+using FlashCards.Core.Domain.Entities;
+using FlashCards.Infrastructure.Persistence.Repositories;
+using FlashCards.Infrastructure.Security;
 
 namespace FlashCards.Infrastructure.Services;
 
-public class AuthenticationService : IAuthenticationService
+public class AuthenticationService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ISessionStorageService _sessionStorageService;
-    
-    private const string JwtKey = nameof(JwtKey);
-    
-    private string? _jwtCache;
-    
-    public event Action<string?>? LoginChanged;
-    
-    public AuthenticationService(IHttpClientFactory factory, ISessionStorageService sessionStorageService)
-    {
-        _httpClientFactory = factory;
-        _sessionStorageService = sessionStorageService;
-    }
+    private readonly IUserRepository _userRepository;
+    private readonly JwtProvider _jwtProvider;
 
-    public async ValueTask<string> GetJwtAsync()
+    public AuthenticationService(IUserRepository userRepository, JwtProvider jwtProvider)
     {
-        if (string.IsNullOrEmpty(_jwtCache))
-            _jwtCache = await _sessionStorageService.GetItemAsync<string>(JwtKey);
-        
-        return _jwtCache;
-    }
-
-    public async Task LogoutAsync()
-    {
-        await _sessionStorageService.RemoveItemAsync(JwtKey);
-        _jwtCache = null;
-        LoginChanged?.Invoke(null);
-    }
-
-    public static string GetUsername(string jwtToken)
-    {
-        var jwt = new JwtSecurityToken(jwtToken);
-        
-        return jwt.Claims.First(claim => claim.Type == ClaimTypes.Name).Value;
+        _userRepository = userRepository;
+        _jwtProvider = jwtProvider;
     }
     
-    public async Task<DateTime> LoginAsync(LoginRequestDto loginRequestDto)
+    public async Task<Result<LoginResponseDto>> AuthenticateAsync(LoginRequestDto? userLoginRequestDto)
     {
-        var responce = await _httpClientFactory.CreateClient("ServerApi")
-            .PostAsync("api/Authentication/Login", JsonContent.Create(loginRequestDto));
-
-        if (!responce.IsSuccessStatusCode)
-            throw new UnauthorizedAccessException("Login failed.");
+        // email check
+        if (userLoginRequestDto == null || !_userRepository.Exists(userLoginRequestDto.Email).Result)
+        {
+            return new Result<LoginResponseDto>(false, $"Email or password is incorrect.");
+        }
         
-        var content = await responce.Content.ReadFromJsonAsync<LoginResponseDto>();
+        var user = await _userRepository.GetByEmailAsync(userLoginRequestDto.Email);
+        // password check
+        if (!PasswordHashHandler.Verify(userLoginRequestDto.Password, user.PasswordHash))
+        {
+            return new Result<LoginResponseDto>(false, $"Email or password is incorrect.");
+        } 
         
-        if (content == null)
-            throw new InvalidDataException("Invalid data was returned as a login response.");
+        // return token
+        var token = _jwtProvider.GenerateJwtToken(user);
+        var userLoginResponseDto = new LoginResponseDto
+        {
+            AccessToken = token,
+        };
         
-        await _sessionStorageService.SetItemAsync(JwtKey, content.AccessToken);
-        
-        LoginChanged?.Invoke(GetUsername(content.AccessToken));
-        
-        return content.AccessTokenExpiration;
+        return new Result<LoginResponseDto>(userLoginResponseDto, true, $"User {user.Email} successfully logged in.");
     }
 }

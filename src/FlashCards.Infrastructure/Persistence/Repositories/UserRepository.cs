@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlashCards.Infrastructure.Persistence.Repositories;
 
-public class UserRepository : IRepository<User>
+public class UserRepository : IUserRepository
 {
     private readonly AppDbContext _context;
 

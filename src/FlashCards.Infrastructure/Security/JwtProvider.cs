@@ -30,6 +30,7 @@ public class JwtProvider(IOptions<JwtOptions> jwtOptions)
             expires: DateTime.UtcNow.AddHours(_jwtOptions.ExpireHours));
         
         var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
+        
         return tokenValue;
     }
 }
