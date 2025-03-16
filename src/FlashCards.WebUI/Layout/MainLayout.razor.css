@@ -95,10 +95,20 @@ main {
         right: 0.75rem;
         top: 0.5rem;
     }
+    
+/*CUSTOM*/
 .main-layout-logo-link {
     color: white;
     text-decoration: none;
+    margin-left: 12px;
 }
     .main-layout-logo-link:hover {
         color: white;
+    }
+    
+    @media (max-width: 460px) {
+        .main-layout-logo-link {
+            font-size: 0.8em; 
+            margin-left: 0;
+        }
     }

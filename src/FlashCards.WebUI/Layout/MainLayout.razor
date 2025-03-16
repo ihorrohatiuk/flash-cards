@@ -15,7 +15,7 @@
         {
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="DrawerToggle"/>
         }
-        <MudText Typo="Typo.h5" Class="ml-3">
+        <MudText Typo="Typo.h5">
             <a href="/" class="main-layout-logo-link">
                 Flash Cards
             </a>
@@ -26,8 +26,21 @@
         {
             @if (!_isLoggedIn)
             {
-                <MudButton Href="/Login" Color="Color.Primary" Variant="Variant.Filled">Log In</MudButton>
-                <MudButton Href="/Registration" Color="Color.Secondary" Variant="Variant.Outlined" Class="ml-2">Registration</MudButton>
+                <MudButton
+                    Href="/Login"
+                    Color="Color.Primary"
+                    Variant="Variant.Filled"
+                    Size="Size.Small">
+                    Log In
+                </MudButton>
+                <MudButton
+                    Class="ml-2"
+                    Href="/Registration"
+                    Color="Color.Secondary"
+                    Variant="Variant.Outlined"
+                    Size="Size.Small">
+                    Registration
+                </MudButton>
             }
             else
             {
