@@ -1,6 +1,73 @@
 ﻿@page "/Add-Unit"
-<h3>Add Unit Page</h3>
+@inject ISnackbar Snackbar
+
+<div class="custom-flex-container">
+    <h3>New unit</h3>
+    <div class="buttons">
+        <MudButton
+            Variant="Variant.Filled"
+            Size="Size.Medium"
+            StartIcon="@Icons.Material.Filled.ArrowDownward"
+            Color="Color.Primary">
+            Import
+        </MudButton>
+        <MudButton
+            Variant="Variant.Filled"
+            Size="Size.Medium"
+            StartIcon="@Icons.Material.Filled.Save"
+            Color="Color.Primary">
+            Save
+        </MudButton>
+    </div>
+</div>
+
+<MudCard Outlined="true" Class="mb-5">
+    <MudCardContent>
+        <MudForm >
+            <MudTextField T="string" Label="Unit name" Required="true" RequiredError="Unit name is required!"/>
+        </MudForm>
+        <MudForm >
+            <MudTextField T="string" Label="Subject" Required="false"/>
+        </MudForm>
+    </MudCardContent>
+</MudCard>
+
+@for (int i = 0; i < _flashCardsQuantity; i++)
+{
+    <MudCard Outlined="true" Class="mb-5">
+        <MudCardContent>
+            <MudForm >
+                <MudTextField T="string" Label="Question" Required="true" RequiredError="Question is required!"/>
+            </MudForm>
+            <MudForm >
+                <MudTextField T="string" Label="Answer" Required="true" RequiredError="Answer is required!"/>
+            </MudForm>
+        </MudCardContent>
+    </MudCard>
+}
+
+<MudButton
+    FullWidth="true"
+    Variant="Variant.Filled"
+    Size="Size.Medium"
+    Color="Color.Primary"
+    OnClick="AddFlashCard">
+    Add a flash card
+</MudButton>
 
 @code {
-    
+    private int _flashCardsQuantity = 1;
+    private const int FlashCardsMaximumQuantity = 3;
+
+    private void AddFlashCard()
+    {
+        if (_flashCardsQuantity < FlashCardsMaximumQuantity)
+        {
+            _flashCardsQuantity++;
+            StateHasChanged();
+            return;
+        }
+
+        Snackbar.Add($"Maximum number of cards reached ({FlashCardsMaximumQuantity})", Severity.Info);
+    }
 }
