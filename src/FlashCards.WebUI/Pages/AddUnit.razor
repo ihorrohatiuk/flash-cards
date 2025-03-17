@@ -16,7 +16,8 @@
             Variant="Variant.Filled"
             Size="Size.Medium"
             StartIcon="@Icons.Material.Filled.Save"
-            Color="Color.Primary">
+            Color="Color.Primary"
+            OnClick="SaveUnit">
             Save
         </MudButton>
     </div>
@@ -105,5 +106,15 @@
         
         _flashCards.Remove(card);
         StateHasChanged();
+    }
+
+    private void SaveUnit()
+    {
+        // TODO: FE -> add save logic here.
+        foreach (var card in _flashCards)
+        {
+            Console.WriteLine("Question: " + card.Question);
+            Console.WriteLine("Answer: " + card.Answer);
+        }
     }
 }
