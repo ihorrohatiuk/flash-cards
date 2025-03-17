@@ -96,6 +96,12 @@
             Snackbar.Add($"An unexpected error occurred, try again later", Severity.Error);
             return;
         }
+
+        if (_flashCards.Count < 2)
+        {
+            Snackbar.Add($"Unit should has at least one flash card", Severity.Info);
+            return;
+        }
         
         _flashCards.Remove(card);
         StateHasChanged();
