@@ -1,64 +1,83 @@
 ﻿@page "/Add-Unit"
 @using FlashCards.WebUI.Mocks
+@using FlashCards.WebUI.Validation
 @inject ISnackbar Snackbar
 
+@*TODO: Add validations*@
 <div class="custom-flex-container">
     <h3>New unit</h3>
     <div class="buttons">
+        @*Import button*@
         <MudButton
-            Variant="Variant.Filled"
+            Variant="Variant.Outlined"
             Size="Size.Medium"
             StartIcon="@Icons.Material.Filled.ArrowDownward"
             Color="Color.Primary">
             Import
         </MudButton>
+        @*Save button*@
         <MudButton
             Variant="Variant.Filled"
             Size="Size.Medium"
             StartIcon="@Icons.Material.Filled.Save"
             Color="Color.Primary"
-            OnClick="SaveUnit">
+            OnClick="SaveUnitAsync">
             Save
         </MudButton>
     </div>
 </div>
 
-<MudCard Outlined="true" Class="mb-5">
-    <MudCardContent>
-        <MudForm >
-            <MudTextField T="string" Label="Unit name" Required="true" RequiredError="Unit name is required!"/>
-        </MudForm>
-        <MudForm >
-            <MudTextField T="string" Label="Subject" Required="false"/>
-        </MudForm>
-    </MudCardContent>
-</MudCard>
-
-@foreach (var flashCard in _flashCards)
-{
+<MudForm Style="width: 100%" Class="mb-2" Spacing="2" @ref="_unitInfo">
     <MudCard Outlined="true" Class="mb-5">
         <MudCardContent>
-            <MudStack AlignItems="AlignItems.End">
-                <MudForm Style="width: 100%">
-                    <MudTextField T="string" Label="Question" Required="true" RequiredError="Question is required!"
-                                  @bind-Value="flashCard.Question"/>
-                </MudForm>
-                <MudForm Class="mb-2" Style="width: 100%">
-                    <MudTextField T="string" Label="Answer" Required="true" RequiredError="Answer is required!"
-                                  @bind-Value="flashCard.Answer"/>
-                </MudForm>
-                <MudButton Variant="Variant.Filled"
-                           Size="Size.Medium"
-                           StartIcon="@Icons.Material.Filled.Delete"
-                           Color="Color.Secondary"
-                           OnClick="() => DeleteFlashCard(flashCard)">
-                    Delete
-                </MudButton>
-            </MudStack>
+                <MudTextField
+                    Validation="@(new Func<string, IEnumerable<string>>(AddUnitValidation.UnitNameValidation))"
+                    T="string" 
+                    Class="mb-2" 
+                    Margin="Margin.Dense" 
+                    Label="Unit name" 
+                    Variant="Variant.Filled"/>
+                <MudTextField 
+                    T="string" 
+                    Margin="Margin.Dense" 
+                    Label="Subject"
+                    Immediate="true" 
+                    Variant="Variant.Filled"/>
         </MudCardContent>
     </MudCard>
-}
 
+    @foreach (var flashCard in _flashCards)
+    {
+        <MudCard Outlined="true" Class="mb-5">
+            <MudCardContent>
+                        @*Question field*@
+                        <MudTextField
+                            Validation="@(new Func<string, IEnumerable<string>>(AddUnitValidation.QuestionValidation))"
+                            T="string"
+                            Label="Question"
+                            @bind-Value="flashCard.Question"/>
+                        @*Answer field*@
+                        <MudTextField
+                            Validation="@(new Func<string, IEnumerable<string>>(AddUnitValidation.AnswerValidation))"
+                            Class="mb-2"
+                            T="string"
+                            Label="Answer"
+                            @bind-Value="flashCard.Answer"/>
+                        <MudStack AlignItems="AlignItems.End">
+                            <MudButton Variant="Variant.Filled"
+                                       Size="Size.Medium"
+                                       StartIcon="@Icons.Material.Filled.Delete"
+                                       Color="Color.Secondary"
+                                       OnClick="() => DeleteFlashCard(flashCard)">
+                                Delete
+                            </MudButton>
+                        </MudStack>
+            </MudCardContent>
+        </MudCard>
+    }
+</MudForm>
+
+@*Add a flash card button*@
 <MudButton
     FullWidth="true"
     Variant="Variant.Filled"
@@ -69,13 +88,15 @@
 </MudButton>
 
 @code {
-    private const int FlashCardsMaximumQuantity = 3;
-    
+    private MudForm _unitInfo;
     private List<FlashCardDto>? _flashCards;
+    
+    private const int FlashCardsMaximumQuantity = 3;
 
     protected override void OnInitialized()
     {
         _flashCards = [];
+        AddFlashCard();
     }
 
     private void AddFlashCard()
@@ -108,13 +129,23 @@
         StateHasChanged();
     }
 
-    private void SaveUnit()
+    private async Task SaveUnitAsync()
     {
-        // TODO: FE -> add save logic here.
-        foreach (var card in _flashCards)
+        await _unitInfo.Validate();
+        bool isValid = _unitInfo.IsValid;
+
+        if (isValid)
         {
-            Console.WriteLine("Question: " + card.Question);
-            Console.WriteLine("Answer: " + card.Answer);
+            // TODO: FE -> add save logic here.
+            foreach (var card in _flashCards)
+            {
+                Console.WriteLine("Question: " + card.Question);
+                Console.WriteLine("Answer: " + card.Answer);
+            }
+
+            return;
         }
+        
+        Snackbar.Add($"Some fields are filled out incorrectly", Severity.Error);
     }
 }
