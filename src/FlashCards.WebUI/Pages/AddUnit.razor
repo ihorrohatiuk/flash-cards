@@ -1,4 +1,5 @@
 ﻿@page "/Add-Unit"
+@using FlashCards.WebUI.Mocks
 @inject ISnackbar Snackbar
 
 <div class="custom-flex-container">
@@ -32,16 +33,27 @@
     </MudCardContent>
 </MudCard>
 
-@for (int i = 0; i < _flashCardsQuantity; i++)
+@foreach (var flashCard in _flashCards)
 {
     <MudCard Outlined="true" Class="mb-5">
         <MudCardContent>
-            <MudForm >
-                <MudTextField T="string" Label="Question" Required="true" RequiredError="Question is required!"/>
-            </MudForm>
-            <MudForm >
-                <MudTextField T="string" Label="Answer" Required="true" RequiredError="Answer is required!"/>
-            </MudForm>
+            <MudStack AlignItems="AlignItems.End">
+                <MudForm Style="width: 100%">
+                    <MudTextField T="string" Label="Question" Required="true" RequiredError="Question is required!"
+                                  @bind-Value="flashCard.Question"/>
+                </MudForm>
+                <MudForm Class="mb-2" Style="width: 100%">
+                    <MudTextField T="string" Label="Answer" Required="true" RequiredError="Answer is required!"
+                                  @bind-Value="flashCard.Answer"/>
+                </MudForm>
+                <MudButton Variant="Variant.Filled"
+                           Size="Size.Medium"
+                           StartIcon="@Icons.Material.Filled.Delete"
+                           Color="Color.Secondary"
+                           OnClick="() => DeleteFlashCard(flashCard)">
+                    Delete
+                </MudButton>
+            </MudStack>
         </MudCardContent>
     </MudCard>
 }
@@ -56,18 +68,36 @@
 </MudButton>
 
 @code {
-    private int _flashCardsQuantity = 1;
     private const int FlashCardsMaximumQuantity = 3;
+    
+    private List<FlashCardDto>? _flashCards;
+
+    protected override void OnInitialized()
+    {
+        _flashCards = [];
+    }
 
     private void AddFlashCard()
     {
-        if (_flashCardsQuantity < FlashCardsMaximumQuantity)
+        if (_flashCards.Count < FlashCardsMaximumQuantity)
         {
-            _flashCardsQuantity++;
+            _flashCards.Add(new FlashCardDto());
             StateHasChanged();
             return;
         }
 
         Snackbar.Add($"Maximum number of cards reached ({FlashCardsMaximumQuantity})", Severity.Info);
+    }
+
+    private void DeleteFlashCard(FlashCardDto card)
+    {
+        if (_flashCards is null || !_flashCards.Contains(card))
+        {
+            Snackbar.Add($"An unexpected error occurred, try again later", Severity.Error);
+            return;
+        }
+        
+        _flashCards.Remove(card);
+        StateHasChanged();
     }
 }
