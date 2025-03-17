@@ -3,7 +3,6 @@
 @using FlashCards.Infrastructure.Services
 @using FlashCards.WebUI.Services
 @using FlashCards.WebUI.Validation
-@inject NavigationManager Navigation
 @inject NavigationManager NavigationManager
 @inject IAuthenticationService AuthenticationService
 
@@ -60,7 +59,7 @@
 
         if (!string.IsNullOrEmpty(token))
         {
-            Navigation.NavigateTo("/", forceLoad: true);
+            NavigationManager.NavigateTo("/", forceLoad: true);
         }
     }
 
