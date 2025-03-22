@@ -1,8 +1,95 @@
 ﻿@page "/Units/{Id}/FlashCardsMode/"
 
-<h3>UnitsFlashCardsMode</h3>
+@using FlashCards.WebUI.Mocks
+@inject HttpClient Http
+
+@if (_flashCards == null)
+{
+    <h3>Loading...</h3>
+    
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+}
+else
+{
+    <div class="flip-container">
+        <div class="flip-card @(_showAnswer ? "flip" : "")" @onclick="FlipCard">
+            <div class="flip-card-front">
+                @_flashCards[_currentCardIndex].Question
+            </div>
+            <div class="flip-card-back">
+                @_flashCards[_currentCardIndex].Answer
+            </div>
+        </div>
+    </div>
+
+    <MudStack Row="true" Class="mt-5">
+        <MudButton
+            Style="width: 50%"
+            Variant="Variant.Filled"
+            Color="Color.Secondary"
+            StartIcon="@Icons.Material.Filled.Clear"
+            OnClick="NextCard">
+            I don't know
+        </MudButton>
+
+        <MudButton
+            Style="width: 50%"
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            StartIcon="@Icons.Material.Filled.Check"
+            OnClick="NextCard">
+            Next
+        </MudButton>
+    </MudStack>
+    
+    <MudStack Row="true" Class="mt-5" Justify="Justify.SpaceBetween">
+        <MudPaper Outlined="true" >
+            <MudText>In progress</MudText>
+        </MudPaper>
+        <MudPaper Outlined="true" >
+            <MudText>In progress</MudText>
+        </MudPaper>
+        <MudPaper Outlined="true" >
+            <MudText>In progress</MudText>
+        </MudPaper>
+    </MudStack>
+}
 
 @code {
     [Parameter]
     public string Id { get; set; }
+
+    private bool _showAnswer = false;
+    private List<FlashCardDto>? _flashCards;
+    private int _currentCardIndex = 0;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadFlashCardsAsync();
+    }
+    
+    private async Task LoadFlashCardsAsync()
+    {
+        // Mock http request
+        _flashCards = await Http.GetFromJsonAsync<List<FlashCardDto>>("sample-data/unit.json");
+        ArgumentNullException.ThrowIfNull(_flashCards);
+    }
+    
+    private void FlipCard()
+    {
+        _showAnswer = !_showAnswer;
+    }
+    
+    private void NextCard()
+    {
+        _showAnswer = false;
+        if (_currentCardIndex < _flashCards.Count - 1)
+        {
+            _currentCardIndex++;
+        }
+        else
+        {
+            _currentCardIndex = 0;
+        }
+    }
 }

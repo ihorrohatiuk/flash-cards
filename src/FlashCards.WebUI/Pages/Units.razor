@@ -24,7 +24,7 @@ else
     </div>
     
     <MudGrid Justify="Justify.FlexStart" Spacing="5">
-        @foreach (FlashCardsUnitDto unit in _userUnits)
+        @foreach (FlashCardsUnitInfoDto unit in _userUnits)
         {
             <MudItem Class="mud-grid-your-units" xs="12" sm="12" md="12" lg="12">
                 <MudLink Href="/flip" Style="text-decoration: none; display: inline-block; width: 100%">
@@ -92,7 +92,7 @@ else
     private const int UnitSubjectMaximumDisplayingLength = 30;
     private const int UnitOwnerMaximumDisplayingLength = 15;
     
-    private List<FlashCardsUnitDto>? _userUnits;
+    private List<FlashCardsUnitInfoDto>? _userUnits;
 
     protected override async Task OnInitializedAsync()
     {
@@ -103,6 +103,6 @@ else
     {
         // Mocking API response delay 
         await Task.Delay(500);
-        _userUnits = await Http.GetFromJsonAsync<List<FlashCardsUnitDto>>("sample-data/units.json");
+        _userUnits = await Http.GetFromJsonAsync<List<FlashCardsUnitInfoDto>>("sample-data/units.json");
     }
 }

@@ -1,0 +1,82 @@
+﻿[
+  {
+    "Question": "How are you?",
+    "Answer": "I'm fine"
+  },
+  {
+    "Question": "Akó sa máš?",
+    "Answer": "Mám sa dobre"
+  },
+  {
+    "Question": "What is your name?",
+    "Answer": "My name is John"
+  },
+  {
+    "Question": "Ako sa voláš?",
+    "Answer": "Volám sa Ján"
+  },
+  {
+    "Question": "Where are you from?",
+    "Answer": "I'm from the USA"
+  },
+  {
+    "Question": "Odkiaľ si?",
+    "Answer": "Som z USA"
+  },
+  {
+    "Question": "How old are you?",
+    "Answer": "I am 25 years old"
+  },
+  {
+    "Question": "Koľko máš rokov?",
+    "Answer": "Mám 25 rokov"
+  },
+  {
+    "Question": "Do you speak English?",
+    "Answer": "Yes, I do"
+  },
+  {
+    "Question": "Hovoríš po anglicky?",
+    "Answer": "Áno, hovorím"
+  },
+  {
+    "Question": "Can you help me?",
+    "Answer": "Yes, of course"
+  },
+  {
+    "Question": "Môžeš mi pomôcť?",
+    "Answer": "Áno, samozrejme"
+  },
+  {
+    "Question": "Where is the bathroom?",
+    "Answer": "It is over there"
+  },
+  {
+    "Question": "Kde je toaleta?",
+    "Answer": "Je tam"
+  },
+  {
+    "Question": "How much does it cost?",
+    "Answer": "It costs 10 euros"
+  },
+  {
+    "Question": "Koľko to stojí?",
+    "Answer": "Stojí to 10 eur"
+  },
+  {
+    "Question": "I don't understand",
+    "Answer": "Could you repeat, please?"
+  },
+  {
+    "Question": "Nerozumiem",
+    "Answer": "Môžeš to zopakovať, prosím?"
+  },
+  {
+    "Question": "Good morning",
+    "Answer": "Good morning"
+  },
+  {
+    "Question": "Dobré ráno",
+    "Answer": "Dobré ráno"
+  }
+]
