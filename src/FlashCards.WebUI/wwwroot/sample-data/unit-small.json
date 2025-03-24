@@ -1,0 +1,26 @@
+﻿[
+  {
+    "Question": "How are you?",
+    "Answer": "I'm fine"
+  },
+  {
+    "Question": "Akó sa máš?",
+    "Answer": "Mám sa dobre"
+  },
+  {
+    "Question": "What is your name?",
+    "Answer": "My name is John"
+  },
+  {
+    "Question": "Ako sa voláš?",
+    "Answer": "Volám sa Ján"
+  },
+  {
+    "Question": "Where are you from?",
+    "Answer": "I'm from the USA"
+  },
+  {
+    "Question": "Odkiaľ si?",
+    "Answer": "Som z USA"
+  }
+]

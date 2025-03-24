@@ -26,32 +26,54 @@ else
         <MudButton
             Style="width: 50%"
             Variant="Variant.Filled"
-            Color="Color.Secondary"
+            Color="Color.Error"
             StartIcon="@Icons.Material.Filled.Clear"
-            OnClick="NextCard">
+            OnClick="DontKnowClick">
             I don't know
         </MudButton>
 
         <MudButton
             Style="width: 50%"
             Variant="Variant.Filled"
-            Color="Color.Primary"
+            Color="Color.Success"
             StartIcon="@Icons.Material.Filled.Check"
-            OnClick="NextCard">
-            Next
+            OnClick="KnowClick">
+            I know
         </MudButton>
     </MudStack>
     
-    <MudStack Row="true" Class="mt-5" Justify="Justify.SpaceBetween">
-        <MudPaper Outlined="true" >
-            <MudText>In progress</MudText>
-        </MudPaper>
-        <MudPaper Outlined="true" >
-            <MudText>In progress</MudText>
-        </MudPaper>
-        <MudPaper Outlined="true" >
-            <MudText>In progress</MudText>
-        </MudPaper>
+    <MudStack Row="true" Class="mt-5" Justify="Justify.Center">
+        <MudCard
+            Class="responsive-card"
+            Style="@($"background-color:{Colors.Green.Default};color:{Colors.Gray.Lighten5}")"
+            Outlined="true">
+            <MudCardContent>
+                <MudText Align="Align.Center">@(_learnedFlashCardsIndexes.Count) Learned</MudText>
+            </MudCardContent>
+        </MudCard>
+        <MudCard
+            Class="responsive-card"
+            Style="@($"background-color:{Colors.Yellow.Darken4};color:{Colors.Gray.Lighten5}")"
+            Outlined="true">
+            <MudCardContent>
+                <MudText Align="Align.Center">@(_inProgressFlashCardsIndexes.Count) In progress</MudText>
+            </MudCardContent>
+        </MudCard>
+        <MudCard
+            Class="responsive-card"
+            Style="@($"background-color:{Colors.BlueGray.Default};color:{Colors.Gray.Lighten5}")"
+            Outlined="true">
+            <MudCardContent>
+                <MudText Align="Align.Center">@(_remindedFlashCardsIndexes.Count) Remained</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudStack>
+    
+    <MudStack>
+        <MudPaper>Learned Indexes @(string.Join(", ", _learnedFlashCardsIndexes))</MudPaper>
+        <MudPaper>In Progress Indexes @(string.Join(", ", _inProgressFlashCardsIndexes))</MudPaper>
+        <MudPaper>Remained Indexes @(string.Join(", ", _remindedFlashCardsIndexes))</MudPaper>
+        <MudPaper>Current card index @(_currentCardIndex) / in progress index @(_inProgressIndex)</MudPaper>
     </MudStack>
 }
 
@@ -61,35 +83,88 @@ else
 
     private bool _showAnswer = false;
     private List<FlashCardDto>? _flashCards;
+    private List<int> _learnedFlashCardsIndexes;
+    private List<int> _inProgressFlashCardsIndexes;
+    private List<int> _remindedFlashCardsIndexes;
     private int _currentCardIndex = 0;
+    private int _inProgressIndex = 0;
     
     protected override async Task OnInitializedAsync()
     {
         await LoadFlashCardsAsync();
+        ArgumentNullException.ThrowIfNull(_flashCards);
+        
+        _learnedFlashCardsIndexes = [];
+        _inProgressFlashCardsIndexes = [];
+        _remindedFlashCardsIndexes = [];
+        
+        // take first 10 flash cards to `in progress` array
+        if (_flashCards.Count < 11)
+        {
+            _inProgressFlashCardsIndexes.AddRange(Enumerable.Range(0, _flashCards.Count));
+        }
+        else
+        {
+            _inProgressFlashCardsIndexes.AddRange(Enumerable.Range(0, 10));
+            
+            //  remained flash cards take to `remained` array
+            _remindedFlashCardsIndexes.AddRange(Enumerable.Range(10, _flashCards.Count - _inProgressFlashCardsIndexes.Count));
+        }
     }
     
     private async Task LoadFlashCardsAsync()
     {
         // Mock http request
         _flashCards = await Http.GetFromJsonAsync<List<FlashCardDto>>("sample-data/unit.json");
-        ArgumentNullException.ThrowIfNull(_flashCards);
     }
     
     private void FlipCard()
     {
         _showAnswer = !_showAnswer;
     }
-    
-    private void NextCard()
+
+    private void DontKnowClick()
     {
-        _showAnswer = false;
-        if (_currentCardIndex < _flashCards.Count - 1)
+        if (_inProgressIndex < _inProgressFlashCardsIndexes.Count - 1)
         {
-            _currentCardIndex++;
+            _inProgressIndex++;
         }
         else
         {
-            _currentCardIndex = 0;
+            _inProgressIndex = 0;
         }
+        ShowNextCard();
+    }
+    
+    private void KnowClick()
+    {
+        _learnedFlashCardsIndexes.Add(_currentCardIndex);
+        if (_inProgressFlashCardsIndexes.Count > 0)
+        {
+            _inProgressFlashCardsIndexes.Remove(_currentCardIndex);
+            if (_remindedFlashCardsIndexes.Count > 0)
+            {
+                _inProgressFlashCardsIndexes.Add(_remindedFlashCardsIndexes.First());
+                _remindedFlashCardsIndexes.Remove(_remindedFlashCardsIndexes.First());
+            }
+
+            if (_inProgressFlashCardsIndexes.Count != 0)
+            {
+                ShowNextCard();
+                return;
+            }
+        }
+
+        Console.WriteLine("YOU MEMORISED ALL FLASHCARDS!!!!");
+    }
+
+    private void ShowNextCard()
+    {
+        _showAnswer = false;
+        if (_inProgressIndex >= _inProgressFlashCardsIndexes.Count)
+        {
+            _inProgressIndex = 0;
+        }
+        _currentCardIndex = _inProgressFlashCardsIndexes[_inProgressIndex];
     }
 }
