@@ -11,6 +11,12 @@
 }
 else
 {
+    <MudProgressLinear 
+        Color="Color.Tertiary" 
+        Rounded="true"
+        Striped="false"
+        Value="@((double)_learnedFlashCardsIndexes.Count/_flashCards.Count * 100)" 
+        Class="mb-5"/>
     <div class="flip-container">
         <div class="flip-card @(_showAnswer ? "flip" : "")" @onclick="FlipCard">
             <div class="flip-card-front">
