@@ -1,4 +1,6 @@
-﻿@page "/Units/{Id}/FreeLearningMode/"
+﻿@*TODO: Add a check that when the user exits the mode, it will notify the user that progress has been lost*@
+@*TODO: Save the result after each session, then create a graph on a final screen to show user advancement*@
+@page "/Units/{Id}/FreeLearningMode/" 
 
 @using FlashCards.WebUI.Mocks
 @using FlashCards.WebUI.Mocks.Core
@@ -99,14 +101,14 @@ else
                         Style="width: 20%; min-width: 10px;"
                         Variant="Variant.Filled"
                         Color="Color.Error"
-                        OnClick="() => RateCard(1)">
+                        OnClick="async () => await RateCard(1)">
                         1
                     </MudButton>
                     @*2*@
                     <MudButton
                         Style="@($"width: 20%; color: white; background-color:{Colors.DeepOrange.Darken1}; min-width: 10px;")"
                         Variant="Variant.Filled"
-                        OnClick="() => RateCard(2)">
+                        OnClick="async () => await RateCard(2)">
                         2
                     </MudButton>
                     @*3*@
@@ -114,14 +116,14 @@ else
                         Style="@($"width: 20%; color: white; background-color:{Colors.Orange.Default}; min-width: 10px;")"
                         Variant="Variant.Filled"
                         Color="Color.Success"
-                        OnClick="() => RateCard(3)">
+                        OnClick="async () => await RateCard(3)">
                         3
                     </MudButton>
                     @*4*@
                     <MudButton
                         Style="@($"width: 20%; color: white; background-color:{Colors.LightGreen.Default}; min-width: 10px;")"
                         Variant="Variant.Filled"
-                        OnClick="() => RateCard(4)">
+                        OnClick="async () => await RateCard(4)">
                         4
                     </MudButton>
                     @*5*@
@@ -129,7 +131,7 @@ else
                         Style="width: 20%; min-width: 10px;"
                         Variant="Variant.Filled"
                         Color="Color.Success"
-                        OnClick="() => RateCard(5)">
+                        OnClick="async () => await RateCard(5)">
                         5
                     </MudButton>
                 </MudStack>
@@ -174,7 +176,7 @@ else
         if (_showAnswer) _isFlipped = true;
     }
 
-    private void RateCard(int rate)
+    private async Task RateCard(int rate)
     {
         // Algorithm Logic
         _scheduler.UpdateConfidence(_currentCard, rate);
@@ -183,6 +185,7 @@ else
         _sessionFlashCardsCount++;
         _isFlipped = false;
         if (_showAnswer) FlipCard();
+        await Task.Delay(400); // wait until the card flip animation is played
         ShowNextCard();
     }
     
