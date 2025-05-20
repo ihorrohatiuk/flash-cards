@@ -1,0 +1,214 @@
+﻿@*TODO: Add a check that when the user exits the mode, it will notify the user that progress has been lost*@
+@*TODO: Save the result after each session, then create a graph on a final screen to show user advancement*@
+@page "/Units/{Id}/FreeLearningMode/" 
+
+@using FlashCards.WebUI.Mocks
+@using FlashCards.WebUI.Mocks.Core
+@inject HttpClient Http
+
+@if (_flashCards == null)
+{
+    <h3>Loading...</h3>
+    
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+}
+else
+{
+    @if (CountSessionProgress() == 100)
+    {
+        /*Final screen*/
+        <MudStack Class="mt-5" AlignItems="AlignItems.Center">
+            @*Trophy image*@
+            <img src="/images/champion-cup.svg" alt="Cup image" class="w-25">
+            <div style="text-align: center">
+                <h1>Your score: 100%</h1>
+                <h4 class="mt-1">You've reached your goal!</h4>
+            </div>
+            @*Back to unit info button*@
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ContinueSession_Button">Back to unit page</MudButton>
+        </MudStack>
+    }
+    else
+    {
+        // Session checkpoint 
+        @if (_sessionFlashCardsCount == 10) 
+        {
+            <h3>Session results:</h3>
+            
+            <MudStack Class="mt-5" AlignItems="AlignItems.Center">
+                <MudProgressCircular Color="Color.Success" Rounded="true" Size="Size.Large" StrokeWidth="4" Value="@(CountSessionProgress() + 1)" />
+                @*Progress text*@
+                <h2>@((int)CountSessionProgress())%</h2>
+            </MudStack>
+            
+            <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <h3>"1"</h3>
+                <MudProgressLinear Color="Color.Error" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(1) / _flashCards.Count * 100)"/>
+                <h3>@CountFlashCardsWithConfidence(1)</h3>
+            </MudStack>
+            <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <h3>"2"</h3>
+                <MudProgressLinear Color="Color.Warning" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(2) / _flashCards.Count * 100)" />
+                <h3>@CountFlashCardsWithConfidence(2)</h3>
+            </MudStack>
+            <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <h3>"3"</h3>
+                <MudProgressLinear Color="Color.Warning" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(3) / _flashCards.Count * 100)" />
+                <h3>@CountFlashCardsWithConfidence(3)</h3>
+            </MudStack>
+            <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <h3>"4"</h3>
+                <MudProgressLinear Color="Color.Warning" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(4) / _flashCards.Count * 100)" />
+                <h3>@CountFlashCardsWithConfidence(4)</h3>
+            </MudStack>
+            <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <h3>"5"</h3>
+                <MudProgressLinear Color="Color.Success" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(5) / _flashCards.Count * 100)" />
+                <h3>@CountFlashCardsWithConfidence(5)</h3>
+            </MudStack>
+            
+            /*Continue button*/
+            <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ContinueSession_Button">Continue</MudButton>
+            </MudStack>
+        }
+        // Flash cards
+        else
+        {
+            <MudProgressLinear 
+                Color="Color.Tertiary" 
+                Rounded="true"
+                Striped="false"
+                Value="@((double) _flashCards.Count(c => c.Confidence == 5) / _flashCards.Count * 100)" 
+                Class="mb-5"/>
+            
+            <div class="flip-container">
+                <div class="flip-card @(_showAnswer ? "flip" : "")" @onclick="FlipCard">
+                    <div class="flip-card-front">
+                        @_currentCard.Question
+                    </div>
+                    <div class="flip-card-back">
+                        @_currentCard.Answer
+                    </div>  
+                </div>
+            </div>
+        
+            @if (_isFlipped)
+            {
+                <MudStack Row="true" Class="mt-5">
+                    @*1*@
+                    <MudButton
+                        Style="width: 20%; min-width: 10px;"
+                        Variant="Variant.Filled"
+                        Color="Color.Error"
+                        OnClick="async () => await RateCard(1)">
+                        1
+                    </MudButton>
+                    @*2*@
+                    <MudButton
+                        Style="@($"width: 20%; color: white; background-color:{Colors.DeepOrange.Darken1}; min-width: 10px;")"
+                        Variant="Variant.Filled"
+                        OnClick="async () => await RateCard(2)">
+                        2
+                    </MudButton>
+                    @*3*@
+                    <MudButton
+                        Style="@($"width: 20%; color: white; background-color:{Colors.Orange.Default}; min-width: 10px;")"
+                        Variant="Variant.Filled"
+                        Color="Color.Success"
+                        OnClick="async () => await RateCard(3)">
+                        3
+                    </MudButton>
+                    @*4*@
+                    <MudButton
+                        Style="@($"width: 20%; color: white; background-color:{Colors.LightGreen.Default}; min-width: 10px;")"
+                        Variant="Variant.Filled"
+                        OnClick="async () => await RateCard(4)">
+                        4
+                    </MudButton>
+                    @*5*@
+                    <MudButton
+                        Style="width: 20%; min-width: 10px;"
+                        Variant="Variant.Filled"
+                        Color="Color.Success"
+                        OnClick="async () => await RateCard(5)">
+                        5
+                    </MudButton>
+                </MudStack>
+            }
+        }
+    }
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private bool _showAnswer = false;
+    private bool _isFlipped = false;
+    private List<FlashCardDto>? _flashCards;
+    private ConfidenceBasedRepetitionScheduler _scheduler;
+    private FlashCardDto _currentCard;
+
+    private int _sessionFlashCardsCount = 0;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadFlashCardsAsync();
+        ArgumentNullException.ThrowIfNull(_flashCards);
+
+        _scheduler = new ConfidenceBasedRepetitionScheduler(_flashCards);
+        
+        //Set first card
+        ShowNextCard();  
+    }
+    
+    /*Algorithm methods*/
+    private async Task LoadFlashCardsAsync()
+    {
+        // Mock http request
+        _flashCards = await Http.GetFromJsonAsync<List<FlashCardDto>>("sample-data/unit-spain-words.json");
+    }
+    
+    private void FlipCard()
+    {
+        _showAnswer = !_showAnswer;
+        if (_showAnswer) _isFlipped = true;
+    }
+
+    private async Task RateCard(int rate)
+    {
+        // Algorithm Logic
+        _scheduler.UpdateConfidence(_currentCard, rate);
+        
+        // Visual side
+        _sessionFlashCardsCount++;
+        _isFlipped = false;
+        if (_showAnswer) FlipCard();
+        await Task.Delay(400); // wait until the card flip animation is played
+        ShowNextCard();
+    }
+    
+    private void ShowNextCard()
+    {
+        _currentCard = _scheduler.GetNextFlashCard();
+    }
+
+    private void ContinueSession_Button()
+    {
+        _sessionFlashCardsCount = 0;
+    }
+    
+    /*Visual side methods*/
+    private int CountFlashCardsWithConfidence(int confidence)
+    {
+        ArgumentNullException.ThrowIfNull(_flashCards);
+        
+        return _flashCards.Count(c => c.Confidence == confidence);
+    }
+
+    private double CountSessionProgress()
+    {
+        return (double)CountFlashCardsWithConfidence(5) / _flashCards.Count * 100;
+    }
+}

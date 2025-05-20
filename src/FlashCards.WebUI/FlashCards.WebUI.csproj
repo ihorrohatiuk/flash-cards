@@ -21,6 +21,8 @@
       <_ContentIncludedByDefault Remove="wwwroot\icon-192.png" />
       <_ContentIncludedByDefault Remove="wwwroot\index.html" />
       <_ContentIncludedByDefault Remove="Pages\Home.razor" />
+      <_ContentIncludedByDefault Remove="Components\CircleProgressBar.razor" />
+      <_ContentIncludedByDefault Remove="Layout\Components\CircleProgressBar.razor" />
     </ItemGroup>
 
     <ItemGroup>

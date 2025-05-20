@@ -1,0 +1,102 @@
+﻿[
+  {
+    "Question": "How are you?",
+    "Answer": "I'm fine",
+    "Confidence": 1
+  },
+  {
+    "Question": "Akó sa máš?",
+    "Answer": "Mám sa dobre",
+    "Confidence": 1
+  },
+  {
+    "Question": "What is your name?",
+    "Answer": "My name is John",
+    "Confidence": 1
+  },
+  {
+    "Question": "Ako sa voláš?",
+    "Answer": "Volám sa Ján",
+    "Confidence": 1
+  },
+  {
+    "Question": "Where are you from?",
+    "Answer": "I'm from the USA",
+    "Confidence": 1
+  },
+  {
+    "Question": "Odkiaľ si?",
+    "Answer": "Som z USA",
+    "Confidence": 1
+  },
+  {
+    "Question": "How old are you?",
+    "Answer": "I am 25 years old",
+    "Confidence": 1
+  },
+  {
+    "Question": "Koľko máš rokov?",
+    "Answer": "Mám 25 rokov",
+    "Confidence": 1
+  },
+  {
+    "Question": "Do you speak English?",
+    "Answer": "Yes, I do",
+    "Confidence": 1
+  },
+  {
+    "Question": "Hovoríš po anglicky?",
+    "Answer": "Áno, hovorím",
+    "Confidence": 1
+  },
+  {
+    "Question": "Can you help me?",
+    "Answer": "Yes, of course",
+    "Confidence": 1
+  },
+  {
+    "Question": "Môžeš mi pomôcť?",
+    "Answer": "Áno, samozrejme",
+    "Confidence": 1
+  },
+  {
+    "Question": "Where is the bathroom?",
+    "Answer": "It is over there",
+    "Confidence": 1
+  },
+  {
+    "Question": "Kde je toaleta?",
+    "Answer": "Je tam",
+    "Confidence": 1
+  },
+  {
+    "Question": "How much does it cost?",
+    "Answer": "It costs 10 euros",
+    "Confidence": 1
+  },
+  {
+    "Question": "Koľko to stojí?",
+    "Answer": "Stojí to 10 eur",
+    "Confidence": 1
+  },
+  {
+    "Question": "I don't understand",
+    "Answer": "Could you repeat, please?",
+    "Confidence": 1
+  },
+  {
+    "Question": "Nerozumiem",
+    "Answer": "Môžeš to zopakovať, prosím?",
+    "Confidence": 1
+  },
+  {
+    "Question": "Good morning",
+    "Answer": "Good morning",
+    "Confidence": 1
+  },
+  {
+    "Question": "Dobré ráno",
+    "Answer": "Dobré ráno",
+    "Confidence": 1
+  }
+]

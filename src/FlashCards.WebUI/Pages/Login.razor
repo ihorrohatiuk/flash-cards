@@ -3,10 +3,9 @@
 @using FlashCards.Infrastructure.Services
 @using FlashCards.WebUI.Services
 @using FlashCards.WebUI.Validation
-@inject NavigationManager Navigation
 @inject NavigationManager NavigationManager
 @inject IAuthenticationService AuthenticationService
-
+@*TODO: Add /register button*@
 <MudPaper Elevation="4" Style="max-width: 400px;
     margin: 100px auto;
     padding: 30px;
@@ -60,7 +59,7 @@
 
         if (!string.IsNullOrEmpty(token))
         {
-            Navigation.NavigateTo("/", forceLoad: true);
+            NavigationManager.NavigateTo("/", forceLoad: true);
         }
     }
 
