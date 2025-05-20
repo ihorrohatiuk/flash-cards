@@ -1,26 +1,26 @@
 ﻿[
   {
-    "Question": "How are you?",
-    "Answer": "I'm fine"
+    "Question": "1",
+    "Answer": "11"
   },
   {
-    "Question": "Akó sa máš?",
-    "Answer": "Mám sa dobre"
+    "Question": "2",
+    "Answer": "22"
   },
   {
-    "Question": "What is your name?",
-    "Answer": "My name is John"
+    "Question": "3",
+    "Answer": "33"
   },
   {
-    "Question": "Ako sa voláš?",
-    "Answer": "Volám sa Ján"
+    "Question": "4",
+    "Answer": "44"
   },
   {
-    "Question": "Where are you from?",
-    "Answer": "I'm from the USA"
+    "Question": "5",
+    "Answer": "55"
   },
   {
-    "Question": "Odkiaľ si?",
-    "Answer": "Som z USA"
+    "Question": "6",
+    "Answer": "66"
   }
 ]
