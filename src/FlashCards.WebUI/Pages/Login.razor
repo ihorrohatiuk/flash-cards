@@ -5,7 +5,7 @@
 @using FlashCards.WebUI.Validation
 @inject NavigationManager NavigationManager
 @inject IAuthenticationService AuthenticationService
-@*TODO: Add /register button*@
+
 <MudPaper Elevation="4" Style="max-width: 400px;
     margin: 100px auto;
     padding: 30px;
@@ -31,9 +31,16 @@
         <MudButton 
             Variant="Variant.Filled" 
             Color="Color.Primary" 
-            OnClick="SubmitAsync"
+            OnClick="OnSubmitClickAsync"
             Disabled="@_isLoginButtonDisable">Login</MudButton>
     </MudForm>
+    
+    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center">
+        <MudText>Don't have an account yet?</MudText>
+        <MudButton 
+            OnClick="OnRegistrationClick"
+            Color="Color.Secondary">Registration</MudButton>
+    </MudStack>
 
     @if (_errorMessage != null)
     {
@@ -63,7 +70,7 @@
         }
     }
 
-    private async Task SubmitAsync()
+    private async Task OnSubmitClickAsync()
     {
         try
         {
@@ -84,5 +91,10 @@
         {
             _isLoginButtonDisable = false;
         }
+    }
+
+    private void OnRegistrationClick()
+    {
+        NavigationManager.NavigateTo("/registration");
     }
 }
