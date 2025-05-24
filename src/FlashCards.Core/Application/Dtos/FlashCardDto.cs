@@ -1,4 +1,4 @@
-﻿namespace FlashCards.WebUI.Mocks;
+﻿namespace FlashCards.Core.Application.Dtos;
 
 public class FlashCardDto
 {

@@ -1,4 +1,6 @@
-﻿namespace FlashCards.WebUI.Mocks.Core;
+﻿using FlashCards.Core.Application.Dtos;
+
+namespace FlashCards.WebUI.Mocks.Core;
 
 public class ConfidenceBasedRepetitionScheduler
 {
