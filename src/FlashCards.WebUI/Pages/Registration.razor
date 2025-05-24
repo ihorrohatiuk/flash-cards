@@ -1,12 +1,10 @@
 ﻿@page "/Registration"
-@using System.Text.RegularExpressions
 @using FlashCards.Core.Application.Dtos
-@using FlashCards.Infrastructure.Services
 @using FlashCards.WebUI.Services
 @using FlashCards.WebUI.Validation
 @inject IAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
-@*TODO: Add /login button*@
+
 <MudPaper Elevation="4" Style="max-width: 400px;
     margin: 100px auto;
     padding: 30px;
@@ -45,6 +43,13 @@
             OnClick="SubmitAsync"
             Disabled="@_isRegistrationButtonDisable">Register</MudButton>
     </MudForm>
+    
+    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center">
+        <MudText>Already have an account?</MudText>
+        <MudButton 
+            OnClick="OnLoginClick"
+            Color="Color.Secondary">Login</MudButton>
+    </MudStack>
 
     @if (_errorMessage != null)
     {
@@ -87,6 +92,9 @@
             _isRegistrationButtonDisable = false;
         }
     }
-    //TODO: Move validation to an independent class.
-    
+
+    private void OnLoginClick()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
 }
