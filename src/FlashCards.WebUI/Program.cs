@@ -32,6 +32,7 @@ builder.Services.AddScoped(sp =>
         // using to getting local files like sample-data
         BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) 
     });
+/*Backend url*/
 builder.Services.AddHttpClient("ServerApi")
     .ConfigureHttpClient(c =>
         c.BaseAddress = new Uri(builder.Configuration["ServerUrl"] ?? ""))
