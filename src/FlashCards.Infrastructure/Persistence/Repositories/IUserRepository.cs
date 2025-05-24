@@ -1,4 +1,5 @@
 ﻿using FlashCards.Core.Domain.Entities;
+using FlashCards.Infrastructure.Persistence.DataModels;
 
 namespace FlashCards.Infrastructure.Persistence.Repositories;
 

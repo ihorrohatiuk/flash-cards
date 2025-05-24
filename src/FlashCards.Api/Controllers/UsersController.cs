@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FlashCards.Core.Domain.Constants;
 using FlashCards.Core.Domain.Entities;
 using FlashCards.Infrastructure.Persistence.Contexts;
+using FlashCards.Infrastructure.Persistence.DataModels;
 using FlashCards.Infrastructure.Security;
 using FlashCards.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;

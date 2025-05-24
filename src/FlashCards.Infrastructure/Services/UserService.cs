@@ -2,6 +2,7 @@
 using FlashCards.Core.Domain.Constants;
 using FlashCards.Core.Domain.Entities;
 using FlashCards.Infrastructure.Persistence.Contexts;
+using FlashCards.Infrastructure.Persistence.DataModels;
 using FlashCards.Infrastructure.Persistence.Repositories;
 using FlashCards.Infrastructure.Security;
 

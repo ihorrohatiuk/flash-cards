@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using FlashCards.Core.Domain.Entities;
+using FlashCards.Infrastructure.Persistence.DataModels;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 

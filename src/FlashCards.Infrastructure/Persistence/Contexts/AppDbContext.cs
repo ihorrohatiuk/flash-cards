@@ -1,4 +1,4 @@
-﻿using FlashCards.Core.Domain.Entities;
+﻿using FlashCards.Infrastructure.Persistence.DataModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlashCards.Infrastructure.Persistence.Contexts;

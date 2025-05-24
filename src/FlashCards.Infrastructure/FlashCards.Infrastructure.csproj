@@ -22,8 +22,4 @@
       <ProjectReference Include="..\FlashCards.Core\FlashCards.Core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Validators\" />
-    </ItemGroup>
-
 </Project>
