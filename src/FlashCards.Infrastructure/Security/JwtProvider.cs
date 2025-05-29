@@ -12,13 +12,13 @@ public class JwtProvider(IOptions<JwtOptions> jwtOptions)
 {
     private readonly JwtOptions _jwtOptions = jwtOptions.Value;
 
-    public string GenerateJwtToken(User user)
+    public string GenerateJwtToken(UserEntity userEntity)
     {
         Claim[] claims = 
         [
-            new("userId", user.Id.ToString()), 
-            new("email", user.Email),
-            new("role", user.Role)
+            new("userId", userEntity.Id.ToString()), 
+            new("email", userEntity.Email),
+            new("role", userEntity.Role)
         ];
         
         var signinCredentials = new SigningCredentials(

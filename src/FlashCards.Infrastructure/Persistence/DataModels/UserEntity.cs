@@ -4,7 +4,7 @@ using FlashCards.Core.Domain.Constants;
 
 namespace FlashCards.Infrastructure.Persistence.DataModels;
 
-public class User
+public class UserEntity
 {
     [Key]
     public Guid Id { get; set; }

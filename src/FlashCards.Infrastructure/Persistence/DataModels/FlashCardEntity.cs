@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlashCards.Infrastructure.Persistence.DataModels;
 
-public class FlashCard
+public class FlashCardEntity
 {
     [Key]
     public Guid Id { get; set; }
@@ -23,5 +23,5 @@ public class FlashCard
     [Required]
     public int Confidence { get; set; }
     
-    public FlashCardsUnit? FlashCardsUnit { get; set; }
+    public FlashCardsUnitEntity? FlashCardsUnit { get; set; }
 }

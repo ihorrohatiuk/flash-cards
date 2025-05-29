@@ -25,14 +25,14 @@ public class UsersController : ControllerBase
 
     [HttpGet(Name = "GetUsers")]
     [Authorize(Roles = RolesType.Admin)]
-    public IEnumerable<User> GetUsers()
+    public IEnumerable<UserEntity> GetUsers()
     {
         return _userService.GetAll();
     }
     
     [HttpGet("{id}", Name = "GetUser")]
     [Authorize(Roles = RolesType.User)]
-    public async Task<User?> Get(Guid id)
+    public async Task<UserEntity?> Get(Guid id)
     {
         return await _userService.GetByIdAsync(id);
     }

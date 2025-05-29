@@ -14,55 +14,55 @@ public class UserRepository : IUserRepository
         _context = context;
     }
     
-    public IEnumerable<User> GetAll() //TODO: Add pagination
+    public IEnumerable<UserEntity> GetAll() //TODO: Add pagination
     {
-        return _context.Set<User>()
+        return _context.Set<UserEntity>()
             .AsNoTracking()
             .AsEnumerable();
     }
 
-    public async Task<User?> GetByIdAsync(Guid id)
+    public async Task<UserEntity?> GetByIdAsync(Guid id)
     {
-        return await _context.Set<User>()
+        return await _context.Set<UserEntity>()
             .FindAsync(id);
     }
     
-    public async Task<User?> GetByEmailAsync(string email)
+    public async Task<UserEntity?> GetByEmailAsync(string email)
     {
-        return await _context.Set<User>()
+        return await _context.Set<UserEntity>()
             .AsNoTracking() 
             .FirstOrDefaultAsync(user => user.Email == email);
     }
 
-    public async Task AddAsync(User user)
+    public async Task AddAsync(UserEntity userEntity)
     {
-        await _context.Set<User>().AddAsync(user);
+        await _context.Set<UserEntity>().AddAsync(userEntity);
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync(User user)
+    public async Task UpdateAsync(UserEntity userEntity)
     {
-       _context.Entry(user).State = EntityState.Modified;
+       _context.Entry(userEntity).State = EntityState.Modified;
        await _context.SaveChangesAsync();
     }
     
     public async Task DeleteAsync(Guid id)
     {
-        var user = await _context.Set<User>().FindAsync(id);
+        var user = await _context.Set<UserEntity>().FindAsync(id);
         if (user != null)
         {
-            _context.Set<User>().Remove(user);
+            _context.Set<UserEntity>().Remove(user);
             await _context.SaveChangesAsync();
         }
     }
 
     public async Task<bool> Exists(Guid id)
     {
-        return await _context.Set<User>().AnyAsync(u => u.Id == id);
+        return await _context.Set<UserEntity>().AnyAsync(u => u.Id == id);
     }
     
     public async Task<bool> Exists(string email)
     {
-        return await _context.Set<User>().AnyAsync(u => u.Email == email);
+        return await _context.Set<UserEntity>().AnyAsync(u => u.Email == email);
     }
 }

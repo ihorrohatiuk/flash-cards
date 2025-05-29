@@ -22,7 +22,7 @@ namespace FlashCards.Api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("FlashCards.Infrastructure.Persistence.DataModels.FlashCard", b =>
+            modelBuilder.Entity("FlashCards.Infrastructure.Persistence.DataModels.FlashCardEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -119,7 +119,7 @@ namespace FlashCards.Api.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("FlashCards.Infrastructure.Persistence.DataModels.FlashCard", b =>
+            modelBuilder.Entity("FlashCards.Infrastructure.Persistence.DataModels.FlashCardEntity", b =>
                 {
                     b.HasOne("FlashCards.Infrastructure.Persistence.DataModels.FlashCardsUnit", "FlashCardsUnit")
                         .WithMany()
