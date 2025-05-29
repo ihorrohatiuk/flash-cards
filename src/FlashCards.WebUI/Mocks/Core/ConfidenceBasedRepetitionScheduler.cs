@@ -1,4 +1,6 @@
 ﻿using FlashCards.Core.Application.Dtos;
+using FlashCards.Core.Domain.Constants;
+using Microsoft.VisualBasic;
 
 namespace FlashCards.WebUI.Mocks.Core;
 
@@ -19,8 +21,7 @@ public class ConfidenceBasedRepetitionScheduler
 
         foreach (var flashCard in _flashCards)
         {
-            //TODO: Make wight a constant
-            int weight = 6 - flashCard.Confidence;
+            int weight = AlgorithmConstants.ConfidenceBasedRepetitionConstant - flashCard.Confidence;
             for (int i = 0; i < weight; i++)
             {
                 weightedCards.Add(flashCard);
