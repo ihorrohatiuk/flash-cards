@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using FlashCards.Core.Domain.Entities;
 
 namespace FlashCards.Infrastructure.Persistence.DataModels;
 
-public class FlashCardEntity
+public class FlashCardEntity : FlashCard
 {
     [Key]
     public Guid Id { get; set; }
@@ -11,14 +12,6 @@ public class FlashCardEntity
     [Required]
     [ForeignKey("FlashCardsUnit")]
     public Guid FlashCardsUnitId { get; set; }
-    
-    [Required]
-    [MaxLength(300)]
-    public string? Question { get; set; }
-    
-    [Required]
-    [MaxLength(300)]
-    public string? Answer { get; set; }
     
     [Required]
     public int Confidence { get; set; }
