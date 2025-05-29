@@ -18,11 +18,10 @@ public class FlashCard
     
     [Required]
     [MaxLength(300)]
-    public string? QuestionImagePath { get; set; }
+    public string? Answer { get; set; }
     
     [Required]
-    [MaxLength(300)]
-    public string? Answer { get; set; }
+    public int Confidence { get; set; }
     
     public FlashCardsUnit? FlashCardsUnit { get; set; }
 }
