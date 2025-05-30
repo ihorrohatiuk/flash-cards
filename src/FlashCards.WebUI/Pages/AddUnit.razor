@@ -1,4 +1,5 @@
 ﻿@page "/Add-Unit"
+@using FlashCards.Core.Domain.Constants
 @using FlashCards.Core.Domain.Entities
 @using FlashCards.WebUI.Services
 @using FlashCards.WebUI.Validation
@@ -94,9 +95,6 @@
 @code {
     private MudForm _unitInfo;
     private List<FlashCard>? _flashCards;
-    
-    /*TODO: Add to global constants in domain Layer*/
-    private const int FlashCardsMaximumQuantity = 200;
 
     protected override void OnInitialized()
     {
@@ -115,14 +113,14 @@
 
     private void AddFlashCard()
     {
-        if (_flashCards.Count < FlashCardsMaximumQuantity)
+        if (_flashCards.Count < AppConstants.FlashCardsMaxQuantityPerUnit)
         {
             _flashCards.Add(new FlashCard());
             StateHasChanged();
             return;
         }
 
-        Snackbar.Add($"Maximum number of cards reached ({FlashCardsMaximumQuantity})", Severity.Info);
+        Snackbar.Add($"Maximum number of cards reached ({AppConstants.FlashCardsMaxQuantityPerUnit})", Severity.Info);
     }
 
     private void DeleteFlashCard(FlashCard card)
