@@ -63,18 +63,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     Encoding.UTF8.GetBytes(
                         builder.Configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>()?.Key))
         };
-
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                context.Token = context.Request.Cookies["AccessToken"];
-#if DEBUG
-                Console.WriteLine(context.Token);
-#endif
-                return Task.CompletedTask;
-            }
-        };
     });
 // Authorization 
 builder.Services.AddAuthorization();
