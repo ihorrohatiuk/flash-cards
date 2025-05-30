@@ -80,4 +80,12 @@ public class AuthenticationService : IAuthenticationService
         
         return true;
     }
+    
+    public bool IsTokenExpired(string token)
+    {
+        var jwt = new JwtSecurityToken(token);
+        var exp = jwt.ValidTo; // UTC
+
+        return exp < DateTime.UtcNow;
+    }
 }

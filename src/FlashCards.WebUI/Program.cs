@@ -44,9 +44,15 @@ builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 // Flash cards state container to pass flash cards between /ai-flashcards and /add-unit pages
 builder.Services.AddScoped<FlashCardStateContainer>();
 // Local storage
-//builder.Services.AddBlazoredSessionStorageAsSingleton();
 builder.Services.AddBlazoredLocalStorageAsSingleton();
 // MudBlazor
 builder.Services.AddMudServices();
+// Checking is saved JWT token actual
+var authService = builder.Services.BuildServiceProvider().GetRequiredService<IAuthenticationService>();
+var token = await authService.GetJwtAsync();
+if (!string.IsNullOrEmpty(token) && authService.IsTokenExpired(token))
+{
+    await authService.LogoutAsync();
+}
 
 await builder.Build().RunAsync();
