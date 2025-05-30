@@ -38,8 +38,13 @@ builder.Services.AddHttpClient("ServerApi")
         c.BaseAddress = new Uri(builder.Configuration["ServerUrl"] ?? ""))
     .AddHttpMessageHandler<AuthenticationHandler>();
 
+// Authentication
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+// Flash cards state container to pass flash cards between /ai-flashcards and /add-unit pages
+builder.Services.AddScoped<FlashCardStateContainer>();
+// Session storage
 builder.Services.AddBlazoredSessionStorageAsSingleton();
+// MudBlazor
 builder.Services.AddMudServices();
 
 await builder.Build().RunAsync();

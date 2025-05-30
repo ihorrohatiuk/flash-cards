@@ -1,0 +1,188 @@
+﻿@page "/ai-flashcards"
+@using FlashCards.Core.Domain.Entities
+@using FlashCards.WebUI.Services
+
+@inject ISnackbar Snackbar
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject FlashCardStateContainer FlashCardStateContainer
+
+@if (!_showFlashCards)
+{
+    <h3>Generate flash cards using AI!</h3>
+
+    <MudText Align="Align.Left">Add your PDF, TXT, DOCX file, choose how many flash-cards you would like to generate and press GENERATE button.</MudText>
+
+    <MudStack Row="true" AlignItems="AlignItems.Center">
+        <MudText Align="Align.Left">How many cards would you like to  generate?</MudText>
+        <MudNumericField T="int"
+                         @bind-Value="_numberOfCards"
+                         Min="1"
+                         Max="50"
+                         Required="true"/>
+    </MudStack>
+
+    <MudStack Style="width: 100%">
+        <MudFileUpload T="IBrowserFile"
+                       @ref="_fileUpload"
+                       OnFilesChanged="OnInputFileChanged"
+                       Hidden="@false"
+                       InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+                       InputStyle="opacity:0"
+                       tabindex="-1"
+                       @ondrop="@ClearDragClass"
+                       @ondragenter="@SetDragClass"
+                       @ondragleave="@ClearDragClass"
+                       @ondragend="@ClearDragClass">
+            <ActivatorContent>
+                <MudPaper Height="300px"
+                          Outlined="true"
+                          Class="@_dragClass">
+                    <MudIcon Icon="@Icons.Material.Filled.CloudUpload"
+                             Size="Size.Large"
+                             Color="Color.Primary" />
+
+                    <MudText Typo="Typo.h6">
+                        Drag and drop file here or click
+                    </MudText>
+
+                    @if (!string.IsNullOrEmpty(_fileName))
+                    {
+                        <MudChip T="string"
+                                 Color="Color.Dark"
+                                 Text="@_fileName"
+                                 tabindex="-1" />
+                    }
+                </MudPaper>
+            </ActivatorContent>
+        </MudFileUpload>
+        <MudToolBar Gutters="@false"
+                    Class="relative d-flex justify-end gap-4">
+            <MudButton Color="Color.Primary"
+                       Disabled="@(!string.IsNullOrEmpty(_fileName))"
+                       OnClick="@OpenFilePickerAsync"
+                       Variant="Variant.Filled">
+                Open file picker
+            </MudButton>
+            <MudButton Color="Color.Primary"
+                       Disabled="@(string.IsNullOrEmpty(_fileName) || _numberOfCards < 1)"
+                       OnClick="@(Generate)"
+                       Variant="Variant.Filled">
+                Generate
+            </MudButton>
+            <MudButton Color="Color.Error"
+                       Disabled="@(string.IsNullOrEmpty(_fileName))"
+                       OnClick="@ClearAsync"
+                       Variant="Variant.Filled">
+                Clear
+            </MudButton>
+        </MudToolBar>
+    </MudStack>
+} 
+else
+{
+    if (_flashCards is null)
+    {
+        <h3>Request processing in progress...</h3>
+    
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+    }
+    else
+    {
+        <h3>Does it look the way you wanted?</h3>
+        
+        @*Flash Cards table*@
+        <MudTable Items="@_flashCards" Dense="@true" Striped="true">
+            <HeaderContent>
+                <MudTh>#</MudTh>
+                <MudTh>Question</MudTh>
+                <MudTh>Answer</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="#">1++</MudTd>
+                <MudTd DataLabel="Question">@context.Answer</MudTd>
+                <MudTd DataLabel="Answer">@context.Question</MudTd>
+            </RowTemplate>
+        </MudTable>
+        
+        <MudStack Row="true" Justify="Justify.Center" Class="mt-5">
+            <MudButton
+                Variant="Variant.Outlined"
+                Color="Color.Secondary"
+                OnClick="@OnCancelClick">
+                No, cancel
+            </MudButton>
+        
+            <MudButton
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                OnClick="@OnCreateClick">
+                Yes, add @_flashCards.Count flash cards
+            </MudButton>
+        </MudStack>
+    }
+}
+
+
+@code {
+    private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full d-flex flex-column justify-center align-center text-center";
+    private string _dragClass = DefaultDragClass;
+    private string? _fileName;
+    private MudFileUpload<IBrowserFile>? _fileUpload;
+
+    private int _numberOfCards;
+
+    private List<FlashCard>? _flashCards;
+    private bool _showFlashCards;
+
+    private async Task ClearAsync()
+    {
+        await (_fileUpload?.ClearAsync() ?? Task.CompletedTask);
+        _fileName = null;
+        ClearDragClass();
+    }
+
+    private Task OpenFilePickerAsync()
+        => _fileUpload?.OpenFilePickerAsync() ?? Task.CompletedTask;
+
+    private void OnInputFileChanged(InputFileChangeEventArgs e)
+    {
+        ClearDragClass();
+        var file = e.File;
+        _fileName = file.Name;
+    }
+
+    private async Task Generate()
+    {
+        // FLASH CARDS GENERATION LOGIC IS HERE
+        if (string.IsNullOrEmpty(_fileName))
+        {
+            Snackbar.Add("No file selected.", Severity.Warning);
+            return;
+        }
+
+        _showFlashCards = true;
+        _flashCards = await Http.GetFromJsonAsync<List<FlashCard>>("sample-data/unit-spain-words.json");
+
+        Snackbar.Add($"Generating flashcards for: {_fileName}");
+    }
+
+    private void SetDragClass()
+        => _dragClass = $"{DefaultDragClass} mud-border-primary";
+
+    private void ClearDragClass()
+        => _dragClass = DefaultDragClass;
+
+    private void OnCancelClick()
+    {
+        // Reload page
+        Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+    }
+
+    private void OnCreateClick()
+    {
+        FlashCardStateContainer.FlashCards = _flashCards;
+        // Navigate to /add-unit to save flashcards
+        Navigation.NavigateTo("/add-unit");
+    }
+}

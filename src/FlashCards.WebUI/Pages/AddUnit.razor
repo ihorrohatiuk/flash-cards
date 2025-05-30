@@ -1,14 +1,17 @@
 ﻿@page "/Add-Unit"
-@using FlashCards.Core.Application.Dtos
-@using FlashCards.WebUI.Mocks
+@using FlashCards.Core.Domain.Entities
+@using FlashCards.WebUI.Services
 @using FlashCards.WebUI.Validation
+
 @inject ISnackbar Snackbar
+@inject FlashCardStateContainer FlashCardStateContainer
 
 <div class="custom-flex-container">
     <h3>New unit</h3>
     <div class="buttons">
         @*Import button*@
         <MudButton
+            Disabled="@(_flashCards?.Count > 1)"
             Class="me-2 ms-0"
             Variant="Variant.Outlined"
             Size="Size.Medium"
@@ -90,22 +93,31 @@
 
 @code {
     private MudForm _unitInfo;
-    private List<FlashCardDto>? _flashCards;
+    private List<FlashCard>? _flashCards;
     
     /*TODO: Add to global constants in domain Layer*/
     private const int FlashCardsMaximumQuantity = 200;
 
     protected override void OnInitialized()
     {
-        _flashCards = [];
-        AddFlashCard();
+        if (FlashCardStateContainer.FlashCards != null)
+        {
+            _flashCards = FlashCardStateContainer.FlashCards;
+            // Delete flash cards from state container to avoid unexpected behavior
+            FlashCardStateContainer.FlashCards = null;
+        }
+        else
+        {
+            _flashCards = [];
+            AddFlashCard();
+        }
     }
 
     private void AddFlashCard()
     {
         if (_flashCards.Count < FlashCardsMaximumQuantity)
         {
-            _flashCards.Add(new FlashCardDto());
+            _flashCards.Add(new FlashCard());
             StateHasChanged();
             return;
         }
@@ -113,7 +125,7 @@
         Snackbar.Add($"Maximum number of cards reached ({FlashCardsMaximumQuantity})", Severity.Info);
     }
 
-    private void DeleteFlashCard(FlashCardDto card)
+    private void DeleteFlashCard(FlashCard card)
     {
         if (_flashCards is null || !_flashCards.Contains(card))
         {
