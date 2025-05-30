@@ -1,8 +1,7 @@
 ﻿using FlashCards.Core.Application.Dtos;
 using FlashCards.Core.Domain.Constants;
-using Microsoft.VisualBasic;
 
-namespace FlashCards.WebUI.Mocks.Core;
+namespace FlashCards.Core.Application.SpacedRepetition;
 
 public class ConfidenceBasedRepetitionScheduler
 {
