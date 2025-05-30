@@ -6,6 +6,7 @@
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject FlashCardStateContainer FlashCardStateContainer
+@inject AiService AiService
 
 @if (!_showFlashCards)
 {
@@ -99,9 +100,9 @@ else
                 <MudTh>Answer</MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="#">1++</MudTd>
-                <MudTd DataLabel="Question">@context.Answer</MudTd>
-                <MudTd DataLabel="Answer">@context.Question</MudTd>
+                <MudTd DataLabel="#">@GetNextRowIndex()</MudTd>
+                <MudTd DataLabel="Question">@context.Question</MudTd>
+                <MudTd DataLabel="Answer">@context.Answer</MudTd>
             </RowTemplate>
         </MudTable>
         
@@ -129,11 +130,14 @@ else
     private string _dragClass = DefaultDragClass;
     private string? _fileName;
     private MudFileUpload<IBrowserFile>? _fileUpload;
+    private int _tableRowindex = 0;
 
     private int _numberOfCards;
 
     private List<FlashCard>? _flashCards;
     private bool _showFlashCards;
+    
+    private IBrowserFile? _selectedFile;
 
     private async Task ClearAsync()
     {
@@ -149,22 +153,33 @@ else
     {
         ClearDragClass();
         var file = e.File;
+        _selectedFile = e.File;
         _fileName = file.Name;
     }
 
     private async Task Generate()
     {
-        // FLASH CARDS GENERATION LOGIC IS HERE
         if (string.IsNullOrEmpty(_fileName))
         {
             Snackbar.Add("No file selected.", Severity.Warning);
             return;
         }
 
-        _showFlashCards = true;
-        _flashCards = await Http.GetFromJsonAsync<List<FlashCard>>("sample-data/unit-spain-words.json");
+        try
+        {
+            _showFlashCards = true;
 
-        Snackbar.Add($"Generating flashcards for: {_fileName}");
+            var flashCards = await AiService.GetFlashCardsAsync(_selectedFile, _numberOfCards);
+            _flashCards = flashCards.ToList();
+
+            /*Snackbar.Add($"Generated {_flashCards.Count} flashcards for: {_fileName}", Severity.Success);*/
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Snackbar.Add("Failed to generate flashcards. Please try again.", Severity.Error);
+            _showFlashCards = false;
+        }
     }
 
     private void SetDragClass()
@@ -185,4 +200,6 @@ else
         // Navigate to /add-unit to save flashcards
         Navigation.NavigateTo("/add-unit");
     }
+    
+    private int GetNextRowIndex() => ++_tableRowindex;
 }
