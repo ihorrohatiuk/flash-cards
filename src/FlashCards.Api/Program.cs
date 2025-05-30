@@ -40,11 +40,14 @@ builder.Services.AddCors(options =>
 });
 // JWT configuration
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
+// AI Service options
+builder.Services.Configure<AiServiceOptions>(builder.Configuration.GetSection(nameof(AiServiceOptions)));
 // Services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AuthenticationService>();
 builder.Services.AddScoped<JwtProvider>();
+builder.Services.AddTransient<AiFlashCardsService>();
 // Authentication configuration
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
@@ -75,19 +78,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 // Authorization 
 builder.Services.AddAuthorization();
-
+// Controllers
 builder.Services.AddControllers();
-
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline (Swagger).
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 
 // Cookie configuration
