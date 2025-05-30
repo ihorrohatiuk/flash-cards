@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Json;
 using System.Security.Claims;
+using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using FlashCards.Core.Application.Dtos;
 using FlashCards.Infrastructure.Services;
@@ -10,29 +11,29 @@ namespace FlashCards.WebUI.Services;
 public class AuthenticationService : IAuthenticationService
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ISessionStorageService _sessionStorageService;
+    private readonly ILocalStorageService _localStorageService;
     
     private string? _jwtCache;
     
     private const string AccessToken = nameof(AccessToken);
 
-    public AuthenticationService(IHttpClientFactory httpClientFactory, ISessionStorageService sessionStorageService)
+    public AuthenticationService(IHttpClientFactory httpClientFactory, ILocalStorageService localStorageService)
     {
         _httpClientFactory = httpClientFactory;
-        _sessionStorageService = sessionStorageService;
+        _localStorageService = localStorageService;
     }
 
     public async ValueTask<string> GetJwtAsync()
     {
         if (string.IsNullOrEmpty(_jwtCache))
-            _jwtCache = await _sessionStorageService.GetItemAsync<string>(AccessToken);
+            _jwtCache = await _localStorageService.GetItemAsync<string>(AccessToken);
 
         return _jwtCache;
     }
 
     public async Task LogoutAsync()
     {
-        await _sessionStorageService.RemoveItemAsync(AccessToken);
+        await _localStorageService.RemoveItemAsync(AccessToken);
         _jwtCache = null;
     }
 
@@ -57,7 +58,7 @@ public class AuthenticationService : IAuthenticationService
         if (content == null)
             throw new InvalidDataException("Invalid data was returned as a login response.");
         
-        await _sessionStorageService.SetItemAsync(AccessToken, content.AccessToken);
+        await _localStorageService.SetItemAsync(AccessToken, content.AccessToken);
         
         return true;
     }

@@ -1,4 +1,4 @@
-using Blazored.SessionStorage;
+using Blazored.LocalStorage;
 using FlashCards.WebUI;
 using FlashCards.WebUI.Handlers;
 using FlashCards.WebUI.Services;
@@ -43,8 +43,9 @@ builder.Services.AddHttpClient("ServerApi")
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 // Flash cards state container to pass flash cards between /ai-flashcards and /add-unit pages
 builder.Services.AddScoped<FlashCardStateContainer>();
-// Session storage
-builder.Services.AddBlazoredSessionStorageAsSingleton();
+// Local storage
+//builder.Services.AddBlazoredSessionStorageAsSingleton();
+builder.Services.AddBlazoredLocalStorageAsSingleton();
 // MudBlazor
 builder.Services.AddMudServices();
 
