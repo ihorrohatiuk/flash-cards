@@ -3,9 +3,12 @@
 @using FlashCards.Core.Domain.Entities
 @using FlashCards.WebUI.Services
 @using FlashCards.WebUI.Validation
+@using FlashCards.WebUI.Components
 
 @inject ISnackbar Snackbar
 @inject FlashCardStateContainer FlashCardStateContainer
+
+<AuthGuard />
 
 <div class="custom-flex-container">
     <h3>New unit</h3>

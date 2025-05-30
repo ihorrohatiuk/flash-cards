@@ -4,7 +4,10 @@
 
 @using FlashCards.Core.Application.Dtos
 @using FlashCards.Core.Application.SpacedRepetition
+@using FlashCards.WebUI.Components
 @inject HttpClient Http
+
+<AuthGuard />
 
 @if (_flashCards == null)
 {

@@ -1,7 +1,11 @@
 ﻿@page "/Units"
 @using FlashCards.Core.Application.Dtos
 @using FlashCards.Infrastructure.Helpers
+@using FlashCards.WebUI.Components
+
 @inject HttpClient Http
+
+<AuthGuard />
 
 <PageTitle>Units</PageTitle>
 
