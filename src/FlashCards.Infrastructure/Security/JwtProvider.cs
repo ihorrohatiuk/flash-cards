@@ -18,6 +18,8 @@ public class JwtProvider(IOptions<JwtOptions> jwtOptions)
         [
             new(JwtClaims.UserId, userEntity.Id.ToString()),
             new(JwtClaims.Email, userEntity.Email),
+            new (JwtClaims.FirstName, userEntity.FirstName),
+            new (JwtClaims.LastName, userEntity.LastName),
             new(JwtClaims.Role, userEntity.Role)
         ];
         
