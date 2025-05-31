@@ -85,16 +85,11 @@ else
                 Value="@((double) _flashCards.Count(c => c.Confidence == 5) / _flashCards.Count * 100)" 
                 Class="mb-5"/>
             
-            <div class="flip-container">
-                <div class="flip-card @(_showAnswer ? "flip" : "")" @onclick="FlipCard">
-                    <div class="flip-card-front">
-                        @_currentCard.Question
-                    </div>
-                    <div class="flip-card-back">
-                        @_currentCard.Answer
-                    </div>  
-                </div>
-            </div>
+            <FlashCardComponent
+                Question="@_currentCard.Question"
+                Answer="@_currentCard.Answer"
+                @bind-ShowAnswer="@_showAnswer" 
+                OnFlipCard="FlipHandler"/>
         
             @if (_isFlipped)
             {
@@ -173,10 +168,14 @@ else
         _flashCards = await Http.GetFromJsonAsync<List<FlashCardDto>>("sample-data/unit-spain-words.json");
     }
     
-    private void FlipCard()
+    private void FlipHandler()
     {
-        _showAnswer = !_showAnswer;
-        if (_showAnswer) _isFlipped = true;
+        Console.WriteLine("Method FlifHandler");
+        if (_showAnswer)
+        {
+            Console.WriteLine("IsFlipped = true");
+            _isFlipped = true;
+        }
     }
 
     private async Task RateCard(int rate)
@@ -187,7 +186,7 @@ else
         // Visual side
         _sessionFlashCardsCount++;
         _isFlipped = false;
-        if (_showAnswer) FlipCard();
+        if (_showAnswer) _showAnswer = false;
         await Task.Delay(400); // wait until the card flip animation is played
         ShowNextCard();
     }
