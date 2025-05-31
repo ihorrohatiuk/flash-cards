@@ -10,5 +10,6 @@ public interface IAuthenticationService
     Task<bool> IsLoggedInAsync();
     Task<bool> RegisterAsync(RegistrationRequestDto registrationRequestDto);
     Task<string> GetUserId();
+    Task<string> GetUserName();
     bool IsTokenExpired(string token);
 }

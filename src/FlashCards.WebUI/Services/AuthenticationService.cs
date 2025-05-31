@@ -38,11 +38,13 @@ public class AuthenticationService : IAuthenticationService
         _jwtCache = null;
     }
 
-    public static string GetUsername(string jwtToken)
+    public async Task<string> GetUserName()
     {
-        var jwt = new JwtSecurityToken(jwtToken);
+        var jwt = new JwtSecurityToken(await GetJwtAsync());
+        string firstName = jwt.Claims.First(c => c.Type == JwtClaims.FirstName).Value;
+        string lastName = jwt.Claims.First(c => c.Type == JwtClaims.LastName).Value;
         
-        return jwt.Claims.First(claim => claim.Type == ClaimTypes.Name).Value;
+        return $"{firstName} {lastName}";
     }
     
     public async Task<string> GetUserId()

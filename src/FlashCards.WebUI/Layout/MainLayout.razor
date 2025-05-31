@@ -46,7 +46,7 @@
             {
                 <MudMenu>
                     <ActivatorContent>
-                        <MudAvatar Size="Size.Medium" Color="Color.Primary">M</MudAvatar>
+                        <MudAvatar Size="Size.Medium" Color="Color.Primary">@(SetAvatarLetters())</MudAvatar>
                     </ActivatorContent>
                     <ChildContent>
                         <MudMenuItem Href="/profile">Profile</MudMenuItem>
@@ -104,5 +104,28 @@
     {
         await AuthenticationService.LogoutAsync();
         NavigationManager.NavigateTo("/", forceLoad: true);
+    }
+
+    private string SetAvatarLetters()
+    {
+        try
+        {
+            var userName = AuthenticationService.GetUserName().Result;
+
+            if (string.IsNullOrWhiteSpace(userName))
+                return "NULL";
+
+            var nameParts = userName.Split(' ');
+
+            if (nameParts.Length < 2)
+                return $"{nameParts[0][0]}";
+
+            return $"{nameParts[0][0]}{nameParts[1][0]}";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching username: {ex.Message}");
+            return "NA";
+        }
     }
 }
