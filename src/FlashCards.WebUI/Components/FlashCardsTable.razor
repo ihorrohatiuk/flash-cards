@@ -1,0 +1,28 @@
+﻿@using FlashCards.Core.Domain.Entities
+
+<MudTable Items="@FlashCards" Dense="@true" Striped="true">
+    <HeaderContent>
+        <MudTh>#</MudTh>
+        <MudTh>Question</MudTh>
+        <MudTh>Answer</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="#">@(FlashCards.IndexOf(context) + 1)</MudTd>
+        <MudTd DataLabel="Question">@context.Question</MudTd>
+        <MudTd DataLabel="Answer">@context.Answer</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    [Parameter] 
+    public List<FlashCard> FlashCards { get; set; }
+    
+    private int _tableRowindex = 0;
+    
+    protected override void OnInitialized()
+    {
+        _tableRowindex = 0;
+    }
+    
+    private int GetNextRowIndex() => ++_tableRowindex;
+}

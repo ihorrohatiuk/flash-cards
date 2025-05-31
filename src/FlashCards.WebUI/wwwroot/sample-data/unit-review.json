@@ -1,0 +1,75 @@
+﻿{
+  "FlashCardsUnit": {
+    "Id": "a7b689f1-6d57-421e-90d7-bf5e7a2e34af",
+    "Name": "Introduction to Computer Science",
+    "Subject": "Computer Science",
+    "IsPrivate": false,
+    "OwnerId": "e4d55b71-3f83-4c20-8ad5-77143c1731a3"
+  },
+  "FlashCards": [
+    {
+      "Question": "What is an algorithm?",
+      "Answer": "A sequence of steps to solve a problem."
+    },
+    {
+      "Question": "Name the main components of a computer.",
+      "Answer": "CPU, RAM, hard drive, and graphics card."
+    },
+    {
+      "Question": "What does CPU stand for?",
+      "Answer": "Central Processing Unit."
+    },
+    {
+      "Question": "What is RAM used for?",
+      "Answer": "Temporary storage for data being used by the computer."
+    },
+    {
+      "Question": "Define software.",
+      "Answer": "A set of instructions that tell a computer what to do."
+    },
+    {
+      "Question": "Define hardware.",
+      "Answer": "The physical parts of a computer system."
+    },
+    {
+      "Question": "What is an operating system?",
+      "Answer": "Software that manages computer hardware and software resources."
+    },
+    {
+      "Question": "What does HTML stand for?",
+      "Answer": "HyperText Markup Language."
+    },
+    {
+      "Question": "What is the function of a hard drive?",
+      "Answer": "To store data permanently."
+    },
+    {
+      "Question": "What does HTTP stand for?",
+      "Answer": "HyperText Transfer Protocol."
+    },
+    {
+      "Question": "What is a computer network?",
+      "Answer": "A group of computers connected to share resources."
+    },
+    {
+      "Question": "What is a database?",
+      "Answer": "An organized collection of data for easy access and management."
+    },
+    {
+      "Question": "What is a compiler?",
+      "Answer": "A program that converts source code into executable code."
+    },
+    {
+      "Question": "What is a bit?",
+      "Answer": "The smallest unit of data in a computer, representing 0 or 1."
+    },
+    {
+      "Question": "What is the Internet?",
+      "Answer": "A global network connecting millions of private, public, academic, and business networks."
+    },
+    {
+      "Question": "What is cybersecurity?",
+      "Answer": "The practice of protecting computer systems and networks from attacks."
+    }
+  ]
+}

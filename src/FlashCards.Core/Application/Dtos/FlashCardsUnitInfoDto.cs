@@ -1,11 +1,9 @@
-﻿namespace FlashCards.Core.Application.Dtos;
+﻿using FlashCards.Core.Domain.Entities;
 
-public class FlashCardsUnitInfoDto
+namespace FlashCards.Core.Application.Dtos;
+
+public class FlashCardsUnitInfoDto : FlashCardsUnit
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string Subject { get; set; } = string.Empty;
-    public bool IsPrivate { get; set; }
     public string Owner { get; set; } = string.Empty;
     public float Progress { get; set; }
     public int CardsQuantity { get; set; }
