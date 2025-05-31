@@ -17,9 +17,6 @@ public class FlashCardsUnit
     public string Subject  { get; set; }
     
     [Required]
-    public bool IsPrivate  { get; set; }
-    
-    [Required]
     [ForeignKey("User")]
     public Guid OwnerId { get; set; }
 }

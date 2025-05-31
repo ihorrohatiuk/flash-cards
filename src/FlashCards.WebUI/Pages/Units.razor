@@ -42,7 +42,7 @@ else
                                     </MudChip>
                                     <div class="accessibility-owner">
                                         @*Accessibility*@
-                                        @if (unit.IsPrivate)
+                                        @*@if (unit.IsPrivate)
                                         {
                                             <MudChip T="string" Style="@($"background:{Colors.Red.Accent1}")" Class="m-0">
                                                 <ChildContent>
@@ -60,8 +60,8 @@ else
                                                 </ChildContent>
                                             </MudChip>
                                         }
-                                        <div class="divider"></div>
-                                        @*User*@
+                                        <div class="divider"></div>*@
+                                        @*Owner*@
                                         <MudChip T="string" Variant="Variant.Outlined" Class="m-0">
                                             <AvatarContent>
                                                 <MudAvatar Style="@($"background:{Colors.Purple.Lighten4}")">@TextHelper.GetFirstLettersOfName(unit.Owner)</MudAvatar>
