@@ -33,9 +33,6 @@ namespace FlashCards.Api.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<int>("Confidence")
-                        .HasColumnType("int");
-
                     b.Property<Guid>("FlashCardsUnitId")
                         .HasColumnType("uniqueidentifier");
 
