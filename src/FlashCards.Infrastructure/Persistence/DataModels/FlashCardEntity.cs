@@ -13,8 +13,5 @@ public class FlashCardEntity : FlashCard
     [ForeignKey("FlashCardsUnit")]
     public Guid FlashCardsUnitId { get; set; }
     
-    [Required]
-    public int Confidence { get; set; }
-    
     public FlashCardsUnitEntity? FlashCardsUnit { get; set; }
 }
