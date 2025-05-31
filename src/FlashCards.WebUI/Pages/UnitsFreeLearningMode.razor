@@ -11,9 +11,8 @@
 
 @if (_flashCards == null)
 {
-    <h3>Loading...</h3>
-    
-    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+    <PageLoadingComponent 
+        LoadingText="Loading..." />
 }
 else
 {

@@ -86,9 +86,8 @@ else
 {
     if (_flashCards is null)
     {
-        <h3>Request processing in progress...</h3>
-    
-        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+        <PageLoadingComponent 
+            LoadingText="Request processing in progress..." />
     }
     else
     {

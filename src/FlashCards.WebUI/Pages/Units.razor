@@ -11,9 +11,8 @@
 
 @if (_userUnits == null)
 {
-    <h3>Loading your flash card's units...</h3>
-    
-    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+    <PageLoadingComponent 
+        LoadingText="Loading your flash card's units..." />
 }
 else
 {
