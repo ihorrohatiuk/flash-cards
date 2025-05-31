@@ -4,6 +4,7 @@ using System.Security.Claims;
 using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using FlashCards.Core.Application.Dtos;
+using FlashCards.Infrastructure.Security;
 using FlashCards.Infrastructure.Services;
 
 namespace FlashCards.WebUI.Services;
@@ -42,6 +43,13 @@ public class AuthenticationService : IAuthenticationService
         var jwt = new JwtSecurityToken(jwtToken);
         
         return jwt.Claims.First(claim => claim.Type == ClaimTypes.Name).Value;
+    }
+    
+    public async Task<string> GetUserId()
+    {
+        var jwt = new JwtSecurityToken(await GetJwtAsync());
+        
+        return jwt.Claims.First(claim => claim.Type == JwtClaims.UserId).Value;
     }
     
     public async Task<bool> LoginAsync(LoginRequestDto loginRequestDto)

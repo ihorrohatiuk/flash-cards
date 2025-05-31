@@ -1,0 +1,25 @@
+﻿@using FlashCards.WebUI.Services
+@inject IAuthenticationService AuthenticationService
+
+@if (_isOwmer)
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter]
+    public Guid OwnerId { get; set; }
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    private bool _isOwmer = false;
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        string userId = await AuthenticationService.GetUserId();
+        if (string.Equals(userId.ToLower(), OwnerId.ToString().ToLower()))
+        {
+            _isOwmer = true;
+        }
+    }
+}

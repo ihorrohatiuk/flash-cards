@@ -1,10 +1,12 @@
-﻿@page "/units/{Id}"
+﻿@page "/units/{UnitId}"
 @using FlashCards.Core.Application.Dtos
 @using FlashCards.WebUI.Components
 
 @inject NavigationManager Navigation
 @inject HttpClient Http
 @inject ISnackbar Snackbar
+
+<AuthGuard />
 
 @if (_flashCardsUnitReviewDto == null)
 {
@@ -33,14 +35,16 @@ else
             Interval learning mode
         </MudButton>
         
-        <MudButton
-            Variant="Variant.Outlined"
-            Size="Size.Medium"
-            StartIcon="@Icons.Material.Filled.Edit"
-            Color="Color.Secondary"
-            OnClick="OnIntervalLearningModeClick">
-            Edit
-        </MudButton>
+        <OwnerView OwnerId="_flashCardsUnitReviewDto.FlashCardsUnit.OwnerId">
+            <MudButton
+                Variant="Variant.Outlined"
+                Size="Size.Medium"
+                StartIcon="@Icons.Material.Filled.Edit"
+                Color="Color.Secondary"
+                OnClick="OnEditClick">
+                Edit
+            </MudButton>
+        </OwnerView>
     </MudStack>
     
     @if (_flashCardsUnitReviewDto.FlashCards.Any())
@@ -84,7 +88,7 @@ else
 
 @code {
     [Parameter] 
-    public string Id { get; set; }
+    public string UnitId { get; set; }
 
     private FlashCardsUnitReviewDto? _flashCardsUnitReviewDto;
     private int _currentCardIndex = 0;
@@ -96,19 +100,19 @@ else
 
     private async Task LoadFlashCardsUnitAsync()
     {
-        _flashCardsUnitReviewDto = await Http.GetFromJsonAsync<FlashCardsUnitReviewDto>("sample-data/unit-review.json");
+        _flashCardsUnitReviewDto = await Http.GetFromJsonAsync<FlashCardsUnitReviewDto>("sample-data/unit-review.json?");
         _currentCardIndex = 0;
         // Add logic if unit not loading
     }
 
     private void OnFreeLearningModeClick()
     {
-        Navigation.NavigateTo($"/Units/{Id}/FreeLearningMode/");
+        Navigation.NavigateTo($"/Units/{UnitId}/FreeLearningMode/");
     }
     
     private void OnIntervalLearningModeClick()
     {
-        Navigation.NavigateTo($"/Units/{Id}/IntervalLearningMode/");
+        Navigation.NavigateTo($"/Units/{UnitId}/IntervalLearningMode/");
     }
 
     private void OnShowPreviousCardClick()
@@ -121,5 +125,10 @@ else
     {
         if (_flashCardsUnitReviewDto != null && _currentCardIndex < _flashCardsUnitReviewDto.FlashCards.Count - 1)
             _currentCardIndex++;
+    }
+
+    private void OnEditClick()
+    {
+        Navigation.NavigateTo($"/units/{UnitId}/edit");
     }
 }
