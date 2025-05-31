@@ -95,18 +95,8 @@ else
         <h3>Does it look the way you wanted?</h3>
         
         @*Flash Cards table*@
-        <MudTable Items="@_flashCards" Dense="@true" Striped="true">
-            <HeaderContent>
-                <MudTh>#</MudTh>
-                <MudTh>Question</MudTh>
-                <MudTh>Answer</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="#">@GetNextRowIndex()</MudTd>
-                <MudTd DataLabel="Question">@context.Question</MudTd>
-                <MudTd DataLabel="Answer">@context.Answer</MudTd>
-            </RowTemplate>
-        </MudTable>
+        <FlashCardsTable
+            FlashCards="_flashCards" />
         
         <MudStack Row="true" Justify="Justify.Center" Class="mt-5">
             <MudButton
