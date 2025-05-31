@@ -17,6 +17,20 @@ public static class AddUnitValidation
             yield return $"Unit name must be between 2 and {AppConstants.MaxUnitNameLength} characters long.";
         }
     }
+    
+    public static IEnumerable<string> UnitSubjectValidation(string unitSubject)
+    {
+        if (string.IsNullOrWhiteSpace(unitSubject) || string.IsNullOrEmpty(unitSubject))
+        {
+            yield return "Unit subject cannot be empty.";
+            yield break;
+        }
+        
+        if (unitSubject.Length is < 1 or > AppConstants.MaxUnitNameLength)
+        {
+            yield return $"Unit subject must be between 1 and {AppConstants.MaxUnitNameLength} characters long.";
+        }
+    }
 
     public static IEnumerable<string> QuestionValidation(string question)
     {
