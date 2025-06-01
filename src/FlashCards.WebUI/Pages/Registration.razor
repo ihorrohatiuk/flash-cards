@@ -1,0 +1,100 @@
+﻿@page "/Registration"
+@using FlashCards.Core.Application.Dtos
+@using FlashCards.WebUI.Services
+@using FlashCards.WebUI.Validation
+@inject IAuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
+
+<MudPaper Elevation="4" Style="max-width: 400px;
+    margin: 100px auto;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;">
+    <MudText Typo="Typo.h4" Align="Align.Center">Registration</MudText>
+
+    <MudForm Valid="_isValid" Spacing="4">
+        <MudTextField
+            @bind-Value="_registrationRequestDto.Email"
+            Label="Email"
+            Required="true"
+            Validation="@(new Func<string, IEnumerable<string>>(Validations.EmailValidation))"
+            RequiredError="Email is required" />
+        <MudTextField
+            @bind-Value="_registrationRequestDto.FirstName"
+            Label="First name" Required="true"
+            Validation="@(new Func<string, IEnumerable<string>>(Validations.FirstNameValidation))"
+            RequiredError="First name is required" />
+        <MudTextField
+            @bind-Value="_registrationRequestDto.LastName"
+            Label="Last name" Required="true"
+            Validation="@(new Func<string, IEnumerable<string>>(Validations.LastNameValidation))"
+            RequiredError="Last name is required" />
+        <MudTextField
+            @bind-Value="_registrationRequestDto.Password"
+            Label="Password" Required="true"
+            InputType="InputType.Password"
+            Validation="@(new Func<string, IEnumerable<string>>(Validations.PasswordValidation))"
+            RequiredError="Password is required" />
+
+        <MudButton 
+            Variant="Variant.Filled" 
+            Color="Color.Primary"
+            OnClick="SubmitAsync"
+            Disabled="@_isRegistrationButtonDisable">Register</MudButton>
+    </MudForm>
+    
+    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center">
+        <MudText>Already have an account?</MudText>
+        <MudButton 
+            OnClick="OnLoginClick"
+            Color="Color.Secondary">Login</MudButton>
+    </MudStack>
+
+    @if (_errorMessage != null)
+    {
+        <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+    }
+    @if (_isRegistrationSuccess)
+    {
+        <MudAlert Severity="Severity.Success">User was successfully created.</MudAlert>
+    }
+</MudPaper>
+
+@code {
+    private string? _errorMessage = null!;
+    private bool _isRegistrationSuccess = false;
+    private bool _isRegistrationButtonDisable = false;
+    private RegistrationRequestDto _registrationRequestDto = new()
+    {
+        FirstName = null,
+        LastName = null,
+        Email = null,
+        Password = null
+    };
+
+    private async Task SubmitAsync()
+    {
+        try
+        {
+            _isRegistrationButtonDisable = true;
+            _errorMessage = null;
+            _isRegistrationSuccess = await AuthenticationService.RegisterAsync(_registrationRequestDto);
+            if (_isRegistrationSuccess)
+                NavigationManager.NavigateTo("/login", forceLoad: true);
+        }
+        catch (Exception e)
+        {
+            _errorMessage = e.Message;
+        }
+        finally
+        {
+            _isRegistrationButtonDisable = false;
+        }
+    }
+
+    private void OnLoginClick()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+}

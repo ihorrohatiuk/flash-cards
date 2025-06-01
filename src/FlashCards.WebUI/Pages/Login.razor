@@ -1,0 +1,100 @@
+﻿@page "/Login"
+@using FlashCards.Core.Application.Dtos
+@using FlashCards.Infrastructure.Services
+@using FlashCards.WebUI.Services
+@using FlashCards.WebUI.Validation
+@inject NavigationManager NavigationManager
+@inject IAuthenticationService AuthenticationService
+
+<MudPaper Elevation="4" Style="max-width: 400px;
+    margin: 100px auto;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;">
+    <MudText Typo="Typo.h4" Align="Align.Center">Log in</MudText>
+
+    <MudForm Valid="_isValid" Spacing="4">
+        <MudTextField 
+            @bind-Value="_loginRequestDto.Email"
+            Label="Email" 
+            Required="true"
+            Validation="@(new Func<string, IEnumerable<string>>(Validations.EmailValidation))"
+            RequiredError="Email is required" />
+        <MudTextField 
+            @bind-Value="_loginRequestDto.Password" 
+            Label="Password" Required="true" 
+            InputType="InputType.Password"
+            Validation="@(new Func<string, IEnumerable<string>>(Validations.PasswordValidation))"
+            RequiredError="Password is required" />
+
+        <MudButton 
+            Variant="Variant.Filled" 
+            Color="Color.Primary" 
+            OnClick="OnSubmitClickAsync"
+            Disabled="@_isLoginButtonDisable">Login</MudButton>
+    </MudForm>
+    
+    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center">
+        <MudText>Don't have an account yet?</MudText>
+        <MudButton 
+            OnClick="OnRegistrationClick"
+            Color="Color.Secondary">Registration</MudButton>
+    </MudStack>
+
+    @if (_errorMessage != null)
+    {
+        <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+    }
+    @if (_isLoginSuccess)
+    {
+        <MudAlert Severity="Severity.Success">Login success</MudAlert>
+    }
+</MudPaper>
+
+@code {
+    private bool _isInputValid = false;
+    private bool _isLoginSuccess = false;
+    private string? _errorMessage = null!;
+    private bool _isLoginButtonDisable = false;
+
+    private LoginRequestDto _loginRequestDto = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await AuthenticationService.GetJwtAsync();
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            NavigationManager.NavigateTo("/", forceLoad: true);
+        }
+    }
+
+    private async Task OnSubmitClickAsync()
+    {
+        try
+        {
+            _isLoginButtonDisable = true;
+            _isLoginSuccess = await AuthenticationService.LoginAsync(_loginRequestDto);
+            _errorMessage = null;
+
+            if (_isLoginSuccess)
+                NavigationManager.NavigateTo("/", forceLoad: true);
+
+            StateHasChanged();
+        }
+        catch (Exception e)
+        {
+            _errorMessage = e.Message;
+        }
+        finally
+        {
+            _isLoginButtonDisable = false;
+        }
+    }
+
+    private void OnRegistrationClick()
+    {
+        NavigationManager.NavigateTo("/registration");
+    }
+}

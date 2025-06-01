@@ -1,0 +1,102 @@
+[
+  {
+    "Id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
+    "Name": "English Wordsfffffffffffffffffffffffffffffffffffffffffff",
+    "Subject": "English",
+    "IsPrivate": true,
+    "Owner": "Jessica Smith",
+    "Progress": 15,
+    "CardsQuantity": 28
+  },
+  {
+    "Id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
+    "Name": "National Dishes",
+    "Subject": "Very long themeeeeeeeeeeeeee",
+    "IsPrivate": true,
+    "Owner": "Anna Taylor",
+    "Progress": 99,
+    "CardsQuantity": 42
+  },
+  {
+    "Id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
+    "Name": "Ancient History",
+    "Subject": "History",
+    "IsPrivate": false,
+    "Owner": "John Brown",
+    "Progress": 32,
+    "CardsQuantity": 5
+  },
+  {
+    "Id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
+    "Name": "Basic Chemistry",
+    "Subject": "Science",
+    "IsPrivate": true,
+    "Owner": "Sarah Jackson",
+    "Progress": 12,
+    "CardsQuantity": 34
+  },
+  {
+    "Id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
+    "Name": "World Capitals",
+    "Subject": "Geography",
+    "IsPrivate": false,
+    "Owner": "Emily White",
+    "Progress": 65.4,
+    "CardsQuantity": 68
+  },
+  {
+    "Id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
+    "Name": "Mathematics Basics",
+    "Subject": "Math",
+    "IsPrivate": false,
+    "Owner": "Linda Miller",
+    "Progress": 28.5,
+    "CardsQuantity": 9
+  },
+  {
+    "Id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
+    "Name": "Spanish Phrases",
+    "Subject": "Language",
+    "IsPrivate": true,
+    "Owner": "John Moore",
+    "Progress": 87.3,
+    "CardsQuantity": 22
+  },
+  {
+    "Id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
+    "Name": "Classical Music",
+    "Subject": "Music",
+    "IsPrivate": true,
+    "Owner": "James Thomas",
+    "Progress": 100,
+    "CardsQuantity": 50
+  },
+  {
+    "Id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
+    "Name": "Computer Basics",
+    "Subject": "Technology",
+    "IsPrivate": true,
+    "Owner": "Chris Smith Morison",
+    "Progress": 77.7,
+    "CardsQuantity": 17
+  },
+  {
+    "Id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
+    "Name": "Human Anatomy",
+    "Subject": "Biology",
+    "IsPrivate": false,
+    "Owner": "Ihor Rohatiuk",
+    "Progress": 63,
+    "CardsQuantity": 18
+  },
+  {
+    "Id": "d3f17b5a-8c4e-4f6b-9e62-3a8e7c5d6b21",
+    "Name": "Art Movements",
+    "Subject": "Art",
+    "IsPrivate": true,
+    "Owner": "Robert Jacksonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+    "Progress": 22.4,
+    "CardsQuantity": 11
+  }
+]
+

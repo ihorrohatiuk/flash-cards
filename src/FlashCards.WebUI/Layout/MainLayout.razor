@@ -1,0 +1,127 @@
+﻿@using FlashCards.Infrastructure.Helpers
+@using FlashCards.Infrastructure.Services
+@using FlashCards.WebUI.Services
+@inject NavigationManager NavigationManager
+@inject IAuthenticationService AuthenticationService
+@inherits LayoutComponentBase
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout Class="pl-8 pa-8">
+    <MudAppBar Elevation="1" Dense="true" Style="background-color: #1f1f1f;">
+        @if (!_isLoginOrRegisterPage)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="DrawerToggle"/>
+        }
+        <MudText Typo="Typo.h5">
+            <a href="/" class="main-layout-logo-link">
+                Flash Cards
+            </a>
+        </MudText>
+        <MudSpacer/>
+
+        @if (!_isLoginOrRegisterPage)
+        {
+            @if (!_isLoggedIn)
+            {
+                <MudButton
+                    Href="/Login"
+                    Color="Color.Primary"
+                    Variant="Variant.Filled"
+                    Size="Size.Small">
+                    Log In
+                </MudButton>
+                <MudButton
+                    Class="ml-2"
+                    Href="/Registration"
+                    Color="Color.Secondary"
+                    Variant="Variant.Outlined"
+                    Size="Size.Small">
+                    Registration
+                </MudButton>
+            }
+            else
+            {
+                <MudMenu>
+                    <ActivatorContent>
+                        <MudAvatar Size="Size.Medium" Color="Color.Primary">@(SetAvatarLetters())</MudAvatar>
+                    </ActivatorContent>
+                    <ChildContent>
+                        <MudMenuItem Disabled="true" Href="/profile">Profile</MudMenuItem>
+                        <MudMenuItem Disabled="true" Href="/settings">Settings</MudMenuItem>
+                        <MudMenuItem OnClick="LogoutAsync">Logout</MudMenuItem>
+                    </ChildContent>
+                </MudMenu>
+            }
+        }
+    </MudAppBar>
+    @if (!_isLoginOrRegisterPage)
+    {
+        <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2" Variant="@DrawerVariant.Temporary">
+            <NavMenu/>
+        </MudDrawer>
+    }
+    <MudMainContent>
+        <div style="min-height: 100vh; max-width: 1000px; margin: 0 auto;">
+            @Body
+        </div>
+        @if (!_isLoginOrRegisterPage)
+        {
+            <Footer />
+        }
+    </MudMainContent>
+</MudLayout>
+
+
+
+@code {
+    private bool _drawerOpen = false;
+    private bool _isLoggedIn = false;
+    private bool _isLoginOrRegisterPage = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        UpdatePageVisibilityForLoginPage();
+        _isLoggedIn = await AuthenticationService.IsLoggedInAsync();
+        NavigationManager.LocationChanged += (_, __) => UpdatePageVisibilityForLoginPage();
+    }
+
+    private void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+    
+    private void UpdatePageVisibilityForLoginPage()
+    {
+        var currentUrl = NavigationManager.Uri.ToLower();
+        _isLoginOrRegisterPage = currentUrl.Contains("/login") || currentUrl.Contains("/registration");
+        StateHasChanged();
+    }
+
+    private async Task LogoutAsync()
+    {
+        await AuthenticationService.LogoutAsync();
+        NavigationManager.NavigateTo("/", forceLoad: true);
+    }
+
+    private string SetAvatarLetters()
+    {
+        try
+        {
+            var userName = AuthenticationService.GetUserName().Result;
+
+            if (string.IsNullOrWhiteSpace(userName))
+                return "NULL";
+
+            return TextHelper.GetFirstLettersOfName(userName);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching username: {ex.Message}");
+            return "NA";
+        }
+    }
+}

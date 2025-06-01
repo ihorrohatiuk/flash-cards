@@ -1,0 +1,55 @@
+﻿<MudPaper Class="p-4 mt-4" Elevation="0" Style="background-color: #333;">
+    <MudContainer MaxWidth="MaxWidth.Large" Class="text-white">
+        <MudGrid Spacing="3">
+            <!-- About Us Section -->
+            <MudItem xs="12" md="4">
+                <MudText Typo="Typo.h6" Class="mb-1 text-white">About Us</MudText>
+                <MudText Typo="Typo.body2" Class="text-white">
+                    We provide a resource for learning and memorization! Our mission is to make studying engaging, effective, and accessible for learners of all ages.
+                </MudText>
+            </MudItem>
+
+            <!-- Quick Links Section -->
+            <MudItem xs="12" md="4">
+                <MudText Typo="Typo.h6" Class="mb-1 text-white">Quick Links</MudText>
+                <MudList T="string" Dense="true">
+                    <MudListItem><MudLink Href="/" Class="text-white">Home</MudLink></MudListItem>
+                    <MudListItem><MudLink Href="/units" Class="text-white">Units</MudLink></MudListItem>
+                    <MudListItem><MudLink Href="/ai-pdf-miner" Class="text-white">AI PDF miner</MudLink></MudListItem>
+                    <MudListItem><MudLink Href="/about-project" Class="text-white">About project</MudLink></MudListItem>
+                </MudList>
+            </MudItem>
+
+            <!-- Contact Section -->
+            <MudItem xs="12" md="4">
+                <MudText Typo="Typo.h6" Class="mb-1 text-white">Contact Us</MudText>
+                <MudList T="string" Dense="true">
+                    <MudListItem><MudIcon Icon="@Icons.Material.Filled.Email" /> info@flashcards.com</MudListItem>
+                    <MudListItem><MudIcon Icon="@Icons.Material.Filled.LocationOn" /> FEI STU, Bratislava, Slovakia</MudListItem>
+                </MudList>
+            </MudItem>
+        </MudGrid>
+
+        <MudDivider Class="my-3" />
+
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body2" Class="text-white">&copy; 2024 FlashCards - FEI STU</MudText>
+            </MudItem>
+            <MudItem xs="12" md="6" Class="d-flex justify-end">
+                <MudLink Href="https://facebook.com" Target="_blank" Class="text-white mx-2">
+                    <MudIcon Icon="@Icons.Custom.Brands.Facebook" />
+                </MudLink>
+                <MudLink Href="https://twitter.com" Target="_blank" Class="text-white mx-2">
+                    <MudIcon Icon="@Icons.Custom.Brands.Twitter" />
+                </MudLink>
+                <MudLink Href="https://linkedin.com" Target="_blank" Class="text-white mx-2">
+                    <MudIcon Icon="@Icons.Custom.Brands.LinkedIn" />
+                </MudLink>
+                <MudLink Href="https://instagram.com" Target="_blank" Class="text-white mx-2">
+                    <MudIcon Icon="@Icons.Custom.Brands.Instagram" />
+                </MudLink>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+</MudPaper>

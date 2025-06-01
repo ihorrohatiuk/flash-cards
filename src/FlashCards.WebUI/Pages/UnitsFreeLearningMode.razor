@@ -1,0 +1,261 @@
+﻿@*TODO: Add a check that when the user exits the mode, it will notify the user that progress has been lost*@
+@*TODO: Save the result after each session, then create a graph on a final screen to show user advancement*@
+@page "/Units/{UnitId}/FreeLearningMode/" 
+
+@using FlashCards.Core.Application.Dtos
+@using FlashCards.Core.Application.SpacedRepetition
+@using FlashCards.Core.Domain.Entities
+@using FlashCards.WebUI.Components
+@using FlashCards.WebUI.Services
+
+@inject UnitService UnitService
+@inject ProgressService ProgressService
+@inject ISnackbar Snackbar
+@inject NavigationManager Navigation
+
+<AuthGuard />
+
+@if (_cbrflashCards == null)
+{
+    <PageLoadingComponent 
+        LoadingText="Loading..." />
+}
+else
+{
+    @if (CountSessionProgress() == 100)
+    {
+        /*Final screen*/
+        <MudStack Class="mt-5" AlignItems="AlignItems.Center">
+            @*Trophy image*@
+            <img src="/images/champion-cup.svg" alt="Cup image" class="w-25">
+            <div style="text-align: center">
+                <h1>Your score: 100%</h1>
+                <h4 class="mt-1">You've reached your goal!</h4>
+            </div>
+            @*Back to unit info button*@
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OnBackToUnitPageClick">Save progress and Back to unit page</MudButton>
+        </MudStack>
+    }
+    else
+    {
+        // Session checkpoint 
+        @if (_sessionFlashCardsCount == 10) 
+        {
+            <h3>Session results:</h3>
+            
+            <MudStack Class="mt-5" AlignItems="AlignItems.Center">
+                <MudProgressCircular Color="Color.Success" Rounded="true" Size="Size.Large" StrokeWidth="4" Value="@(CountSessionProgress() + 1)" />
+                @*Progress text*@
+                <h2>@((int)CountSessionProgress())%</h2>
+            </MudStack>
+            
+            <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <h3>"1"</h3>
+                <MudProgressLinear Color="Color.Error" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(1) / _cbrflashCards.Count * 100)"/>
+                <h3>@CountFlashCardsWithConfidence(1)</h3>
+            </MudStack>
+            <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <h3>"2"</h3>
+                <MudProgressLinear Color="Color.Warning" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(2) / _cbrflashCards.Count * 100)" />
+                <h3>@CountFlashCardsWithConfidence(2)</h3>
+            </MudStack>
+            <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <h3>"3"</h3>
+                <MudProgressLinear Color="Color.Warning" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(3) / _cbrflashCards.Count * 100)" />
+                <h3>@CountFlashCardsWithConfidence(3)</h3>
+            </MudStack>
+            <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <h3>"4"</h3>
+                <MudProgressLinear Color="Color.Warning" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(4) / _cbrflashCards.Count * 100)" />
+                <h3>@CountFlashCardsWithConfidence(4)</h3>
+            </MudStack>
+            <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <h3>"5"</h3>
+                <MudProgressLinear Color="Color.Success" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(5) / _cbrflashCards.Count * 100)" />
+                <h3>@CountFlashCardsWithConfidence(5)</h3>
+            </MudStack>
+            
+            /*Continue button*/
+            <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ContinueSession_ButtonAsync">Continue</MudButton>
+            </MudStack>
+        }
+        // Flash cards
+        else
+        {
+            <MudProgressLinear 
+                Color="Color.Tertiary" 
+                Rounded="true"
+                Striped="false"
+                Value="@((double) _cbrflashCards.Count(c => c.Confidence == 5) / _cbrflashCards.Count * 100)" 
+                Class="mb-5"/>
+            
+            <FlashCardComponent
+                Question="@_currentCard.Question"
+                Answer="@_currentCard.Answer"
+                @bind-ShowAnswer="@_showAnswer" 
+                OnFlipCard="FlipHandler"/>
+        
+            @if (_isFlipped)
+            {
+                <MudStack Row="true" Class="mt-5">
+                    @*1*@
+                    <MudButton
+                        Style="width: 20%; min-width: 10px;"
+                        Variant="Variant.Filled"
+                        Color="Color.Error"
+                        OnClick="async () => await RateCard(1)">
+                        1
+                    </MudButton>
+                    @*2*@
+                    <MudButton
+                        Style="@($"width: 20%; color: white; background-color:{Colors.DeepOrange.Darken1}; min-width: 10px;")"
+                        Variant="Variant.Filled"
+                        OnClick="async () => await RateCard(2)">
+                        2
+                    </MudButton>
+                    @*3*@
+                    <MudButton
+                        Style="@($"width: 20%; color: white; background-color:{Colors.Orange.Default}; min-width: 10px;")"
+                        Variant="Variant.Filled"
+                        Color="Color.Success"
+                        OnClick="async () => await RateCard(3)">
+                        3
+                    </MudButton>
+                    @*4*@
+                    <MudButton
+                        Style="@($"width: 20%; color: white; background-color:{Colors.LightGreen.Default}; min-width: 10px;")"
+                        Variant="Variant.Filled"
+                        OnClick="async () => await RateCard(4)">
+                        4
+                    </MudButton>
+                    @*5*@
+                    <MudButton
+                        Style="width: 20%; min-width: 10px;"
+                        Variant="Variant.Filled"
+                        Color="Color.Success"
+                        OnClick="async () => await RateCard(5)">
+                        5
+                    </MudButton>
+                </MudStack>
+            }
+        }
+    }
+}
+
+@code {
+    [Parameter]
+    public string UnitId { get; set; }
+
+    private bool _showAnswer = false;
+    private bool _isFlipped = false;
+    private List<CbrFlashCardDto>? _cbrflashCards;
+    private ConfidenceBasedRepetitionScheduler _scheduler;
+    private CbrFlashCardDto _currentCard;
+
+    private int _sessionFlashCardsCount = 0;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadFlashCardsAsync();
+        ArgumentNullException.ThrowIfNull(_cbrflashCards);
+
+        _scheduler = new ConfidenceBasedRepetitionScheduler(_cbrflashCards);
+        
+        //Set first card
+        ShowNextCard();  
+    }
+    
+    /*Algorithm methods*/
+    private async Task LoadFlashCardsAsync()
+    {
+        FlashCardsUnitDto flashCardsUnit;
+        
+        try
+        {
+            flashCardsUnit = await UnitService.GetUnitByIdAsync(Guid.Parse(UnitId));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            Snackbar.Add("An unexpected error has occurred. Please refresh the page and try again.", Severity.Error);
+            return;
+        }
+
+        List<FlashCard> flashCards = flashCardsUnit.FlashCards;
+        _cbrflashCards = flashCards.Select(fc => new CbrFlashCardDto
+            {
+                Question = fc.Question,
+                Answer = fc.Answer,
+                Confidence = 1
+            })
+            .ToList();
+
+        await SaveUserProgressAsync();
+    }
+    
+    private void FlipHandler()
+    {
+        if (_showAnswer)
+        {
+            _isFlipped = true;
+        }
+    }
+
+    private async Task RateCard(int rate)
+    {
+        // Algorithm Logic
+        _scheduler.UpdateConfidence(_currentCard, rate);
+        
+        // Visual side
+        _sessionFlashCardsCount++;
+        _isFlipped = false;
+        if (_showAnswer) _showAnswer = false;
+        await Task.Delay(400); // wait until the card flip animation is played
+        ShowNextCard();
+    }
+    
+    private void ShowNextCard()
+    {
+        _currentCard = _scheduler.GetNextFlashCard();
+    }
+
+    private async Task ContinueSession_ButtonAsync()
+    {
+        await SaveUserProgressAsync();
+        _sessionFlashCardsCount = 0;
+    }
+
+    private async Task SaveUserProgressAsync()
+    {
+        try
+        {
+            await ProgressService.SaveCbrProgressForUnit(Guid.Parse(UnitId), (int)CountSessionProgress());
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            Snackbar.Add("An error occurred while saving your progress, but you can continue learning.", Severity.Warning);
+        }
+    }
+    
+    /*Visual side methods*/
+    private int CountFlashCardsWithConfidence(int confidence)
+    {
+        ArgumentNullException.ThrowIfNull(_cbrflashCards);
+        
+        return _cbrflashCards.Count(c => c.Confidence == confidence);
+    }
+
+    private double CountSessionProgress()
+    {
+        return (double)CountFlashCardsWithConfidence(5) / _cbrflashCards.Count * 100;
+    }
+
+    private async Task OnBackToUnitPageClick()
+    {
+        await SaveUserProgressAsync();
+        Navigation.NavigateTo($"/units/{UnitId}");
+    }
+
+}

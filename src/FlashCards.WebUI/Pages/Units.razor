@@ -1,0 +1,155 @@
+﻿@page "/Units"
+@using FlashCards.Core.Application.Dtos
+@using FlashCards.Infrastructure.Helpers
+@using FlashCards.WebUI.Components
+@using FlashCards.WebUI.Services
+
+@inject NavigationManager Navigation
+@inject UnitService UnitService
+@inject IAuthenticationService AuthenticationService
+@inject ISnackbar Snackbar
+
+<AuthGuard />
+
+<PageTitle>Units</PageTitle>
+
+@if (_userUnits == null)
+{
+    <PageLoadingComponent 
+        LoadingText="Loading your flash card's units..." />
+}
+else
+{
+    if (_userHaveUnits)
+    {
+        <div class="custom-flex-container">
+            <h3>Your units</h3>
+            <MudButton 
+                Variant="Variant.Filled" 
+                Size="Size.Small" 
+                StartIcon="@Icons.Material.Filled.Add" 
+                Color="Color.Primary" 
+                OnClick="OnAddUnitClick">Add unit</MudButton>
+        </div>
+        
+        // TODO: To separate component
+        <MudGrid Justify="Justify.FlexStart" Spacing="5">
+            @foreach (FlashCardsUnitInfoDto unit in _userUnits)
+            {
+                <MudItem Class="mud-grid-your-units" xs="12" sm="12" md="12" lg="12">
+                    <MudLink OnClick="() => OnUnitHeaderClick(unit.Id)" Style="text-decoration: none; display: inline-block; width: 100%">
+                        <MudCard Outlined="true" Class="mud-card-unit">
+                            <MudCardContent>
+                                @*Unit name*@
+                                <MudText Typo="Typo.h5" FontWeight="FontWeight.Bold">@TextHelper.TruncateText(unit.Name, UnitNameMaximumDisplayingLength)</MudText>
+                                <div class="card-content">
+                                    <MudStack Direction="Column" Spacing="2" AlignItems="AlignItems.Start">
+                                        @*Subject name*@
+                                        <MudChip T="string" Color="Color.Primary" Class="mt-2 ml-0">
+                                            <ChildContent>@TextHelper.TruncateText(unit.Subject, UnitSubjectMaximumDisplayingLength)</ChildContent>
+                                        </MudChip>
+                                        <div class="accessibility-owner">
+                                            @*Accessibility for Unit.IsPrivate*@
+                                            @*@if (unit.IsPrivate)
+                                            {
+                                                <MudChip T="string" Style="@($"background:{Colors.Red.Accent1}")" Class="m-0">
+                                                    <ChildContent>
+                                                        <MudIcon Icon="@Icons.Material.Outlined.Lock" Style="@($"color:{Colors.Red.Accent4}")"/>
+                                                        <MudText Style="@($"color:{Colors.Red.Accent4}")">Private</MudText>
+                                                    </ChildContent>
+                                                </MudChip>
+                                            }
+                                            else
+                                            {
+                                                <MudChip T="string" Style="@($"background:{Colors.Green.Accent1}")" Class="m-0">
+                                                    <ChildContent>
+                                                        <MudIcon Icon="@Icons.Material.Outlined.LockOpen" Style="@($"color:{Colors.Green.Accent4}")"/>
+                                                        <MudText Style="@($"color:{Colors.Green.Accent4}")">Public</MudText>
+                                                    </ChildContent>
+                                                </MudChip>
+                                            }
+                                            <div class="divider"></div>*@
+                                            @*Owner*@
+                                            <MudChip T="string" Variant="Variant.Outlined" Class="m-0">
+                                                <AvatarContent>
+                                                    <MudAvatar Style="@($"background:{Colors.Purple.Lighten4}")">@TextHelper.GetFirstLettersOfName(unit.Owner)</MudAvatar>
+                                                </AvatarContent>
+                                                <ChildContent>@TextHelper.TruncateText(unit.Owner, UnitOwnerMaximumDisplayingLength)</ChildContent>
+                                            </MudChip>
+                                        </div>
+                                    </MudStack>
+                                    @*Progress*@
+                                    <div class="progress-bar hide-on-medium">
+                                        @(unit.Progress)%
+                                        <MudProgressLinear Color="Color.Success" Rounded="true" Size="Size.Large" Value="@(unit.Progress)"/>
+                                    </div>
+                                    @*Cards quantity*@
+                                    <div class="hide-on-small">
+                                        <MudText class="hide-on-small" Typo="Typo.h5" FontWeight="FontWeight.Bold">@(unit.CardsQuantity) cards</MudText>
+                                    </div>
+                                </div>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudLink>
+                </MudItem>
+            }
+        </MudGrid>
+    }
+    else
+    {
+        <MudStack AlignItems="AlignItems.Center">
+            <img src="/images/not-found-box.png" alt="Units not found" class="w-50">
+            <h3>It looks like you don't have any units... Let's create a first one!</h3>
+            
+            <MudButton 
+                Variant="Variant.Filled" 
+                Size="Size.Small" 
+                StartIcon="@Icons.Material.Filled.Add" 
+                Color="Color.Primary" 
+                OnClick="OnAddUnitClick">Add unit</MudButton>
+        </MudStack>
+    }
+}
+
+
+@code {
+
+    // TODO: To constants
+    private const int UnitNameMaximumDisplayingLength = 25;
+    private const int UnitSubjectMaximumDisplayingLength = 30;
+    private const int UnitOwnerMaximumDisplayingLength = 15;
+
+    private List<FlashCardsUnitInfoDto>? _userUnits;
+    private bool _userHaveUnits = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUnits();
+    }
+
+    private async Task LoadUnits()
+    {
+        try
+        {
+            _userUnits = await UnitService.GetUnitHeadersByOwnerIdAsync(await AuthenticationService.GetUserId());
+        }
+        catch (InvalidOperationException e)
+        {
+            Console.WriteLine(e);
+            Snackbar.Add("An unexpected error has occurred. Please refresh the page and try again.", Severity.Error);
+        }
+
+        if (_userUnits?.Count == 0)
+            _userHaveUnits = false;
+    }
+
+    private void OnAddUnitClick()
+    {
+        Navigation.NavigateTo("/add-unit");
+    }
+
+    private void OnUnitHeaderClick(Guid unitId)
+    {
+        Navigation.NavigateTo($"units/{unitId}");
+    }
+}

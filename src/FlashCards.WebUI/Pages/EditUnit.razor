@@ -1,0 +1,114 @@
+﻿@page "/units/{unitId}/edit"
+@using FlashCards.Core.Application.Dtos
+@using FlashCards.WebUI.Components
+@using FlashCards.WebUI.Services
+
+@inject ISnackbar Snackbar
+@inject UnitService UnitService
+@inject NavigationManager Navigation
+
+@if (_unitDto is null)
+{
+    <PageLoadingComponent
+        LoadingText="Loading unit.." />
+}
+else
+{
+    <div class="custom-flex-container">
+        <h3>Edit unit</h3>
+        <div class="buttons">
+            <MudStack Row="true">
+                @*Delete button*@
+                <MudButton
+                    Disabled="false"
+                    Class="me-2 ms-0"
+                    Variant="Variant.Outlined"
+                    Size="Size.Medium"
+                    StartIcon="@Icons.Material.Filled.DeleteForever"
+                    Color="Color.Error"
+                    OnClick="DeleteUnitAsync">
+                    Delete unit
+                </MudButton>
+                @*Save button*@
+                <MudButton
+                    Variant="Variant.Filled"
+                    Size="Size.Medium"
+                    StartIcon="@Icons.Material.Filled.Save"
+                    Color="Color.Primary"
+                    OnClick="SaveUnitAsync">
+                    Save
+                </MudButton>
+            </MudStack>
+        </div>
+    </div>
+
+    <EditUnitComponent 
+        @ref="_editUnitComponent"
+        UnitDto="@_unitDto"
+        UnitForm="@_unitForm"/>
+}
+
+@code {
+    [Parameter] 
+    public string UnitId { get; set; }
+
+    private EditUnitComponent _editUnitComponent;
+    private MudForm _unitForm;
+    private FlashCardsUnitDto? _unitDto;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUnitAsync();
+    }
+
+    private async Task LoadUnitAsync()
+    {
+        _unitDto = await UnitService.GetUnitByIdAsync(Guid.Parse(UnitId));
+
+        if (_unitDto is null)
+        {
+            Snackbar.Add("An unexpected error has occurred. Please refresh the page and try again.", Severity.Error);
+        }
+    }
+
+    private async Task SaveUnitAsync()
+    {
+        await _editUnitComponent.UnitForm.Validate();
+        bool isValid = _editUnitComponent.UnitForm.IsValid;
+
+        if (isValid)
+        {
+            try
+            {
+                await UnitService.UpdateUnitAsync(_unitDto);
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine(e);
+                Snackbar.Add("An unexpected error has occurred. Please refresh the page and try again.", Severity.Error);
+                return;
+            }
+            
+            Navigation.NavigateTo($"units/{UnitId}");
+            return;
+        }
+        
+        Snackbar.Add($"Some fields are filled out incorrectly", Severity.Error);
+    }
+
+    private async Task DeleteUnitAsync()
+    {
+        try
+        {
+            await UnitService.DeleteUnitAsync(Guid.Parse(UnitId));
+        }
+        catch (InvalidOperationException e)
+        {
+            Console.WriteLine(e);
+            Snackbar.Add("An unexpected error has occurred. Please try again.", Severity.Error);
+            return;
+        }
+        
+        Navigation.NavigateTo("/units");
+    }
+}

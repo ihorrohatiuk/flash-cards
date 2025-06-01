@@ -1,0 +1,103 @@
+﻿@page "/add-unit"
+@using FlashCards.Core.Application.Dtos
+@using FlashCards.Core.Domain.Constants
+@using FlashCards.Core.Domain.Entities
+@using FlashCards.WebUI.Services
+@using FlashCards.WebUI.Validation
+@using FlashCards.WebUI.Components
+
+@inject ISnackbar Snackbar
+@inject FlashCardStateContainer FlashCardStateContainer
+@inject UnitService UnitService
+@inject NavigationManager Navigation
+
+<AuthGuard />
+
+<div class="custom-flex-container">
+    <h3>New unit</h3>
+    <div class="buttons">
+        @*Import button*@
+        <MudButton
+            Disabled="@(_flashCardsUnitDto.FlashCards?.Count > 1)"
+            Class="me-2 ms-0"
+            Variant="Variant.Outlined"
+            Size="Size.Medium"
+            StartIcon="@Icons.Material.Filled.ArrowDownward"
+            Color="Color.Primary">
+            Import
+        </MudButton>
+        @*Save button*@
+        <MudButton
+            Variant="Variant.Filled"
+            Size="Size.Medium"
+            StartIcon="@Icons.Material.Filled.Save"
+            Color="Color.Primary"
+            OnClick="SaveUnitAsync">
+            Save
+        </MudButton>
+    </div>
+</div>
+
+<EditUnitComponent
+    @ref="_editUnitComponent"
+    UnitDto="@_flashCardsUnitDto"/>
+
+@code {
+    private MudForm _unitInfoForm;
+    private FlashCardsUnitDto? _flashCardsUnitDto;
+    private EditUnitComponent? _editUnitComponent;
+
+    protected override void OnInitialized()
+    {
+        _flashCardsUnitDto = new FlashCardsUnitDto
+        {
+            FlashCardsUnit = new FlashCardsUnit()
+        };
+        
+        if (FlashCardStateContainer.FlashCards != null)
+        {
+            _flashCardsUnitDto.FlashCards = FlashCardStateContainer.FlashCards;
+            // Delete flash cards from state container to avoid unexpected behavior
+            FlashCardStateContainer.FlashCards = null;
+        }
+        else
+        {
+            _flashCardsUnitDto.FlashCards = new List<FlashCard>();
+        }
+    }
+    
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender && _editUnitComponent is not null)
+        {
+            _editUnitComponent.AddFlashCard();
+        }
+    }
+
+    private async Task SaveUnitAsync()
+    {
+        await _editUnitComponent.UnitForm.Validate();
+        bool isValid = _editUnitComponent.UnitForm.IsValid;
+
+        if (isValid && _flashCardsUnitDto is not null)
+        {
+            Guid unitId;
+            try
+            {
+                unitId = await UnitService.CreateUnitAsync(_flashCardsUnitDto);
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine(e);
+                Snackbar.Add("An unexpected error has occurred. Please try again.", Severity.Error);
+                return;
+            }
+            
+            Navigation.NavigateTo($"/units/{unitId.ToString()}");
+            
+            return;
+        }
+        
+        Snackbar.Add($"Some fields are filled out incorrectly", Severity.Error);
+    }
+}
