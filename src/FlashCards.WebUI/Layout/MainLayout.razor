@@ -49,8 +49,8 @@
                         <MudAvatar Size="Size.Medium" Color="Color.Primary">@(SetAvatarLetters())</MudAvatar>
                     </ActivatorContent>
                     <ChildContent>
-                        <MudMenuItem Href="/profile">Profile</MudMenuItem>
-                        <MudMenuItem Href="/settings">Settings</MudMenuItem>
+                        <MudMenuItem Disabled="true" Href="/profile">Profile</MudMenuItem>
+                        <MudMenuItem Disabled="true" Href="/settings">Settings</MudMenuItem>
                         <MudMenuItem OnClick="LogoutAsync">Logout</MudMenuItem>
                     </ChildContent>
                 </MudMenu>
