@@ -40,7 +40,7 @@
                         @*Answer field*@
                         <MudTextField
                             Validation="@(new Func<string, IEnumerable<string>>(UnitValidation.AnswerValidation))"
-                            Class="mb-2"
+                            Class="mb-2 mt-2"
                             T="string"
                             Label="Answer"
                             @bind-Value="flashCard.Answer"/>
@@ -69,7 +69,7 @@
 </MudButton>
 
 @code {
-    [Parameter] public FlashCardsUnitDto UnitDto { get; set; }
+    [Parameter] public FlashCardsUnitDto? UnitDto { get; set; }
     [Parameter] public MudForm UnitForm { get; set; }
 
     private void AddFlashCard()

@@ -15,26 +15,28 @@ else
     <div class="custom-flex-container">
         <h3>Edit unit</h3>
         <div class="buttons">
-            @*Import button*@
-            <MudButton
-                Disabled="false"
-                Class="me-2 ms-0"
-                Variant="Variant.Outlined"
-                Size="Size.Medium"
-                StartIcon="@Icons.Material.Filled.DeleteForever"
-                Color="Color.Error"
-                OnClick="DeleteUnitAsync">
-                Delete unit
-            </MudButton>
-            @*Save button*@
-            <MudButton
-                Variant="Variant.Filled"
-                Size="Size.Medium"
-                StartIcon="@Icons.Material.Filled.Save"
-                Color="Color.Primary"
-                OnClick="SaveUnitAsync">
-                Save
-            </MudButton>
+            <MudStack Row="true">
+                @*Delete button*@
+                <MudButton
+                    Disabled="false"
+                    Class="me-2 ms-0"
+                    Variant="Variant.Outlined"
+                    Size="Size.Medium"
+                    StartIcon="@Icons.Material.Filled.DeleteForever"
+                    Color="Color.Error"
+                    OnClick="DeleteUnitAsync">
+                    Delete unit
+                </MudButton>
+                @*Save button*@
+                <MudButton
+                    Variant="Variant.Filled"
+                    Size="Size.Medium"
+                    StartIcon="@Icons.Material.Filled.Save"
+                    Color="Color.Primary"
+                    OnClick="SaveUnitAsync">
+                    Save
+                </MudButton>
+            </MudStack>
         </div>
     </div>
 
