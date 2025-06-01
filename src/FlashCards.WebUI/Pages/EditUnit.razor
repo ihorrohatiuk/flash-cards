@@ -41,6 +41,7 @@ else
     </div>
 
     <EditUnitComponent 
+        @ref="_editUnitComponent"
         UnitDto="@_unitDto"
         UnitForm="@_unitForm"/>
 }
@@ -48,6 +49,8 @@ else
 @code {
     [Parameter] 
     public string UnitId { get; set; }
+
+    private EditUnitComponent _editUnitComponent;
     private MudForm _unitForm;
     private FlashCardsUnitDto? _unitDto;
 
@@ -68,8 +71,8 @@ else
 
     private async Task SaveUnitAsync()
     {
-        await _unitForm.Validate();
-        bool isValid = _unitForm.IsValid;
+        await _editUnitComponent.UnitForm.Validate();
+        bool isValid = _editUnitComponent.UnitForm.IsValid;
 
         if (isValid)
         {

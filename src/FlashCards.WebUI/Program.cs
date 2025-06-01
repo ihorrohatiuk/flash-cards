@@ -26,6 +26,7 @@ builder.Services.AddMudServices(config =>
 
 builder.Services.AddTransient<AuthenticationHandler>();
 builder.Services.AddScoped<AiService>();
+builder.Services.AddScoped<UnitService>();
 
 builder.Services.AddScoped(sp => 
     new HttpClient

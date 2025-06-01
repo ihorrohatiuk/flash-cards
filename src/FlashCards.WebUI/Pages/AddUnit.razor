@@ -8,6 +8,8 @@
 
 @inject ISnackbar Snackbar
 @inject FlashCardStateContainer FlashCardStateContainer
+@inject UnitService UnitService
+@inject NavigationManager Navigation
 
 <AuthGuard />
 
@@ -38,13 +40,12 @@
 
 <EditUnitComponent
     @ref="_editUnitComponent"
-    UnitForm="@_unitInfoForm" 
     UnitDto="@_flashCardsUnitDto"/>
 
 @code {
     private MudForm _unitInfoForm;
     private FlashCardsUnitDto? _flashCardsUnitDto;
-    private EditUnitComponent _editUnitComponent;
+    private EditUnitComponent? _editUnitComponent;
 
     protected override void OnInitialized()
     {
@@ -67,23 +68,33 @@
     
     protected override void OnAfterRender(bool firstRender)
     {
-        _editUnitComponent.AddFlashCard();
+        if (firstRender && _editUnitComponent is not null)
+        {
+            _editUnitComponent.AddFlashCard();
+        }
     }
 
     private async Task SaveUnitAsync()
     {
-        await _unitInfoForm.Validate();
-        bool isValid = _unitInfoForm.IsValid;
+        await _editUnitComponent.UnitForm.Validate();
+        bool isValid = _editUnitComponent.UnitForm.IsValid;
 
-        if (isValid)
+        if (isValid && _flashCardsUnitDto is not null)
         {
-            // TODO: FE -> add save logic here.
-            foreach (var card in _flashCardsUnitDto.FlashCards)
+            Guid unitId;
+            try
             {
-                Console.WriteLine("Question: " + card.Question);
-                Console.WriteLine("Answer: " + card.Answer);
+                unitId = await UnitService.CreateUnitAsync(_flashCardsUnitDto);
             }
-
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine(e);
+                Snackbar.Add("An unexpected error has occurred. Please try again.", Severity.Error);
+                return;
+            }
+            
+            Navigation.NavigateTo($"/units/{unitId}");
+            
             return;
         }
         

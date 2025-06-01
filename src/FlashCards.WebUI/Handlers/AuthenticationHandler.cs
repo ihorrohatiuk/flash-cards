@@ -28,7 +28,7 @@ public class AuthenticationHandler : DelegatingHandler
             }
             else
             {
-                request.Headers.Authorization = new AuthenticationHeaderValue("AccessToken", jwt);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
             }
         }
 
