@@ -1,10 +1,12 @@
 ﻿@page "/units/{UnitId}"
 @using FlashCards.Core.Application.Dtos
 @using FlashCards.WebUI.Components
+@using FlashCards.WebUI.Services
 
 @inject NavigationManager Navigation
 @inject HttpClient Http
 @inject ISnackbar Snackbar
+@inject UnitService UnitService
 
 <AuthGuard />
 
@@ -100,19 +102,26 @@ else
 
     private async Task LoadFlashCardsUnitAsync()
     {
-        _flashCardsUnitReviewDto = await Http.GetFromJsonAsync<FlashCardsUnitDto>("sample-data/unit-review.json?");
+        try
+        {
+            _flashCardsUnitReviewDto = await UnitService.GetUnitById(Guid.Parse(UnitId));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            Snackbar.Add("An unexpected error has occurred. Please refresh the page and try again.", Severity.Error);
+        }
         _currentCardIndex = 0;
-        // Add logic if unit not loading
     }
 
     private void OnFreeLearningModeClick()
     {
-        Navigation.NavigateTo($"/Units/{UnitId}/FreeLearningMode/");
+        Navigation.NavigateTo($"/Units/{UnitId.ToString()}/FreeLearningMode/");
     }
     
     private void OnIntervalLearningModeClick()
     {
-        Navigation.NavigateTo($"/Units/{UnitId}/IntervalLearningMode/");
+        Navigation.NavigateTo($"/Units/{UnitId.ToString()}/IntervalLearningMode/");
     }
 
     private void OnShowPreviousCardClick()
@@ -129,6 +138,6 @@ else
 
     private void OnEditClick()
     {
-        Navigation.NavigateTo($"/units/{UnitId}/edit");
+        Navigation.NavigateTo($"/units/{UnitId.ToString()}/edit");
     }
 }

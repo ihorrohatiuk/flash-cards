@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
 using MudBlazor.Services;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -55,5 +57,13 @@ if (!string.IsNullOrEmpty(token) && authService.IsTokenExpired(token))
 {
     await authService.LogoutAsync();
 }
+
+// Json serialising options
+JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+{
+    ContractResolver = new CamelCasePropertyNamesContractResolver(),
+    NullValueHandling = NullValueHandling.Ignore,
+    Formatting = Formatting.None
+};
 
 await builder.Build().RunAsync();

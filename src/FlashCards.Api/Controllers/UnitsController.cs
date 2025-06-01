@@ -64,7 +64,7 @@ public class UnitsController : ControllerBase
     }
     
     [HttpGet("{unitId}")]
-    public async Task<IActionResult> GetUnit(Guid unitId)
+    public async Task<IActionResult> GetUnitById(Guid unitId)
     {
         var flashCardsUnit = await _context.FlashCardsUnits
             .FirstOrDefaultAsync(u => u.Id == unitId);

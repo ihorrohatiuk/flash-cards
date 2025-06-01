@@ -1,4 +1,6 @@
-﻿namespace FlashCards.Core.Application.Dtos;
+﻿using System.Text.Json.Serialization;
+
+namespace FlashCards.Core.Application.Dtos;
 
 public class AddUnitResponseDto
 {
