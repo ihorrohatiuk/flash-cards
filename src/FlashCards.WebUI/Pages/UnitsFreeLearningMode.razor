@@ -1,15 +1,19 @@
 ﻿@*TODO: Add a check that when the user exits the mode, it will notify the user that progress has been lost*@
 @*TODO: Save the result after each session, then create a graph on a final screen to show user advancement*@
-@page "/Units/{Id}/FreeLearningMode/" 
+@page "/Units/{UnitId}/FreeLearningMode/" 
 
 @using FlashCards.Core.Application.Dtos
 @using FlashCards.Core.Application.SpacedRepetition
+@using FlashCards.Core.Domain.Entities
 @using FlashCards.WebUI.Components
-@inject HttpClient Http
+@using FlashCards.WebUI.Services
+
+@inject UnitService UnitService 
+@inject ISnackbar Snackbar
 
 <AuthGuard />
 
-@if (_flashCards == null)
+@if (_cbrflashCards == null)
 {
     <PageLoadingComponent 
         LoadingText="Loading..." />
@@ -45,27 +49,27 @@ else
             
             <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
                 <h3>"1"</h3>
-                <MudProgressLinear Color="Color.Error" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(1) / _flashCards.Count * 100)"/>
+                <MudProgressLinear Color="Color.Error" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(1) / _cbrflashCards.Count * 100)"/>
                 <h3>@CountFlashCardsWithConfidence(1)</h3>
             </MudStack>
             <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
                 <h3>"2"</h3>
-                <MudProgressLinear Color="Color.Warning" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(2) / _flashCards.Count * 100)" />
+                <MudProgressLinear Color="Color.Warning" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(2) / _cbrflashCards.Count * 100)" />
                 <h3>@CountFlashCardsWithConfidence(2)</h3>
             </MudStack>
             <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
                 <h3>"3"</h3>
-                <MudProgressLinear Color="Color.Warning" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(3) / _flashCards.Count * 100)" />
+                <MudProgressLinear Color="Color.Warning" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(3) / _cbrflashCards.Count * 100)" />
                 <h3>@CountFlashCardsWithConfidence(3)</h3>
             </MudStack>
             <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
                 <h3>"4"</h3>
-                <MudProgressLinear Color="Color.Warning" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(4) / _flashCards.Count * 100)" />
+                <MudProgressLinear Color="Color.Warning" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(4) / _cbrflashCards.Count * 100)" />
                 <h3>@CountFlashCardsWithConfidence(4)</h3>
             </MudStack>
             <MudStack Row="true" Class="mt-5" Justify="Justify.Center" AlignItems="AlignItems.Center">
                 <h3>"5"</h3>
-                <MudProgressLinear Color="Color.Success" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(5) / _flashCards.Count * 100)" />
+                <MudProgressLinear Color="Color.Success" Rounded="true" Size="Size.Large" Value="@((double) CountFlashCardsWithConfidence(5) / _cbrflashCards.Count * 100)" />
                 <h3>@CountFlashCardsWithConfidence(5)</h3>
             </MudStack>
             
@@ -81,7 +85,7 @@ else
                 Color="Color.Tertiary" 
                 Rounded="true"
                 Striped="false"
-                Value="@((double) _flashCards.Count(c => c.Confidence == 5) / _flashCards.Count * 100)" 
+                Value="@((double) _cbrflashCards.Count(c => c.Confidence == 5) / _cbrflashCards.Count * 100)" 
                 Class="mb-5"/>
             
             <FlashCardComponent
@@ -139,11 +143,11 @@ else
 
 @code {
     [Parameter]
-    public string Id { get; set; }
+    public string UnitId { get; set; }
 
     private bool _showAnswer = false;
     private bool _isFlipped = false;
-    private List<CbrFlashCardDto>? _flashCards;
+    private List<CbrFlashCardDto>? _cbrflashCards;
     private ConfidenceBasedRepetitionScheduler _scheduler;
     private CbrFlashCardDto _currentCard;
 
@@ -152,9 +156,9 @@ else
     protected override async Task OnInitializedAsync()
     {
         await LoadFlashCardsAsync();
-        ArgumentNullException.ThrowIfNull(_flashCards);
+        ArgumentNullException.ThrowIfNull(_cbrflashCards);
 
-        _scheduler = new ConfidenceBasedRepetitionScheduler(_flashCards);
+        _scheduler = new ConfidenceBasedRepetitionScheduler(_cbrflashCards);
         
         //Set first card
         ShowNextCard();  
@@ -163,16 +167,33 @@ else
     /*Algorithm methods*/
     private async Task LoadFlashCardsAsync()
     {
-        // Mock http request
-        _flashCards = await Http.GetFromJsonAsync<List<CbrFlashCardDto>>("sample-data/unit-spain-words.json");
+        FlashCardsUnitDto flashCardsUnit;
+        
+        try
+        {
+            flashCardsUnit = await UnitService.GetUnitByIdAsync(Guid.Parse(UnitId));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            Snackbar.Add("An unexpected error has occurred. Please refresh the page and try again.", Severity.Error);
+            return;
+        }
+
+        List<FlashCard> flashCards = flashCardsUnit.FlashCards;
+        _cbrflashCards = flashCards.Select(fc => new CbrFlashCardDto
+            {
+                Question = fc.Question,
+                Answer = fc.Answer,
+                Confidence = 1
+            })
+            .ToList();
     }
     
     private void FlipHandler()
     {
-        Console.WriteLine("Method FlifHandler");
         if (_showAnswer)
         {
-            Console.WriteLine("IsFlipped = true");
             _isFlipped = true;
         }
     }
@@ -203,13 +224,13 @@ else
     /*Visual side methods*/
     private int CountFlashCardsWithConfidence(int confidence)
     {
-        ArgumentNullException.ThrowIfNull(_flashCards);
+        ArgumentNullException.ThrowIfNull(_cbrflashCards);
         
-        return _flashCards.Count(c => c.Confidence == confidence);
+        return _cbrflashCards.Count(c => c.Confidence == confidence);
     }
 
     private double CountSessionProgress()
     {
-        return (double)CountFlashCardsWithConfidence(5) / _flashCards.Count * 100;
+        return (double)CountFlashCardsWithConfidence(5) / _cbrflashCards.Count * 100;
     }
 }
