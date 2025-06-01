@@ -105,13 +105,29 @@ public class UnitsController : ControllerBase
 
         foreach (var unit in units)
         {
+            // Cards quantity
             var cards = await _context.FlashCards
                 .Where(c => c.FlashCardsUnitId == unit.Id)
                 .ToListAsync();
 
             int cardsQuantity = cards.Count;
             
-            // TODO: Add progress count here
+            // Progress count
+            int progress;
+            CbrProgress? cbrProgress = await _context.CbrProgresses
+                .Where(p => p.UserId == ownerId)
+                .FirstOrDefaultAsync(p => p.FlashCardsUnitId == unit.Id);
+
+            if (cbrProgress == null)
+            {
+                progress = 0;
+            }
+            else
+            {
+                progress = cbrProgress.Progress;
+            }
+            
+            // Owner name
             var ownerName = await _context.Users
                 .Where(u => u.Id == ownerId)
                 .Select(u => u.FirstName + " " + u.LastName)
@@ -125,7 +141,7 @@ public class UnitsController : ControllerBase
                 OwnerId = unit.OwnerId,
                 Owner = ownerName,
                 CardsQuantity = cardsQuantity,
-                Progress = 57
+                Progress = progress,
             });
         }
 
