@@ -16,8 +16,8 @@
     
     protected override async Task OnParametersSetAsync()
     {
-        string userId = await AuthenticationService.GetUserId();
-        if (string.Equals(userId.ToLower(), OwnerId.ToString().ToLower()))
+        Guid userId = await AuthenticationService.GetUserId();
+        if (string.Equals(userId.ToString().ToLower(), OwnerId.ToString().ToLower()))
         {
             _isOwmer = true;
         }

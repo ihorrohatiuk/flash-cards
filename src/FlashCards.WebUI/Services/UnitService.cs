@@ -55,7 +55,28 @@ public class UnitService
         return unitResponseDto;
     }
     
-    // 3. Get units by owner
+    public async Task<List<FlashCardsUnitInfoDto>> GetUnitHeadersByOwnerId(Guid ownerId)
+    {
+        var response = await _httpClientFactory
+            .CreateClient("ServerApi")
+            .GetAsync($"api/units/GetByOwner/{ownerId}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return new List<FlashCardsUnitInfoDto>();
+            }
+
+            throw new InvalidOperationException($"Failed load units: {error}");
+        }
+
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var unitResponseDto = JsonConvert.DeserializeObject<List<FlashCardsUnitInfoDto>>(responseContent);
+
+        return unitResponseDto;
+    }
     // 2. Update unit
     // 3. Delete unit
 }

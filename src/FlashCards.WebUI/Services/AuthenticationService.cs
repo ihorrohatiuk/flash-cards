@@ -47,11 +47,11 @@ public class AuthenticationService : IAuthenticationService
         return $"{firstName} {lastName}";
     }
     
-    public async Task<string> GetUserId()
+    public async Task<Guid> GetUserId()
     {
         var jwt = new JwtSecurityToken(await GetJwtAsync());
         
-        return jwt.Claims.First(claim => claim.Type == JwtClaims.UserId).Value;
+        return Guid.Parse(jwt.Claims.First(claim => claim.Type == JwtClaims.UserId).Value);
     }
     
     public async Task<bool> LoginAsync(LoginRequestDto loginRequestDto)
