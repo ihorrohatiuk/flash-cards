@@ -21,8 +21,17 @@ public class AuthenticationHandler : DelegatingHandler
         var isToServer = request.RequestUri?.AbsoluteUri.StartsWith(_configuration["ServerUrl"] ?? "") ?? false;
 
         if (isToServer && !string.IsNullOrEmpty(jwt))
-            request.Headers.Authorization = new AuthenticationHeaderValue("AccessToken", jwt);
-        
+        {
+            if (_authenticationService.IsTokenExpired(jwt))
+            {
+                await _authenticationService.LogoutAsync();
+            }
+            else
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+            }
+        }
+
         return await base.SendAsync(request, cancellationToken);
     }
 }

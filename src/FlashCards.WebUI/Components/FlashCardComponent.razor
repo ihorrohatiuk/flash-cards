@@ -1,0 +1,31 @@
+﻿<div class="flip-container">
+    <div class="flip-card @(ShowAnswer ? "flip" : "")" @onclick="FlipCard">
+        <div class="flip-card-front">
+            @Question
+        </div>
+        <div class="flip-card-back">
+            @Answer
+        </div>  
+    </div>
+</div>
+
+@code {
+    [Parameter] public bool ShowAnswer { get; set; } = false;
+    [Parameter] public EventCallback<bool> ShowAnswerChanged { get; set; }
+    [Parameter] public string Question { get; set; }
+    [Parameter] public string Answer { get; set; }
+    [Parameter] public EventCallback OnFlipCard { get; set; }
+    
+    private async Task FlipCard()
+    {
+        ShowAnswer = !ShowAnswer;
+
+        // To add custom logic when card flipping
+        await ShowAnswerChanged.InvokeAsync(ShowAnswer);
+        
+        if (OnFlipCard.HasDelegate)
+        {
+            await OnFlipCard.InvokeAsync();
+        }
+    }
+}

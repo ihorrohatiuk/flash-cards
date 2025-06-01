@@ -14,14 +14,9 @@ public class FlashCardsUnit
     
     [Required]
     [MaxLength(50)]
-    public string Theme  { get; set; }
+    public string Subject  { get; set; }
     
     [Required]
     [ForeignKey("User")]
-    public Guid UserId { get; set; }
-    
-    [Required]
-    public DateTime ModifiedDate { get; set; }
-    
-    public User User { get; set; }
+    public Guid OwnerId { get; set; }
 }

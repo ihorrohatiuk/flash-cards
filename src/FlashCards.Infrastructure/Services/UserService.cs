@@ -2,6 +2,7 @@
 using FlashCards.Core.Domain.Constants;
 using FlashCards.Core.Domain.Entities;
 using FlashCards.Infrastructure.Persistence.Contexts;
+using FlashCards.Infrastructure.Persistence.DataModels;
 using FlashCards.Infrastructure.Persistence.Repositories;
 using FlashCards.Infrastructure.Security;
 
@@ -15,24 +16,24 @@ public class UserService
     {
         _userRepository = new UserRepository(context);    
     }
-    public IEnumerable<User> GetAll()
+    public IEnumerable<UserEntity> GetAll()
     {
         return _userRepository.GetAll();
     }
 
-    public async Task<User?> GetByIdAsync(Guid id)
+    public async Task<UserEntity?> GetByIdAsync(Guid id)
     {
         return await _userRepository.GetByIdAsync(id);
     }
 
-    public async Task<Result<User>> AddAsync(RegistrationRequestDto registrationRequestDto)
+    public async Task<Result<UserEntity>> AddAsync(RegistrationRequestDto registrationRequestDto)
     {
         if (_userRepository.Exists(registrationRequestDto.Email).Result)
         {
-            return new Result<User>(false, $"Email {registrationRequestDto.Email} already exists.");
+            return new Result<UserEntity>(false, $"Email {registrationRequestDto.Email} already exists.");
         }
         
-        var user = new User
+        var user = new UserEntity
         {
             Id = Guid.NewGuid(),
             FirstName = registrationRequestDto.FirstName,
@@ -44,12 +45,12 @@ public class UserService
         
         await _userRepository.AddAsync(user);
         
-        return new Result<User>(true, $"User {user.Email} successfully created.");
+        return new Result<UserEntity>(true, $"User {user.Email} successfully created.");
     }
 
-    public async Task UpdateAsync(User user) //TODO: Implement 
+    public async Task UpdateAsync(UserEntity userEntity) //TODO: Implement 
     {
-        await _userRepository.UpdateAsync(user);
+        await _userRepository.UpdateAsync(userEntity);
     }
 
     public async Task DeleteAsync(Guid id)

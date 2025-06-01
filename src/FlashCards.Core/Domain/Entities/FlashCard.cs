@@ -1,28 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using FlashCards.Core.Domain.Constants;
 
 namespace FlashCards.Core.Domain.Entities;
 
 public class FlashCard
 {
-    [Key]
-    public Guid Id { get; set; }
+    [Required]
+    [MaxLength(AppConstants.MaxQuestionLength)]
+    public string Question { get; set; } = string.Empty;
     
     [Required]
-    [ForeignKey("FlashCardsUnit")]
-    public Guid FlashCardsUnitId { get; set; }
-    
-    [Required]
-    [MaxLength(300)]
-    public string? Question { get; set; }
-    
-    [Required]
-    [MaxLength(300)]
-    public string? QuestionImagePath { get; set; }
-    
-    [Required]
-    [MaxLength(300)]
-    public string? Answer { get; set; }
-    
-    public FlashCardsUnit? FlashCardsUnit { get; set; }
+    [MaxLength(AppConstants.MaxAnswerLength)]
+    public string Answer { get; set; } = string.Empty;
 }

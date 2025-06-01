@@ -22,7 +22,29 @@ namespace FlashCards.Api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("FlashCards.Api.Data.Models.FlashCard", b =>
+            modelBuilder.Entity("FlashCards.Infrastructure.Persistence.DataModels.CbrProgress", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FlashCardsUnitId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Progress")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FlashCardsUnitId");
+
+                    b.ToTable("CbrProgresses");
+                });
+
+            modelBuilder.Entity("FlashCards.Infrastructure.Persistence.DataModels.FlashCardEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -41,11 +63,6 @@ namespace FlashCards.Api.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<string>("QuestionImagePath")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("FlashCardsUnitId");
@@ -53,31 +70,33 @@ namespace FlashCards.Api.Migrations
                     b.ToTable("FlashCards");
                 });
 
-            modelBuilder.Entity("FlashCards.Api.Data.Models.FlashCardsUnit", b =>
+            modelBuilder.Entity("FlashCards.Infrastructure.Persistence.DataModels.FlashCardsUnitEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Theme")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("FlashCardsUnits");
                 });
 
-            modelBuilder.Entity("FlashCards.Api.Data.Models.User", b =>
+            modelBuilder.Entity("FlashCards.Infrastructure.Persistence.DataModels.UserEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -113,9 +132,9 @@ namespace FlashCards.Api.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("FlashCards.Api.Data.Models.FlashCard", b =>
+            modelBuilder.Entity("FlashCards.Infrastructure.Persistence.DataModels.CbrProgress", b =>
                 {
-                    b.HasOne("FlashCards.Api.Data.Models.FlashCardsUnit", "FlashCardsUnit")
+                    b.HasOne("FlashCards.Infrastructure.Persistence.DataModels.FlashCardsUnitEntity", "FlashCardsUnit")
                         .WithMany()
                         .HasForeignKey("FlashCardsUnitId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -124,11 +143,22 @@ namespace FlashCards.Api.Migrations
                     b.Navigation("FlashCardsUnit");
                 });
 
-            modelBuilder.Entity("FlashCards.Api.Data.Models.FlashCardsUnit", b =>
+            modelBuilder.Entity("FlashCards.Infrastructure.Persistence.DataModels.FlashCardEntity", b =>
                 {
-                    b.HasOne("FlashCards.Api.Data.Models.User", "User")
+                    b.HasOne("FlashCards.Infrastructure.Persistence.DataModels.FlashCardsUnitEntity", "FlashCardsUnit")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("FlashCardsUnitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FlashCardsUnit");
+                });
+
+            modelBuilder.Entity("FlashCards.Infrastructure.Persistence.DataModels.FlashCardsUnitEntity", b =>
+                {
+                    b.HasOne("FlashCards.Infrastructure.Persistence.DataModels.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

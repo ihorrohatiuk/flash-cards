@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using FlashCards.Core.Domain.Entities;
+using FlashCards.Infrastructure.Persistence.DataModels;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -11,13 +12,15 @@ public class JwtProvider(IOptions<JwtOptions> jwtOptions)
 {
     private readonly JwtOptions _jwtOptions = jwtOptions.Value;
 
-    public string GenerateJwtToken(User user)
+    public string GenerateJwtToken(UserEntity userEntity)
     {
         Claim[] claims = 
         [
-            new("userId", user.Id.ToString()), 
-            new("email", user.Email),
-            new("role", user.Role)
+            new(JwtClaims.UserId, userEntity.Id.ToString()),
+            new(JwtClaims.Email, userEntity.Email),
+            new (JwtClaims.FirstName, userEntity.FirstName),
+            new (JwtClaims.LastName, userEntity.LastName),
+            new(JwtClaims.Role, userEntity.Role)
         ];
         
         var signinCredentials = new SigningCredentials(

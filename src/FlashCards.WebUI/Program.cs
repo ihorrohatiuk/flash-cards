@@ -1,4 +1,4 @@
-using Blazored.SessionStorage;
+using Blazored.LocalStorage;
 using FlashCards.WebUI;
 using FlashCards.WebUI.Handlers;
 using FlashCards.WebUI.Services;
@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
 using MudBlazor.Services;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -25,6 +27,9 @@ builder.Services.AddMudServices(config =>
 });
 
 builder.Services.AddTransient<AuthenticationHandler>();
+builder.Services.AddScoped<AiService>();
+builder.Services.AddScoped<UnitService>();
+builder.Services.AddScoped<ProgressService>();
 
 builder.Services.AddScoped(sp => 
     new HttpClient
@@ -38,8 +43,28 @@ builder.Services.AddHttpClient("ServerApi")
         c.BaseAddress = new Uri(builder.Configuration["ServerUrl"] ?? ""))
     .AddHttpMessageHandler<AuthenticationHandler>();
 
+// Authentication
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddBlazoredSessionStorageAsSingleton();
+// Flash cards state container to pass flash cards between /ai-flashcards and /add-unit pages
+builder.Services.AddScoped<FlashCardStateContainer>();
+// Local storage
+builder.Services.AddBlazoredLocalStorageAsSingleton();
+// MudBlazor
 builder.Services.AddMudServices();
+// Checking is saved JWT token actual
+var authService = builder.Services.BuildServiceProvider().GetRequiredService<IAuthenticationService>();
+var token = await authService.GetJwtAsync();
+if (!string.IsNullOrEmpty(token) && authService.IsTokenExpired(token))
+{
+    await authService.LogoutAsync();
+}
+
+// Json serialising options
+JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+{
+    ContractResolver = new CamelCasePropertyNamesContractResolver(),
+    NullValueHandling = NullValueHandling.Ignore,
+    Formatting = Formatting.None
+};
 
 await builder.Build().RunAsync();

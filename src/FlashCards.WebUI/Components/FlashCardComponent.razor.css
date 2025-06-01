@@ -35,10 +35,3 @@
     background-color: #ea9b9b;
     transform: rotateY(180deg);
 }
-
-
-@media (max-width: 400px) {
-    .responsive-card {
-        width: 100px; 
-    }
-}

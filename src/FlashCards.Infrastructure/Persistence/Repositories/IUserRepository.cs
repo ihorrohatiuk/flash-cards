@@ -1,9 +1,10 @@
 ﻿using FlashCards.Core.Domain.Entities;
+using FlashCards.Infrastructure.Persistence.DataModels;
 
 namespace FlashCards.Infrastructure.Persistence.Repositories;
 
-public interface IUserRepository : IRepository<User>
+public interface IUserRepository : IRepository<UserEntity>
 {
-    Task<User?> GetByEmailAsync(string email);
+    Task<UserEntity?> GetByEmailAsync(string email);
     Task<bool> Exists(string email);
 }

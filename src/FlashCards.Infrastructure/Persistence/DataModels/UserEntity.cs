@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using FlashCards.Core.Domain.Constants;
 
-namespace FlashCards.Core.Domain.Entities;
+namespace FlashCards.Infrastructure.Persistence.DataModels;
 
-public class User
+public class UserEntity
 {
     [Key]
     public Guid Id { get; set; }

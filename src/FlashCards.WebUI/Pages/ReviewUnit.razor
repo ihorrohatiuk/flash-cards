@@ -1,0 +1,142 @@
+﻿@page "/units/{UnitId}"
+@using FlashCards.Core.Application.Dtos
+@using FlashCards.WebUI.Components
+@using FlashCards.WebUI.Services
+
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject UnitService UnitService
+
+<AuthGuard />
+
+@if (_flashCardsUnitReviewDto == null)
+{
+    <PageLoadingComponent LoadingText="Loading unit..."/>
+}
+else
+{
+    <h3>@(_flashCardsUnitReviewDto.FlashCardsUnit.Name)</h3>
+    
+    <MudStack Row="true" Class="mb-5">
+        <MudButton
+            Variant="Variant.Filled"
+            Size="Size.Medium"
+            StartIcon="@Icons.Material.Filled.School"
+            Color="Color.Primary"
+            OnClick="OnFreeLearningModeClick">
+            Free learning mode
+        </MudButton>
+        
+        <MudButton
+            Variant="Variant.Filled"
+            Size="Size.Medium"
+            StartIcon="@Icons.Material.Filled.HourglassTop"
+            Color="Color.Primary"
+            OnClick="OnIntervalLearningModeClick">
+            Interval learning mode
+        </MudButton>
+        
+        <OwnerView OwnerId="_flashCardsUnitReviewDto.FlashCardsUnit.OwnerId">
+            <MudButton
+                Variant="Variant.Outlined"
+                Size="Size.Medium"
+                StartIcon="@Icons.Material.Filled.Edit"
+                Color="Color.Secondary"
+                OnClick="OnEditClick">
+                Edit
+            </MudButton>
+        </OwnerView>
+    </MudStack>
+    
+    @if (_flashCardsUnitReviewDto.FlashCards.Any())
+    {
+        var card = _flashCardsUnitReviewDto.FlashCards[_currentCardIndex];
+        <FlashCardComponent 
+            Question="@card.Question" 
+            Answer="@card.Answer" />
+    }
+    else
+    {
+        Snackbar.Add("An unexpected error has occurred. Please refresh the page and try again.", Severity.Error);
+    }
+    
+    // Previous/Next card buttons
+    <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mt-5 mb-5">
+        <MudButton
+            Disabled="@(_currentCardIndex < 1)"
+            Variant="Variant.Outlined"
+            Size="Size.Medium"
+            StartIcon="@Icons.Material.Filled.ArrowBack"
+            Color="Color.Secondary"
+            OnClick="OnShowPreviousCardClick">
+        </MudButton>
+        
+        <MudText>@(_currentCardIndex + 1) / @(_flashCardsUnitReviewDto.FlashCards.Count)</MudText>
+        
+        <MudButton
+            Disabled="@((_currentCardIndex + 1) == _flashCardsUnitReviewDto.FlashCards.Count)"
+            Variant="Variant.Outlined"
+            Size="Size.Medium"
+            EndIcon="@Icons.Material.Filled.ArrowForward"
+            Color="Color.Secondary"
+            OnClick="OnShowNextCardClick">
+        </MudButton>
+    </MudStack>
+    
+    <FlashCardsTable 
+        FlashCards="_flashCardsUnitReviewDto.FlashCards" />
+}
+
+@code {
+    [Parameter] 
+    public string UnitId { get; set; }
+
+    private FlashCardsUnitDto? _flashCardsUnitReviewDto;
+    private int _currentCardIndex = 0;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadFlashCardsUnitAsync();
+    }
+
+    private async Task LoadFlashCardsUnitAsync()
+    {
+        try
+        {
+            _flashCardsUnitReviewDto = await UnitService.GetUnitByIdAsync(Guid.Parse(UnitId));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            Snackbar.Add("An unexpected error has occurred. Please refresh the page and try again.", Severity.Error);
+        }
+        _currentCardIndex = 0;
+    }
+
+    private void OnFreeLearningModeClick()
+    {
+        Navigation.NavigateTo($"/Units/{UnitId}/FreeLearningMode/");
+    }
+    
+    private void OnIntervalLearningModeClick()
+    {
+        Navigation.NavigateTo($"/Units/{UnitId}/IntervalLearningMode/");
+    }
+
+    private void OnShowPreviousCardClick()
+    {
+        if (_currentCardIndex > 0)
+            _currentCardIndex--;
+    }
+
+    private void OnShowNextCardClick()
+    {
+        if (_flashCardsUnitReviewDto != null && _currentCardIndex < _flashCardsUnitReviewDto.FlashCards.Count - 1)
+            _currentCardIndex++;
+    }
+
+    private void OnEditClick()
+    {
+        Navigation.NavigateTo($"/units/{UnitId.ToString()}/edit");
+    }
+}
