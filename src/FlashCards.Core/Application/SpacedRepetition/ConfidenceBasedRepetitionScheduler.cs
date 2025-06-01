@@ -27,8 +27,7 @@ public class ConfidenceBasedRepetitionScheduler
             }
         }
         
-        // TODO: Должно быть int index = _random.Next(weightedCards.Count); - проверить и протестировать
-        int index = _random.Next(_flashCards.Count);
+        int index = _random.Next(weightedCards.Count);
         return weightedCards[index];
     }
 
