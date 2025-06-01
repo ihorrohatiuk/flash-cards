@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using FlashCards.Infrastructure.Persistence.DataModels;
 using FlashCards.Infrastructure.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlashCards.Api.Controllers;
 
@@ -59,6 +61,75 @@ public class UnitsController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok(new { Message = "Unit and flashcards added successfully", UnitId = unitId });
+    }
+    
+    [HttpGet("{unitId}")]
+    public async Task<IActionResult> GetUnit(Guid unitId)
+    {
+        var flashCardsUnit = await _context.FlashCardsUnits
+            .FirstOrDefaultAsync(u => u.Id == unitId);
+
+        if (flashCardsUnit == null)
+            return NotFound("FlashCardsUnit not found.");
+
+        var flashCards = await _context.FlashCards
+            .Where(fc => fc.FlashCardsUnitId == unitId)  
+            .ToListAsync();
+        
+        var flashCardsDomain = flashCards.Select(fcEntity => new FlashCard
+        {
+            Question = fcEntity.Question,
+            Answer = fcEntity.Answer
+        }).ToList();
+
+        var result = new FlashCardsUnitDto
+        {
+            FlashCardsUnit = flashCardsUnit,
+            FlashCards = flashCardsDomain
+        };
+
+        return Ok(result);
+    }
+    
+    [HttpGet("GetByOwner/{ownerId}")]
+    public async Task<IActionResult> GetUnitHeadersByOwner(Guid ownerId)
+    {
+        var units = await _context.FlashCardsUnits
+            .Where(u => u.OwnerId == ownerId)
+            .ToListAsync();
+
+        if (!units.Any())
+            return NotFound("No units found for this owner.");
+
+        var result = new List<FlashCardsUnitInfoDto>();
+
+        foreach (var unit in units)
+        {
+            var cards = await _context.FlashCards
+                .Where(c => c.FlashCardsUnitId == unit.Id)
+                .ToListAsync();
+
+            int cardsQuantity = cards.Count;
+            
+            // TODO: Add progress count here
+            var ownerName = await _context.Users
+                .Where(u => u.Id == ownerId)
+                .Select(u => u.FirstName + " " + u.LastName)
+                .FirstOrDefaultAsync() ?? "No Name";
+
+            result.Add(new FlashCardsUnitInfoDto
+            {
+                Id = unit.Id,
+                Name = unit.Name,
+                Subject = unit.Subject,
+                OwnerId = unit.OwnerId,
+                Owner = ownerName,
+                CardsQuantity = cardsQuantity,
+                Progress = 57
+            });
+        }
+
+        return Ok(result);
     }
     
     [HttpPost("delete-unit")]
