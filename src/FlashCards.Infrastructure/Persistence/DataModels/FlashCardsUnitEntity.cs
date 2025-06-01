@@ -6,8 +6,5 @@ namespace FlashCards.Infrastructure.Persistence.DataModels;
 
 public class FlashCardsUnitEntity : FlashCardsUnit
 {
-    [Required]
-    public float Progress { get; set; }
-    
     public UserEntity User { get; set; }
 }
