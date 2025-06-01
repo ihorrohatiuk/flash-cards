@@ -2,7 +2,7 @@
 
 namespace FlashCards.Core.Application.Dtos;
 
-public class FlashCardsUnitReviewDto
+public class FlashCardsUnitDto
 {
     public FlashCardsUnit FlashCardsUnit { get; set; }
     public List<FlashCard> FlashCards { get; set; }

@@ -2,7 +2,7 @@
 
 namespace FlashCards.Core.Application.Dtos;
 
-public class FlashCardDto : FlashCard
+public class CbrFlashCardDto : FlashCard
 {
     public int Confidence { get; set; } = 1;
 }

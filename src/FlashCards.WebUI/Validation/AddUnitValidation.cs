@@ -2,7 +2,7 @@
 
 namespace FlashCards.WebUI.Validation;
 
-public static class AddUnitValidation
+public static class UnitValidation
 {
     public static IEnumerable<string> UnitNameValidation(string unitName)
     {

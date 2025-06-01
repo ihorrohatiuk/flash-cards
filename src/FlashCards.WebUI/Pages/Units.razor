@@ -41,7 +41,7 @@ else
                                         <ChildContent>@TextHelper.TruncateText(unit.Subject, UnitSubjectMaximumDisplayingLength)</ChildContent>
                                     </MudChip>
                                     <div class="accessibility-owner">
-                                        @*Accessibility*@
+                                        @*Accessibility for Unit.IsPrivate*@
                                         @*@if (unit.IsPrivate)
                                         {
                                             <MudChip T="string" Style="@($"background:{Colors.Red.Accent1}")" Class="m-0">

@@ -143,9 +143,9 @@ else
 
     private bool _showAnswer = false;
     private bool _isFlipped = false;
-    private List<FlashCardDto>? _flashCards;
+    private List<CbrFlashCardDto>? _flashCards;
     private ConfidenceBasedRepetitionScheduler _scheduler;
-    private FlashCardDto _currentCard;
+    private CbrFlashCardDto _currentCard;
 
     private int _sessionFlashCardsCount = 0;
     
@@ -164,7 +164,7 @@ else
     private async Task LoadFlashCardsAsync()
     {
         // Mock http request
-        _flashCards = await Http.GetFromJsonAsync<List<FlashCardDto>>("sample-data/unit-spain-words.json");
+        _flashCards = await Http.GetFromJsonAsync<List<CbrFlashCardDto>>("sample-data/unit-spain-words.json");
     }
     
     private void FlipHandler()

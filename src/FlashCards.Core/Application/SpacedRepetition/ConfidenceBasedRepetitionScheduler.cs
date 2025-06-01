@@ -5,18 +5,18 @@ namespace FlashCards.Core.Application.SpacedRepetition;
 
 public class ConfidenceBasedRepetitionScheduler
 {
-    private List<FlashCardDto> _flashCards;
+    private List<CbrFlashCardDto> _flashCards;
     private Random _random;
 
-    public ConfidenceBasedRepetitionScheduler(List<FlashCardDto> flashCards)
+    public ConfidenceBasedRepetitionScheduler(List<CbrFlashCardDto> flashCards)
     {
         _random = new Random();
         _flashCards = flashCards;
     }
 
-    public FlashCardDto GetNextFlashCard()
+    public CbrFlashCardDto GetNextFlashCard()
     {
-        var weightedCards = new List<FlashCardDto>();
+        var weightedCards = new List<CbrFlashCardDto>();
 
         foreach (var flashCard in _flashCards)
         {
@@ -32,8 +32,8 @@ public class ConfidenceBasedRepetitionScheduler
         return weightedCards[index];
     }
 
-    public void UpdateConfidence(FlashCardDto flashCard, int confidence)
+    public void UpdateConfidence(CbrFlashCardDto cbrFlashCard, int confidence)
     {
-        flashCard.Confidence = confidence;
+        cbrFlashCard.Confidence = confidence;
     }
 }

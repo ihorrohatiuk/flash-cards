@@ -90,7 +90,7 @@ else
     [Parameter] 
     public string UnitId { get; set; }
 
-    private FlashCardsUnitReviewDto? _flashCardsUnitReviewDto;
+    private FlashCardsUnitDto? _flashCardsUnitReviewDto;
     private int _currentCardIndex = 0;
     
     protected override async Task OnInitializedAsync()
@@ -100,7 +100,7 @@ else
 
     private async Task LoadFlashCardsUnitAsync()
     {
-        _flashCardsUnitReviewDto = await Http.GetFromJsonAsync<FlashCardsUnitReviewDto>("sample-data/unit-review.json?");
+        _flashCardsUnitReviewDto = await Http.GetFromJsonAsync<FlashCardsUnitDto>("sample-data/unit-review.json?");
         _currentCardIndex = 0;
         // Add logic if unit not loading
     }
