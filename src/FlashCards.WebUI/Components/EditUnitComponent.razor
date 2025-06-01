@@ -72,7 +72,7 @@
     [Parameter] public FlashCardsUnitDto? UnitDto { get; set; }
     [Parameter] public MudForm UnitForm { get; set; }
 
-    private void AddFlashCard()
+    public void AddFlashCard()
     {
         if (UnitDto.FlashCards.Count < AppConstants.FlashCardsMaxQuantityPerUnit)
         {

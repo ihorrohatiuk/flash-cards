@@ -36,72 +36,15 @@
     </div>
 </div>
 
-<MudForm Style="width: 100%" Class="mb-2" Spacing="2" @ref="_unitInfoForm">
-    <MudCard Outlined="true" Class="mb-5">
-        <MudCardContent>
-                <MudTextField
-                    Validation="@(new Func<string, IEnumerable<string>>(UnitValidation.UnitNameValidation))"
-                    T="string" 
-                    Class="mb-2" 
-                    Margin="Margin.Dense" 
-                    Label="Unit name" 
-                    Variant="Variant.Filled"
-                    @bind-Value="@_flashCardsUnitDto.FlashCardsUnit.Name"/>
-                <MudTextField
-                    Validation="@(new Func<string, IEnumerable<string>>(UnitValidation.UnitSubjectValidation))"
-                    T="string" 
-                    Margin="Margin.Dense" 
-                    Label="Subject"
-                    Immediate="true" 
-                    Variant="Variant.Filled"
-                    @bind-Value="_flashCardsUnitDto.FlashCardsUnit.Subject"/>
-        </MudCardContent>
-    </MudCard>
-
-    @foreach (var flashCard in _flashCardsUnitDto.FlashCards)
-    {
-        <MudCard Outlined="true" Class="mb-5">
-            <MudCardContent>
-                        @*Question field*@
-                        <MudTextField
-                            Validation="@(new Func<string, IEnumerable<string>>(UnitValidation.QuestionValidation))"
-                            T="string"
-                            Label="Question"
-                            @bind-Value="flashCard.Question"/>
-                        @*Answer field*@
-                        <MudTextField
-                            Validation="@(new Func<string, IEnumerable<string>>(UnitValidation.AnswerValidation))"
-                            Class="mb-2"
-                            T="string"
-                            Label="Answer"
-                            @bind-Value="flashCard.Answer"/>
-                        <MudStack AlignItems="AlignItems.End">
-                            <MudButton Variant="Variant.Filled"
-                                       Size="Size.Medium"
-                                       StartIcon="@Icons.Material.Filled.Delete"
-                                       Color="Color.Secondary"
-                                       OnClick="() => DeleteFlashCard(flashCard)">
-                                Delete
-                            </MudButton>
-                        </MudStack>
-            </MudCardContent>
-        </MudCard>
-    }
-</MudForm>
-
-@*Add a flash card button*@
-<MudButton
-    FullWidth="true"
-    Variant="Variant.Filled"
-    Size="Size.Medium"
-    Color="Color.Primary"
-    OnClick="AddFlashCard">
-    Add a flash card
-</MudButton>
+<EditUnitComponent
+    @ref="_editUnitComponent"
+    UnitForm="@_unitInfoForm" 
+    UnitDto="@_flashCardsUnitDto"/>
 
 @code {
     private MudForm _unitInfoForm;
     private FlashCardsUnitDto? _flashCardsUnitDto;
+    private EditUnitComponent _editUnitComponent;
 
     protected override void OnInitialized()
     {
@@ -119,38 +62,12 @@
         else
         {
             _flashCardsUnitDto.FlashCards = new List<FlashCard>();
-            AddFlashCard();
         }
     }
-
-    private void AddFlashCard()
+    
+    protected override void OnAfterRender(bool firstRender)
     {
-        if (_flashCardsUnitDto.FlashCards.Count < AppConstants.FlashCardsMaxQuantityPerUnit)
-        {
-            _flashCardsUnitDto.FlashCards.Add(new FlashCard());
-            StateHasChanged();
-            return;
-        }
-
-        Snackbar.Add($"Maximum number of cards reached ({AppConstants.FlashCardsMaxQuantityPerUnit})", Severity.Info);
-    }
-
-    private void DeleteFlashCard(FlashCard card)
-    {
-        if (_flashCardsUnitDto.FlashCards is null || !_flashCardsUnitDto.FlashCards.Contains(card))
-        {
-            Snackbar.Add($"An unexpected error occurred, try again later", Severity.Error);
-            return;
-        }
-
-        if (_flashCardsUnitDto.FlashCards.Count < 2)
-        {
-            Snackbar.Add($"Unit should has at least one flash card", Severity.Info);
-            return;
-        }
-        
-        _flashCardsUnitDto.FlashCards.Remove(card);
-        StateHasChanged();
+        _editUnitComponent.AddFlashCard();
     }
 
     private async Task SaveUnitAsync()
