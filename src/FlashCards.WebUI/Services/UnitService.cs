@@ -34,7 +34,7 @@ public class UnitService
         return result.UnitId;
     }
     
-    public async Task<FlashCardsUnitDto> GetUnitById(Guid unitId)
+    public async Task<FlashCardsUnitDto> GetUnitByIdAsync(Guid unitId)
     {
         var response = await _httpClientFactory
             .CreateClient("ServerApi")
@@ -55,7 +55,7 @@ public class UnitService
         return unitResponseDto;
     }
     
-    public async Task<List<FlashCardsUnitInfoDto>> GetUnitHeadersByOwnerId(Guid ownerId)
+    public async Task<List<FlashCardsUnitInfoDto>> GetUnitHeadersByOwnerIdAsync(Guid ownerId)
     {
         var response = await _httpClientFactory
             .CreateClient("ServerApi")
@@ -77,6 +77,30 @@ public class UnitService
 
         return unitResponseDto;
     }
-    // 2. Update unit
-    // 3. Delete unit
+    
+    public async Task UpdateUnitAsync(FlashCardsUnitDto unitdto)
+    {
+        var response = await _httpClientFactory
+            .CreateClient("ServerApi")
+            .PostAsync($"api/units/{unitdto.FlashCardsUnit.Id}/update", JsonContent.Create(unitdto));
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new InvalidOperationException($"Failed to update unit: {error}");
+        }
+    }
+    
+    public async Task DeleteUnitAsync(Guid unitId)
+    {
+        var response = await _httpClientFactory
+            .CreateClient("ServerApi")
+            .GetAsync($"api/units/{unitId}/delete");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new InvalidOperationException($"Unable to delete a unit: {error}");
+        }
+    }
 }

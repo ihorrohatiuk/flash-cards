@@ -131,7 +131,7 @@ else
     {
         try
         {
-            _userUnits = await UnitService.GetUnitHeadersByOwnerId(await AuthenticationService.GetUserId());
+            _userUnits = await UnitService.GetUnitHeadersByOwnerIdAsync(await AuthenticationService.GetUserId());
         }
         catch (InvalidOperationException e)
         {

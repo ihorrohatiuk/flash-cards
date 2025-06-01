@@ -132,8 +132,46 @@ public class UnitsController : ControllerBase
         return Ok(result);
     }
     
-    [HttpPost("delete-unit")]
-    public async Task<IActionResult> DeleteUnit([FromQuery] Guid flashCardsUnitId)
+    [HttpPost("{unitId}/update")]
+    public async Task<IActionResult> UpdateUnit([FromBody] FlashCardsUnitDto unitDto)
+    {
+        //Getting token from request
+        _ = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        Guid userId = Guid.Parse(User.FindFirst(JwtClaims.UserId)?.Value);
+        string userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+        
+        var existingUnit = await _context.FlashCardsUnits
+            .FirstOrDefaultAsync(u => u.Id == unitDto.FlashCardsUnit.Id);
+
+        if (existingUnit == null)
+            return BadRequest($"Unit with id {unitDto.FlashCardsUnit.Id} not found.");
+        if (existingUnit.OwnerId != userId && !string.Equals(userRole, RolesType.Admin))
+            return Forbid();
+
+        existingUnit.Name = unitDto.FlashCardsUnit.Name;
+        existingUnit.Subject = unitDto.FlashCardsUnit.Subject;
+
+        //TODO: Delete all user progress if unit was updated.
+        var existingFlashCards = _context.FlashCards.Where(c => c.FlashCardsUnitId == existingUnit.Id);
+        _context.FlashCards.RemoveRange(existingFlashCards);
+        
+        var newFlashCards = unitDto.FlashCards.Select(fc => new FlashCardEntity
+        {
+            Id = Guid.NewGuid(),
+            FlashCardsUnitId = existingUnit.Id,
+            Question = fc.Question,
+            Answer = fc.Answer
+        }).ToList();
+
+        await _context.FlashCards.AddRangeAsync(newFlashCards);
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new { Message = "Unit updated successfully", UnitId = existingUnit.Id });
+    }
+    
+    [HttpGet("{unitId}/delete")]
+    public async Task<IActionResult> DeleteUnit(Guid unitId)
     {
         // TODO: ALSO DELETE ALL FLASHCARDS in PROGRESS, SRS METHOD, THAT are linked to this unit!!! 
 
@@ -142,17 +180,17 @@ public class UnitsController : ControllerBase
         Guid userId = Guid.Parse(User.FindFirst(JwtClaims.UserId)?.Value);
         string userRole = User.FindFirst(ClaimTypes.Role)?.Value;
         
-        if (flashCardsUnitId == Guid.Empty)
+        if (unitId == Guid.Empty)
             return BadRequest("Invalid unit id.");
 
-        var unit = await _context.FlashCardsUnits.FindAsync(flashCardsUnitId);
+        var unit = await _context.FlashCardsUnits.FindAsync(unitId);
         if (unit == null)
             return NotFound("Unit not found.");
         if (unit.OwnerId != userId && !string.Equals(userRole, RolesType.Admin))
             return Forbid();
 
         var cards = _context.FlashCards
-            .Where(c => c.FlashCardsUnitId == flashCardsUnitId);
+            .Where(c => c.FlashCardsUnitId == unitId);
 
         // Remove flashcards
         _context.FlashCards.RemoveRange(cards);

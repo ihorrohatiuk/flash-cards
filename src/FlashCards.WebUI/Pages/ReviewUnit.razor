@@ -4,7 +4,6 @@
 @using FlashCards.WebUI.Services
 
 @inject NavigationManager Navigation
-@inject HttpClient Http
 @inject ISnackbar Snackbar
 @inject UnitService UnitService
 
@@ -104,7 +103,7 @@ else
     {
         try
         {
-            _flashCardsUnitReviewDto = await UnitService.GetUnitById(Guid.Parse(UnitId));
+            _flashCardsUnitReviewDto = await UnitService.GetUnitByIdAsync(Guid.Parse(UnitId));
         }
         catch (Exception e)
         {
@@ -116,12 +115,12 @@ else
 
     private void OnFreeLearningModeClick()
     {
-        Navigation.NavigateTo($"/Units/{UnitId.ToString()}/FreeLearningMode/");
+        Navigation.NavigateTo($"/Units/{UnitId}/FreeLearningMode/");
     }
     
     private void OnIntervalLearningModeClick()
     {
-        Navigation.NavigateTo($"/Units/{UnitId.ToString()}/IntervalLearningMode/");
+        Navigation.NavigateTo($"/Units/{UnitId}/IntervalLearningMode/");
     }
 
     private void OnShowPreviousCardClick()

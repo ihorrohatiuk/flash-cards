@@ -1,9 +1,11 @@
 ﻿@page "/units/{unitId}/edit"
 @using FlashCards.Core.Application.Dtos
 @using FlashCards.WebUI.Components
+@using FlashCards.WebUI.Services
 
 @inject ISnackbar Snackbar
-@inject HttpClient Http
+@inject UnitService UnitService
+@inject NavigationManager Navigation
 
 @if (_unitDto is null)
 {
@@ -61,7 +63,7 @@ else
 
     private async Task LoadUnitAsync()
     {
-        _unitDto = await Http.GetFromJsonAsync<FlashCardsUnitDto>("sample-data/unit-review.json?");
+        _unitDto = await UnitService.GetUnitByIdAsync(Guid.Parse(UnitId));
 
         if (_unitDto is null)
         {
@@ -76,22 +78,37 @@ else
 
         if (isValid)
         {
-            // TODO: FE -> add save logic here.
-            foreach (var card in _unitDto.FlashCards)
+            try
             {
-                Console.WriteLine("Question: " + card.Question);
-                Console.WriteLine("Answer: " + card.Answer);
+                await UnitService.UpdateUnitAsync(_unitDto);
             }
-
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine(e);
+                Snackbar.Add("An unexpected error has occurred. Please refresh the page and try again.", Severity.Error);
+                return;
+            }
+            
+            Navigation.NavigateTo($"units/{UnitId}");
             return;
         }
         
         Snackbar.Add($"Some fields are filled out incorrectly", Severity.Error);
     }
 
-    private Task DeleteUnitAsync()
+    private async Task DeleteUnitAsync()
     {
-        throw new NotImplementedException();
+        try
+        {
+            await UnitService.DeleteUnitAsync(Guid.Parse(UnitId));
+        }
+        catch (InvalidOperationException e)
+        {
+            Console.WriteLine(e);
+            Snackbar.Add("An unexpected error has occurred. Please try again.", Severity.Error);
+            return;
+        }
+        
+        Navigation.NavigateTo("/units");
     }
-
 }
