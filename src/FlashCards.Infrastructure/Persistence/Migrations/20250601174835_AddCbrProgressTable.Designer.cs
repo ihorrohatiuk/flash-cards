@@ -4,16 +4,19 @@ using FlashCards.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace FlashCards.Api.Migrations
+namespace FlashCards.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250601174835_AddCbrProgressTable")]
+    partial class AddCbrProgressTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,18 +31,18 @@ namespace FlashCards.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("FlashCardsUnitId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Progress")
+                    b.Property<int>("Confidence")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("FlashCardId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FlashCardsUnitId");
+                    b.HasIndex("FlashCardId");
 
                     b.ToTable("CbrProgresses");
                 });
@@ -134,13 +137,13 @@ namespace FlashCards.Api.Migrations
 
             modelBuilder.Entity("FlashCards.Infrastructure.Persistence.DataModels.CbrProgress", b =>
                 {
-                    b.HasOne("FlashCards.Infrastructure.Persistence.DataModels.FlashCardsUnitEntity", "FlashCardsUnit")
+                    b.HasOne("FlashCards.Infrastructure.Persistence.DataModels.FlashCardEntity", "FlashCard")
                         .WithMany()
-                        .HasForeignKey("FlashCardsUnitId")
+                        .HasForeignKey("FlashCardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("FlashCardsUnit");
+                    b.Navigation("FlashCard");
                 });
 
             modelBuilder.Entity("FlashCards.Infrastructure.Persistence.DataModels.FlashCardEntity", b =>
