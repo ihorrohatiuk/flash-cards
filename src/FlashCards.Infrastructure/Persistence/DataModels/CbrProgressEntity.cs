@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlashCards.Infrastructure.Persistence.DataModels;
 
-public class CbrProgress
+public class CbrProgressEntity
 {
     [Key]
     public Guid Id { get; set; }

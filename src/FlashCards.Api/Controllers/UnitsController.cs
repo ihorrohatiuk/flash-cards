@@ -114,7 +114,7 @@ public class UnitsController : ControllerBase
             
             // Progress count
             int progress;
-            CbrProgress? cbrProgress = await _context.CbrProgresses
+            CbrProgressEntity? cbrProgress = await _context.CbrProgresses
                 .Where(p => p.UserId == ownerId)
                 .FirstOrDefaultAsync(p => p.FlashCardsUnitId == unit.Id);
 

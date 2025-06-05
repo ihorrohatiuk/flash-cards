@@ -1,0 +1,72 @@
+[
+  {
+    "Question": "What is the capital of France?",
+    "Answer": "Paris",
+    "EasinessFactor": 2.5,
+    "Repetitions": 3,
+    "NextPracticeDate": "2025-06-10T10:00:00"
+  },
+  {
+    "Question": "What is the square root of 64?",
+    "Answer": "8",
+    "EasinessFactor": 2.3,
+    "Repetitions": 2,
+    "NextPracticeDate": "2025-06-07T10:00:00"
+  },
+  {
+    "Question": "Who wrote '1984'?",
+    "Answer": "George Orwell",
+    "EasinessFactor": 2.6,
+    "Repetitions": 4,
+    "NextPracticeDate": "2025-06-15T10:00:00"
+  },
+  {
+    "Question": "What is the chemical symbol for water?",
+    "Answer": "H2O",
+    "EasinessFactor": 2.5,
+    "Repetitions": 1,
+    "NextPracticeDate": "2025-06-04T10:00:00"
+  },
+  {
+    "Question": "In what year did the Titanic sink?",
+    "Answer": "1912",
+    "EasinessFactor": 2.4,
+    "Repetitions": 3,
+    "NextPracticeDate": "2025-06-12T10:00:00"
+  },
+  {
+    "Question": "What is the largest planet in our Solar System?",
+    "Answer": "Jupiter",
+    "EasinessFactor": 2.7,
+    "Repetitions": 5,
+    "NextPracticeDate": "2025-06-20T10:00:00"
+  },
+  {
+    "Question": "What language is primarily spoken in Brazil?",
+    "Answer": "Portuguese",
+    "EasinessFactor": 2.2,
+    "Repetitions": 1,
+    "NextPracticeDate": "2025-06-05T10:00:00"
+  },
+  {
+    "Question": "Who painted the Mona Lisa?",
+    "Answer": "Leonardo da Vinci",
+    "EasinessFactor": 2.8,
+    "Repetitions": 4,
+    "NextPracticeDate": "2025-06-14T10:00:00"
+  },
+  {
+    "Question": "What is 9 multiplied by 6?",
+    "Answer": "54",
+    "EasinessFactor": 2.3,
+    "Repetitions": 2,
+    "NextPracticeDate": "2025-06-07T10:00:00"
+  },
+  {
+    "Question": "Which continent is Egypt located in?",
+    "Answer": "Africa",
+    "EasinessFactor": 2.5,
+    "Repetitions": 3,
+    "NextPracticeDate": "2025-06-11T10:00:00"
+  }
+]

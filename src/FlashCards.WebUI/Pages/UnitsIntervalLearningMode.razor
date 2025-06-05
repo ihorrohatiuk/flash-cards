@@ -1,0 +1,192 @@
+﻿@page "/units/{unitId}/IntervalLearningMode"
+@using FlashCards.Core.Application.Dtos
+@using FlashCards.Core.Application.SpacedRepetition
+@using FlashCards.WebUI.Components
+@using FlashCards.WebUI.Services
+
+@inject ISnackbar Snackbar
+@inject NavigationManager Navigation
+@inject ProgressService ProgressService
+@inject HttpClient Http
+
+@if (_flashCards == null)
+{
+    <PageLoadingComponent 
+        LoadingText="Loading..." />
+}
+else if (_hasFlashCardsForSession == false)
+{
+    /*No flash cards for this session screen*/
+    <MudStack Class="mt-5" AlignItems="AlignItems.Center">
+        @*Trophy image*@
+        <img src="/images/cat.png" alt="Cup image" class="w-25">
+        <div style="text-align: center">
+            <h4 class="mt-1">Oops...you don't have any flashcards to review for today's session.</h4>
+        </div>
+        @*Table*@
+        <p>Next repetition dates for each flash card:</p>
+        @*TODO: Add table here*@
+        @*Back to unit info button*@
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OnBackToUnitPageClick">Back to unit page</MudButton>
+    </MudStack>
+}
+else
+{
+    @if (_sessionFlashCardsCount != _flashCards.Count)
+    {
+        /*Flash Cards*/
+        <MudProgressLinear 
+        Color="Color.Tertiary" 
+        Rounded="true"
+        Striped="false"
+        Value="@((double) _sessionFlashCardsCount / _flashCards.Count * 100)" 
+        Class="mb-5"/>
+                
+        <FlashCardComponent
+            Question="@_currentCard.Question"
+            Answer="@_currentCard.Answer"
+            @bind-ShowAnswer="@_showAnswer"
+            OnFlipCard="FlipHandler"/>
+
+        @if (_isFlipped)
+        {
+            <MudStack Row="true" Class="mt-5">
+                @*0*@
+                <MudButton
+                    Style="width: 20%; min-width: 10px;"
+                    Variant="Variant.Filled"
+                    Color="Color.Dark"
+                    OnClick="async () => await RateCardAsync(0)">
+                    0
+                </MudButton>
+                @*1*@
+                <MudButton
+                    Style="width: 20%; min-width: 10px;"
+                    Variant="Variant.Filled"
+                    Color="Color.Error"
+                    OnClick="async () => await RateCardAsync(1)">
+                    1
+                </MudButton>
+                @*2*@
+                <MudButton
+                    Style="@($"width: 20%; color: white; background-color:{Colors.DeepOrange.Darken1}; min-width: 10px;")"
+                    Variant="Variant.Filled"
+                    OnClick="async () => await RateCardAsync(2)">
+                    2
+                </MudButton>
+                @*3*@
+                <MudButton
+                    Style="@($"width: 20%; color: white; background-color:{Colors.Orange.Default}; min-width: 10px;")"
+                    Variant="Variant.Filled"
+                    Color="Color.Success"
+                    OnClick="async () => await RateCardAsync(3)">
+                    3
+                </MudButton>
+                @*4*@
+                <MudButton
+                    Style="@($"width: 20%; color: white; background-color:{Colors.LightGreen.Default}; min-width: 10px;")"
+                    Variant="Variant.Filled"
+                    OnClick="async () => await RateCardAsync(4)">
+                    4
+                </MudButton>
+                @*5*@
+                <MudButton
+                    Style="width: 20%; min-width: 10px;"
+                    Variant="Variant.Filled"
+                    Color="Color.Success"
+                    OnClick="async () => await RateCardAsync(5)">
+                    5
+                </MudButton>
+            </MudStack>
+        }
+    }
+    else
+    {
+        /*Final screen*/
+        <MudStack Class="mt-5" AlignItems="AlignItems.Center">
+            @*Trophy image*@
+            <img src="/images/champion-cup.svg" alt="Cup image" class="w-25">
+            <div style="text-align: center">
+                <h4 class="mt-1">You've repeat all flash cards for today!</h4>
+            </div>
+            @*Table*@
+            <p>Next repetition dates for each flash card:</p>
+            @*Back to unit info button*@
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OnBackToUnitPageClick">Back to unit page</MudButton>
+        </MudStack>
+    }
+}
+
+@code {
+    [Parameter] public string UnitId { get; set; }
+    private bool _isFlipped = false;
+    private List<Sm2FlashCardDto>? _flashCards;
+    private Sm2FlashCardDto _currentCard;
+    private SM2Scheduler _scheduler;
+    private bool _showAnswer;
+    private bool _hasFlashCardsForSession = true;
+    private int _sessionFlashCardsCount = 0;
+    private List<Sm2FlashCardDto> _nextRepetitionCards;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadFlashCardsAsync();
+
+        _scheduler = new SM2Scheduler();
+    }
+
+    private void ShowNextCard()
+    {
+        _currentCard = _flashCards[_sessionFlashCardsCount];
+    }
+
+    private async Task LoadFlashCardsAsync()
+    {
+        _flashCards = await ProgressService.GetSm2FlashCardsByUnit(Guid.Parse(UnitId));
+        ArgumentNullException.ThrowIfNull(_flashCards);
+        if (_flashCards.Count.Equals(0))
+        {
+            _hasFlashCardsForSession = false;
+            return;
+        }
+        _currentCard = _flashCards[0];
+    }
+
+    private async Task RateCardAsync(int rate)
+    {
+        // Algorithm Logic
+        _scheduler.UpdateCard(_currentCard, rate);
+        await SaveUserProgressAsync();
+        
+        // Visual side
+        _sessionFlashCardsCount++;
+        _isFlipped = false;
+        if (_showAnswer) _showAnswer = false;
+        await Task.Delay(400); // wait until the card flip animation is played
+        if (_sessionFlashCardsCount != _flashCards.Count)
+        {
+            ShowNextCard();
+        }
+    }
+    
+    private void FlipHandler()
+    {
+        if (_showAnswer)
+        {
+            _isFlipped = true;
+        }
+    }
+
+    private async Task SaveUserProgressAsync()
+    {
+        var result = await ProgressService.UpdateSm2FlashCard(Guid.Parse(UnitId), _currentCard);
+        if (!result)
+            Snackbar.Add("An error occurred while saving your progress, please try again", Severity.Warning);
+            
+    }
+    
+    private async Task OnBackToUnitPageClick()
+    {
+        Navigation.NavigateTo($"/units/{UnitId}");
+    }
+}
