@@ -1,11 +1,23 @@
 ﻿@page "/"
+@using FlashCards.WebUI.Components
 
 <PageTitle>Home</PageTitle>
 
-<h3>Home Page</h3>
+<h3>Welcome to FlashCards!</h3>
+<p>This project was created as part of my bachelor thesis focused on effective learning techniques and spaced repetition algorithms.</p>
+<p>It allows you to create, manage and study custom learning modules using AI-powered features.</p>
+
+<MudStack Row="true" AlignItems="AlignItems.Center">
+    <p>You can find the full source code on GitHub: </p>
+    <MudText Class="mud-button-root mud-button-text mud-primary-text" Style="cursor: pointer;">
+        <a href="https://github.com/ihorrohatiuk/flash-cards" target="_blank">View on GitHub</a>
+    </MudText>
+</MudStack>
+
+<p>Thank you for visiting and happy learning!</p>
 
 @code {
-
-    
-
+    private bool _cbrShowAnswer = false;
+    private string _cbrQuestion = "What is the capital of France?";
+    private string _cbrAnswer = "Paris";
 }

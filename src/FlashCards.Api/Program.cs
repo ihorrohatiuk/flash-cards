@@ -75,12 +75,8 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline (Swagger).
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.UseDeveloperExceptionPage();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // Cookie configuration
 app.UseCookiePolicy(new CookiePolicyOptions
